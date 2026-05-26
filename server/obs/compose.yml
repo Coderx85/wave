@@ -1,0 +1,64 @@
+services:
+  app:
+    build: .
+    container_name: node-app
+    env_file: ../.env.development
+    ports:
+      - "4000:4000"
+    networks:
+      - mynetwork
+
+  vector:
+    image: timberio/vector:0.13.0-alpine
+    container_name: vector
+    command: ["-c", "/etc/vector/vector.yaml"]
+    depends_on:
+      - app
+    environment:
+      - VECTOR_CONFIG=/etc/vector/vector.yaml
+    volumes:
+      - ./vector/vector.yaml:/etc/vector/vector.yaml:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - mynetwork
+
+  loki:
+    image: grafana/loki:2.8.2
+    container_name: loki
+    depends_on:
+      - vector
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki/config.yaml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+      - loki_wal:/loki/wal
+    user: "0:0"
+    networks:
+      - mynetwork
+
+  grafana:
+    image: grafana/grafana:9.4.2
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+    depends_on:
+      - loki
+      - vector
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+
+volumes:
+  loki_data:
+  loki_wal:

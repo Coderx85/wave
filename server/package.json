@@ -1,0 +1,55 @@
+{
+  "name": "fastify-template",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "dotenv -e src/.env.development -- tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "new-module": "tsx scripts/new-module.ts",
+    "test": "vp test",
+    "auth:setup": "bash scripts/setup-auth.sh",
+    "auth:migrate": "dotenv -e src/.env.development -- npx @better-auth/cli@latest migrate"
+  },
+  "dependencies": {
+    "@fastify/autoload": "^6.3.1",
+    "@fastify/cors": "^11.2.0",
+    "@fastify/env": "^5.0.3",
+    "better-auth": "^1.6.11",
+    "fastify": "^5.6.2",
+    "fastify-cli": "^7.4.1",
+    "fastify-plugin": "^5.1.0",
+    "fastify-type-provider-zod": "^6.1.0",
+    "pg": "^8.21.0",
+    "pino": "^10.1.0",
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@latest",
+    "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.10",
+    "@types/node": "^25.5.0",
+    "@types/nodemailer": "^7.0.4",
+    "@types/pg": "^8.20.0",
+    "dotenv-cli": "^11.0.0",
+    "esbuild": "^0.27.2",
+    "esbuild-plugin-alias": "^0.2.1",
+    "pino-pretty": "^13.1.3",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.20.5",
+    "vite-plus": "latest"
+  },
+  "packageManager": "pnpm@10.32.0",
+  "pnpm": {
+    "overrides": {
+      "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+      "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+    }
+  }
+}
