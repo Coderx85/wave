@@ -3,21 +3,35 @@
   "checkpoint_id": "1c1ab4976b5e",
   "strategy": "manual-commit",
   "branch": "setup/auth-service",
-  "checkpoints_count": 1,
-  "files_touched": null,
+  "checkpoints_count": 8,
+  "files_touched": [
+    "server/src/modules/auth/adapters/password-adapters.ts",
+    "server/src/modules/auth/auth.class.ts",
+    "server/src/modules/auth/auth.interface.ts",
+    "server/src/modules/auth/domain/value-objects/email.ts",
+    "server/src/modules/auth/utils/passsword/index.ts",
+    "server/src/modules/auth/utils/passsword/password.spec.ts",
+    "server/src/modules/auth/utils/passsword/password.ts"
+  ],
   "sessions": [
     {
       "metadata": "/1c/1ab4976b5e/0/metadata.json",
       "transcript": "/1c/1ab4976b5e/0/full.jsonl",
       "content_hash": "/1c/1ab4976b5e/0/content_hash.txt",
       "prompt": "/1c/1ab4976b5e/0/prompt.txt"
+    },
+    {
+      "metadata": "/1c/1ab4976b5e/1/metadata.json",
+      "transcript": "/1c/1ab4976b5e/1/full.jsonl",
+      "content_hash": "/1c/1ab4976b5e/1/content_hash.txt",
+      "prompt": "/1c/1ab4976b5e/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 3930,
-    "cache_creation_tokens": 57660,
-    "cache_read_tokens": 50791,
-    "output_tokens": 4661,
-    "api_call_count": 9
+    "input_tokens": 4663,
+    "cache_creation_tokens": 693473,
+    "cache_read_tokens": 5418979,
+    "output_tokens": 61642,
+    "api_call_count": 116
   }
 }

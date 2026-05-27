@@ -1,0 +1,154 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "1c1ab4976b5e",
+  "session_id": "ses_19571ca1cffeniNOvbcRg6b3qN",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-27T18:59:39.485610057Z",
+  "branch": "setup/auth-service",
+  "checkpoints_count": 7,
+  "files_touched": [
+    "server/src/modules/auth/adapters/password-adapters.ts",
+    "server/src/modules/auth/auth.class.ts",
+    "server/src/modules/auth/auth.interface.ts",
+    "server/src/modules/auth/domain/value-objects/email.ts",
+    "server/src/modules/auth/utils/passsword/index.ts",
+    "server/src/modules/auth/utils/passsword/password.spec.ts",
+    "server/src/modules/auth/utils/passsword/password.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "claude-haiku-4.5",
+  "turn_id": "c6bc75e4ca39",
+  "token_usage": {
+    "input_tokens": 733,
+    "cache_creation_tokens": 635813,
+    "cache_read_tokens": 5368188,
+    "output_tokens": 56981,
+    "api_call_count": 107
+  },
+  "session_metrics": {
+    "turn_count": 8
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-27T18:59:39.445411459Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 339,
+    "human_removed": 630,
+    "total_committed": 0,
+    "total_lines_changed": 1712,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 300,
+      "user_lines_removed": 3,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "server/package.json": 1,
+        "server/pnpm-lock.yaml": 47,
+        "server/src/lib/auth.ts": 2,
+        "server/src/modules/auth/auth.class.ts": 78,
+        "server/src/modules/auth/auth.interface.ts": 43,
+        "server/src/modules/auth/utils/ID/generate-id.ts": 21,
+        "server/src/modules/auth/utils/ID/index.ts": 1,
+        "server/src/modules/auth/utils/passsword/index.ts": 1,
+        "server/src/modules/auth/utils/passsword/password.spec.ts": 61,
+        "server/src/modules/auth/utils/passsword/password.ts": 42,
+        "server/src/types/id.types.ts": 3
+      },
+      "user_removed_per_file": {
+        "server/src/lib/auth.ts": 2,
+        "server/src/types/id.types.ts": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 17,
+      "user_lines_removed": 8,
+      "agent_lines_added": 2743,
+      "agent_lines_removed": 9,
+      "user_added_per_file": {
+        "server/src/modules/user/user.class.ts": 2,
+        "server/src/modules/user/user.interface.ts": 15
+      },
+      "user_removed_per_file": {
+        "server/src/modules/user/user.interface.ts": 8
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 2752,
+      "agent_lines_removed": 9
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 128,
+      "user_lines_removed": 170,
+      "agent_lines_added": 2656,
+      "agent_lines_removed": 9,
+      "user_added_per_file": {
+        "server/src/modules/auth/adapters/repositories/index.ts": 2,
+        "server/src/modules/auth/auth.class.ts": 113,
+        "server/src/modules/user/user.interface.ts": 13
+      },
+      "user_removed_per_file": {
+        "server/src/modules/user/user.class.ts": 154,
+        "server/src/modules/user/user.interface.ts": 16
+      }
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 125,
+      "user_lines_removed": 1025,
+      "agent_lines_added": 520,
+      "agent_lines_removed": 9,
+      "user_added_per_file": {
+        "server/src/modules/auth/auth.class.ts": 113,
+        "server/src/modules/user/user.interface.ts": 12
+      },
+      "user_removed_per_file": {
+        "server/src/modules/auth/adapters/controllers/auth.controller.ts": 147,
+        "server/src/modules/auth/adapters/password-adapters.ts": 74,
+        "server/src/modules/auth/adapters/repositories/in-memory-user-repository.ts": 77,
+        "server/src/modules/auth/adapters/repositories/postgres-user-repository.ts": 121,
+        "server/src/modules/auth/domain/entities/user.ts": 119,
+        "server/src/modules/auth/domain/interfaces/user-repository.interface.ts": 43,
+        "server/src/modules/auth/domain/value-objects/email.ts": 39,
+        "server/src/modules/auth/domain/value-objects/password.ts": 36,
+        "server/src/modules/auth/use-cases/dto/sign-in.dto.ts": 19,
+        "server/src/modules/auth/use-cases/dto/sign-up.dto.ts": 19,
+        "server/src/modules/auth/use-cases/sign-in.use-case.ts": 89,
+        "server/src/modules/auth/use-cases/sign-up.use-case.ts": 73,
+        "server/src/modules/user/user.class.ts": 154,
+        "server/src/modules/user/user.interface.ts": 15
+      }
+    }
+  ]
+}
