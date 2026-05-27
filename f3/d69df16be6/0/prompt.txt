@@ -1,0 +1,6 @@
+Explore the auth module structure at /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server/src/modules/auth/ with thoroughness: quick. I need to understand:
+1. What files exist (domain, use-cases, adapters, utils)
+2. What's already implemented and what's missing
+3. What test files already exist vs what needs to be created
+
+Return a structured summary of the current state and what needs to be completed.
