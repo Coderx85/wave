@@ -1,8 +1,9 @@
 import type { TUserId } from "@/types";
 import type { IUserStore, IUser, IUserDBDTO } from "../user.interface";
-
-// TODO: Replace with actual database implementation.
-const users: IUserDBDTO[] = [];
+import { db } from "../../database/client"; 
+import { eq } from "drizzle-orm";
+import { tryCatch } from "@/lib/try-catch-wrapper";
+import { users } from "../../database/schema/user.repository";
 
 class UserStore implements IUserStore {
   private static instance: UserStore;
@@ -16,46 +17,83 @@ class UserStore implements IUserStore {
     return UserStore.instance;
   };
 
-  async createUser(data: IUser): Promise<IUserDBDTO> {
-    const newUser: IUser = {
-      ...data,  
-    };
+  async createUser(data: IUserDBDTO): Promise<IUserDBDTO> {
+    return tryCatch({  
+    ctx: async () => {
+      const [createdUser] = await db
+        .insert(users)
+        .values({
+          id: data.id,
+          email: data.email,
+          name: data.name,
+          emailVerified: data.emailVerified,
+          image: data.image,
+        })
+        .returning();
 
-    users.push({
-      ...newUser,
-      emailVerified: false,
-    });
-    return Promise.resolve({
-      ...newUser,
-      emailVerified: false,
+      // If the user was not created, throw an error
+      if (!createdUser) {
+        throw new Error("Failed to create user");
+      }
+
+      return {
+        ...createdUser,
+      } as IUserDBDTO;
+      }
     });
   };
   
   async getUserByEmail(email: string): Promise<IUserDBDTO | null> {
-    const user = users.find(u => u.email === email);
-    return Promise.resolve(user || null);
+    return tryCatch({
+      ctx: async () => {
+        const [user] = await db.select().from(users).where(eq(users.email, email));
+        if (!user) return null;
+        return user as IUserDBDTO;
+      }
+    });
   };
 
   async getUserById(id: TUserId): Promise<IUserDBDTO | null> {
-    const user = users.find(u => u.id === id);
-    return Promise.resolve(user || null);
+    return tryCatch({
+      ctx: async () => {
+        const [user] = await db.select().from(users).where(eq(users.id, id));
+        if (!user) return null;
+        return user as IUserDBDTO;
+      }
+    });
   };
 
   async deleteUser(id: TUserId): Promise<void> {
-    const userIndex = users.findIndex(u => u.id === id);
-    if (userIndex !== -1) {
-      users.splice(userIndex, 1);
-    }
-    
-    return Promise.resolve();
+    return tryCatch({
+      ctx: async () => {
+        await db.delete(users).where(eq(users.id, id));
+      }
+    });
   };
 
   async updateUser(data: IUserDBDTO): Promise<IUserDBDTO> {
-    const userIndex = users.findIndex(u => u.id === data.id);
-    if (userIndex !== -1) {
-      users[userIndex] = { ...users[userIndex], ...data, updatedAt: new Date() };
-    }
-    return Promise.resolve(users[userIndex] || data);
+    return tryCatch({
+      ctx: async () => {
+        const [updatedUser] = await db
+          .update(users)
+          .set({
+            email: data.email,
+            name: data.name,
+            emailVerified: data.emailVerified,
+            image: data.image,
+            updatedAt: data.updatedAt,
+          })
+          .where(eq(users.id, data.id)).returning();
+        
+        // If nothing was updated, return the original data
+        if (!updatedUser) {
+          return data;
+        }
+        return {
+          ...updatedUser,
+        } as IUserDBDTO;
+      }
+    });
   };
 };
 

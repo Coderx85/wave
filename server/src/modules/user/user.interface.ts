@@ -30,16 +30,16 @@ export interface IUserModule {
 };
 
 export interface IUserDBDTO extends IUser {
-  imageUrl?: string | null;
+  image?: string | null;
   emailVerified: boolean;
 };
 
 export interface IUserStore {
-  createUser(data: IUserDBDTO): Promise<IUser>;  
+  createUser(data: IUserDBDTO): Promise<IUserDBDTO>;  
 
-  getUserByEmail(email: string): Promise<IUser | null>;
+  getUserByEmail(email: string): Promise<IUserDBDTO | null>;
 
-  getUserById(id: TUserId): Promise<IUser | null>;
+  getUserById(id: TUserId): Promise<IUserDBDTO | null>;
 
   deleteUser(id: TUserId): Promise<void>;
   

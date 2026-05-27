@@ -1,174 +1,282 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { UserRepository } from "./user.repo";
+import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import type { IUserDBDTO } from "../user.interface";
 import type { TUserId } from "@/types";
 
+// Mock the database client and drizzle-orm BEFORE importing UserRepository
+vi.mock("../../database/client");
+vi.mock("drizzle-orm");
+
+// Import after mocking
+import { UserRepository } from "./user.repo";
+import * as dbClient from "../../database/client";
+import { eq } from "drizzle-orm";
+
 describe("UserStore (Repository)", () => {
-  beforeEach(() => {
-    // Reset the users array by creating a new instance
-    // Note: Since UserStore is a singleton, we need to manually clear the state
-    // This is a limitation of the current design - ideally we'd have better test isolation
+  // Helper to create db mock
+  const createDbMock = () => ({
+    select: vi.fn(),
+    insert: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+  });
+
+  // Helper to setup chain mocks for select operations
+  const setupSelectChain = (resultData: any[] = []) => ({
+    from: vi.fn().mockReturnValue({
+      where: vi.fn().mockResolvedValue(resultData),
+    }),
+  });
+
+  // Helper to setup chain mocks for insert operations
+  const setupInsertChain = (resultData: any[] = []) => ({
+    values: vi.fn().mockReturnValue({
+      returning: vi.fn().mockResolvedValue(resultData),
+    }),
+  });
+
+  // Helper to setup chain mocks for update operations
+  const setupUpdateChain = (resultData: any[] = []) => ({
+    set: vi.fn().mockReturnValue({
+      where: vi.fn().mockReturnValue({
+        returning: vi.fn().mockResolvedValue(resultData),
+      }),
+    }),
+  });
+
+  // Helper to setup chain mocks for delete operations
+  const setupDeleteChain = () => ({
+    where: vi.fn().mockResolvedValue(undefined),
   });
 
   const createMockUser = (overrides?: Partial<IUserDBDTO>): IUserDBDTO => ({
     id: `user_${Math.random()}` as TUserId,
     email: "test@example.com",
     name: "Test User",
-    password: "hashedPassword123",
     createdAt: new Date(),
     updatedAt: null,
     emailVerified: false,
+    image: null,
     ...overrides,
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   describe("createUser", () => {
     it("should create a new user", async () => {
       const userData = createMockUser();
-      const result = await UserRepository.createUser(userData);
+      const dbMock = vi.mocked(dbClient.db);
+      const insertChain = setupInsertChain([userData]);
 
-      expect(result).toBeDefined();
-      expect(result.email).toBe(userData.email);
-      expect(result.name).toBe(userData.name);
-      expect(result.emailVerified).toBe(false);
-    });
-
-    it("should preserve user data when creating", async () => {
-      const userData = createMockUser({
-        email: "specific@example.com",
-        name: "Specific User",
-      });
+      dbMock.insert.mockReturnValue(insertChain as any);
 
       const result = await UserRepository.createUser(userData);
 
-      expect(result.email).toBe("specific@example.com");
-      expect(result.name).toBe("Specific User");
+      expect(result).toEqual(userData);
+      expect(dbMock.insert).toHaveBeenCalled();
     });
 
-    it("should set emailVerified to false by default", async () => {
+    it("should throw error if user creation fails", async () => {
       const userData = createMockUser();
-      const result = await UserRepository.createUser(userData);
+      const dbMock = vi.mocked(dbClient.db);
+      const insertChain = setupInsertChain([]); // Empty result
 
-      expect(result.emailVerified).toBe(false);
+      dbMock.insert.mockReturnValue(insertChain as any);
+
+      await expect(UserRepository.createUser(userData)).rejects.toThrow(
+        "Failed to create user"
+      );
+    });
+
+    it("should handle database errors during creation", async () => {
+      const userData = createMockUser();
+      const dbMock = vi.mocked(dbClient.db);
+
+      const insertChain = {
+        values: vi.fn().mockReturnValue({
+          returning: vi.fn().mockRejectedValue(new Error("Database error")),
+        }),
+      };
+
+      dbMock.insert.mockReturnValue(insertChain as any);
+
+      await expect(UserRepository.createUser(userData)).rejects.toThrow(
+        "Database error"
+      );
     });
   });
 
   describe("getUserByEmail", () => {
     it("should find user by email", async () => {
       const userData = createMockUser({ email: "findme@example.com" });
-      await UserRepository.createUser(userData);
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+      const selectChain = setupSelectChain([userData]);
+
+      dbMock.select.mockReturnValue(selectChain as any);
+      eqMock.mockReturnValue({} as any);
 
       const result = await UserRepository.getUserByEmail("findme@example.com");
 
-      expect(result).toBeDefined();
-      expect(result?.email).toBe("findme@example.com");
+      expect(result).toEqual(userData);
+      expect(dbMock.select).toHaveBeenCalled();
     });
 
     it("should return null if user not found by email", async () => {
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+      const selectChain = setupSelectChain([]); // Empty result
+
+      dbMock.select.mockReturnValue(selectChain as any);
+      eqMock.mockReturnValue({} as any);
+
       const result = await UserRepository.getUserByEmail("notfound@example.com");
 
       expect(result).toBeNull();
     });
 
-    it("should find the correct user when multiple users exist", async () => {
-      const user1 = createMockUser({ email: "user1@example.com" });
-      const user2 = createMockUser({ email: "user2@example.com" });
+    it("should handle database errors during email query", async () => {
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
 
-      await UserRepository.createUser(user1);
-      await UserRepository.createUser(user2);
+      const selectChain = {
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockRejectedValue(new Error("Query error")),
+        }),
+      };
 
-      const result = await UserRepository.getUserByEmail("user2@example.com");
+      dbMock.select.mockReturnValue(selectChain as any);
+      eqMock.mockReturnValue({} as any);
 
-      expect(result?.email).toBe("user2@example.com");
-      expect(result?.id).toBe(user2.id);
+      await expect(UserRepository.getUserByEmail("test@example.com")).rejects.toThrow(
+        "Query error"
+      );
     });
   });
 
   describe("getUserById", () => {
     it("should find user by id", async () => {
       const userData = createMockUser();
-      await UserRepository.createUser(userData);
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+      const selectChain = setupSelectChain([userData]);
+
+      dbMock.select.mockReturnValue(selectChain as any);
+      eqMock.mockReturnValue({} as any);
 
       const result = await UserRepository.getUserById(userData.id);
 
-      expect(result).toBeDefined();
-      expect(result?.id).toBe(userData.id);
+      expect(result).toEqual(userData);
+      expect(dbMock.select).toHaveBeenCalled();
     });
 
     it("should return null if user not found by id", async () => {
       const fakeId = `user_fake_${Math.random()}` as TUserId;
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+      const selectChain = setupSelectChain([]); // Empty result
+
+      dbMock.select.mockReturnValue(selectChain as any);
+      eqMock.mockReturnValue({} as any);
+
       const result = await UserRepository.getUserById(fakeId);
 
       expect(result).toBeNull();
     });
 
-    it("should find the correct user when multiple users exist", async () => {
-      const user1 = createMockUser();
-      const user2 = createMockUser();
+    it("should handle database errors during id query", async () => {
+      const userData = createMockUser();
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
 
-      await UserRepository.createUser(user1);
-      await UserRepository.createUser(user2);
+      const selectChain = {
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockRejectedValue(new Error("Query error")),
+        }),
+      };
 
-      const result = await UserRepository.getUserById(user1.id);
+      dbMock.select.mockReturnValue(selectChain as any);
+      eqMock.mockReturnValue({} as any);
 
-      expect(result?.id).toBe(user1.id);
-      expect(result?.email).toBe(user1.email);
+      await expect(UserRepository.getUserById(userData.id)).rejects.toThrow(
+        "Query error"
+      );
     });
   });
 
   describe("deleteUser", () => {
     it("should delete a user", async () => {
       const userData = createMockUser();
-      await UserRepository.createUser(userData);
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+      const deleteChain = setupDeleteChain();
 
-      await UserRepository.deleteUser(userData.id);
+      dbMock.delete.mockReturnValue(deleteChain as any);
+      eqMock.mockReturnValue({} as any);
 
-      const result = await UserRepository.getUserById(userData.id);
-      expect(result).toBeNull();
+      await expect(UserRepository.deleteUser(userData.id)).resolves.not.toThrow();
+      expect(dbMock.delete).toHaveBeenCalled();
     });
 
     it("should handle deleting non-existent user gracefully", async () => {
       const fakeId = `user_fake_${Math.random()}` as TUserId;
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+      const deleteChain = setupDeleteChain();
 
-      // Should not throw
+      dbMock.delete.mockReturnValue(deleteChain as any);
+      eqMock.mockReturnValue({} as any);
+
       await expect(UserRepository.deleteUser(fakeId)).resolves.not.toThrow();
     });
 
-    it("should not affect other users when deleting", async () => {
-      const user1 = createMockUser();
-      const user2 = createMockUser();
+    it("should handle database errors during deletion", async () => {
+      const userData = createMockUser();
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
 
-      await UserRepository.createUser(user1);
-      await UserRepository.createUser(user2);
+      const deleteChain = {
+        where: vi.fn().mockRejectedValue(new Error("Delete error")),
+      };
 
-      await UserRepository.deleteUser(user1.id);
+      dbMock.delete.mockReturnValue(deleteChain as any);
+      eqMock.mockReturnValue({} as any);
 
-      const result = await UserRepository.getUserById(user2.id);
-      expect(result).toBeDefined();
-      expect(result?.id).toBe(user2.id);
+      await expect(UserRepository.deleteUser(userData.id)).rejects.toThrow(
+        "Delete error"
+      );
     });
   });
 
   describe("updateUser", () => {
     it("should update user data", async () => {
       const userData = createMockUser();
-      await UserRepository.createUser(userData);
-
       const updatedData = {
         ...userData,
         name: "Updated Name",
         updatedAt: new Date(),
       };
 
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+      const updateChain = setupUpdateChain([updatedData]);
+
+      dbMock.update.mockReturnValue(updateChain as any);
+      eqMock.mockReturnValue({} as any);
+
       const result = await UserRepository.updateUser(updatedData);
 
+      expect(result).toEqual(updatedData);
       expect(result.name).toBe("Updated Name");
-      expect(result.updatedAt).toBeDefined();
     });
 
     it("should update multiple fields", async () => {
       const userData = createMockUser();
-      await UserRepository.createUser(userData);
-
       const updatedData = {
         ...userData,
         name: "New Name",
@@ -177,6 +285,13 @@ describe("UserStore (Repository)", () => {
         updatedAt: new Date(),
       };
 
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+      const updateChain = setupUpdateChain([updatedData]);
+
+      dbMock.update.mockReturnValue(updateChain as any);
+      eqMock.mockReturnValue({} as any);
+
       const result = await UserRepository.updateUser(updatedData);
 
       expect(result.name).toBe("New Name");
@@ -184,110 +299,198 @@ describe("UserStore (Repository)", () => {
       expect(result.emailVerified).toBe(true);
     });
 
-    it("should update imageUrl", async () => {
+    it("should return original data if update returns no result", async () => {
       const userData = createMockUser();
-      await UserRepository.createUser(userData);
 
-      const updatedData = {
-        ...userData,
-        imageUrl: "/uploads/pic.jpg",
-        updatedAt: new Date(),
-      };
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+      const updateChain = setupUpdateChain([]); // Empty result
 
-      const result = await UserRepository.updateUser(updatedData);
+      dbMock.update.mockReturnValue(updateChain as any);
+      eqMock.mockReturnValue({} as any);
 
-      expect(result.imageUrl).toBe("/uploads/pic.jpg");
+      const result = await UserRepository.updateUser(userData);
+
+      expect(result).toEqual(userData);
     });
 
-    it("should preserve createdAt when updating", async () => {
-      const createdAt = new Date("2024-01-01");
-      const userData = createMockUser({ createdAt });
-      await UserRepository.createUser(userData);
+    it("should handle database errors during update", async () => {
+      const userData = createMockUser();
 
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+
+      const updateChain = {
+        set: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            returning: vi.fn().mockRejectedValue(new Error("Update error")),
+          }),
+        }),
+      };
+
+      dbMock.update.mockReturnValue(updateChain as any);
+      eqMock.mockReturnValue({} as any);
+
+      await expect(UserRepository.updateUser(userData)).rejects.toThrow(
+        "Update error"
+      );
+    });
+
+    it("should preserve user id when updating", async () => {
+      const userData = createMockUser();
+      const originalId = userData.id;
       const updatedData = {
         ...userData,
         name: "Updated",
         updatedAt: new Date(),
       };
 
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+      const updateChain = setupUpdateChain([updatedData]);
+
+      dbMock.update.mockReturnValue(updateChain as any);
+      eqMock.mockReturnValue({} as any);
+
       const result = await UserRepository.updateUser(updatedData);
 
-      expect(result.createdAt).toEqual(createdAt);
-    });
-
-    it("should return updated user for non-existent user", async () => {
-      const userData = createMockUser();
-      const result = await UserRepository.updateUser(userData);
-
-      // Since the user doesn't exist, it should return the provided data
-      expect(result).toBeDefined();
-    });
-
-    it("should not affect other users when updating", async () => {
-      const user1 = createMockUser({ name: "User 1" });
-      const user2 = createMockUser({ name: "User 2" });
-
-      await UserRepository.createUser(user1);
-      await UserRepository.createUser(user2);
-
-      const updatedUser1 = {
-        ...user1,
-        name: "Updated User 1",
-        updatedAt: new Date(),
-      };
-
-      await UserRepository.updateUser(updatedUser1);
-
-      const result = await UserRepository.getUserById(user2.id);
-      expect(result?.name).toBe("User 2");
+      expect(result.id).toBe(originalId);
     });
   });
 
-  describe("Integration tests", () => {
-    it("should perform CRUD operations in sequence", async () => {
-      const userData = createMockUser({ email: "crud@example.com", name: "CRUD User" });
+  describe("Singleton pattern", () => {
+    it("should return the same instance on multiple calls", () => {
+      const instance1 = UserRepository;
+      const instance2 = UserRepository;
 
-      // Create
-      const created = await UserRepository.createUser(userData);
-      expect(created).toBeDefined();
+      expect(instance1).toBe(instance2);
+    });
+  });
 
-      // Read by email
-      let found = await UserRepository.getUserByEmail("crud@example.com");
-      expect(found).toBeDefined();
+  describe("Error handling with tryCatch wrapper", () => {
+    it("should properly wrap errors in tryCatch for createUser", async () => {
+      const userData = createMockUser();
+      const dbMock = vi.mocked(dbClient.db);
 
-      // Update
-      const updated = await UserRepository.updateUser({
-        ...userData,
-        name: "Updated CRUD User",
-        updatedAt: new Date(),
-      });
-      expect(updated.name).toBe("Updated CRUD User");
+      const insertChain = {
+        values: vi.fn().mockReturnValue({
+          returning: vi.fn().mockRejectedValue(new Error("Database connection failed")),
+        }),
+      };
 
-      // Read again to verify update
-      found = await UserRepository.getUserById(userData.id);
-      expect(found?.name).toBe("Updated CRUD User");
+      dbMock.insert.mockReturnValue(insertChain as any);
 
-      // Delete
-      await UserRepository.deleteUser(userData.id);
-      found = await UserRepository.getUserById(userData.id);
-      expect(found).toBeNull();
+      await expect(UserRepository.createUser(userData)).rejects.toThrow(
+        "Database connection failed"
+      );
     });
 
-    it("should maintain data integrity with concurrent operations", async () => {
-      const users = [
-        createMockUser({ email: "concurrent1@example.com" }),
-        createMockUser({ email: "concurrent2@example.com" }),
-        createMockUser({ email: "concurrent3@example.com" }),
-      ];
+    it("should properly wrap errors in tryCatch for getUserByEmail", async () => {
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
 
-      await Promise.all(users.map(u => UserRepository.createUser(u)));
+      const selectChain = {
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockRejectedValue(new Error("Connection timeout")),
+        }),
+      };
 
-      const results = await Promise.all(
-        users.map(u => UserRepository.getUserByEmail(u.email))
+      dbMock.select.mockReturnValue(selectChain as any);
+      eqMock.mockReturnValue({} as any);
+
+      await expect(UserRepository.getUserByEmail("test@example.com")).rejects.toThrow(
+        "Connection timeout"
       );
+    });
 
-      expect(results).toHaveLength(3);
-      expect(results.every(r => r !== null)).toBe(true);
+    it("should properly wrap errors in tryCatch for deleteUser", async () => {
+      const userData = createMockUser();
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+
+      const deleteChain = {
+        where: vi.fn().mockRejectedValue(new Error("Permission denied")),
+      };
+
+      dbMock.delete.mockReturnValue(deleteChain as any);
+      eqMock.mockReturnValue({} as any);
+
+      await expect(UserRepository.deleteUser(userData.id)).rejects.toThrow(
+        "Permission denied"
+      );
+    });
+  });
+
+  describe("Database operation call verification", () => {
+    it("should call database insert with correct chain methods", async () => {
+      const userData = createMockUser();
+      const dbMock = vi.mocked(dbClient.db);
+
+      const returningMock = vi.fn().mockResolvedValue([userData]);
+      const valuesMock = vi.fn().mockReturnValue({
+        returning: returningMock,
+      });
+      const insertMock = vi.fn().mockReturnValue({
+        values: valuesMock,
+      });
+
+      dbMock.insert.mockImplementation(insertMock);
+
+      await UserRepository.createUser(userData);
+
+      expect(insertMock).toHaveBeenCalled();
+      const expectedInsertData = {
+        id: userData.id,
+        email: userData.email,
+        name: userData.name,
+        emailVerified: userData.emailVerified,
+        image: userData.image,
+      };
+      expect(valuesMock).toHaveBeenCalledWith(expectedInsertData);
+      expect(returningMock).toHaveBeenCalled();
+    });
+
+    it("should call database select with where clause for getUserByEmail", async () => {
+      const userData = createMockUser({ email: "specific@example.com" });
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+
+      const selectChain = setupSelectChain([userData]);
+      dbMock.select.mockImplementation(() => selectChain as any);
+      eqMock.mockReturnValue({} as any);
+
+      await UserRepository.getUserByEmail("specific@example.com");
+
+      expect(dbMock.select).toHaveBeenCalled();
+      expect(selectChain.from).toHaveBeenCalled();
+    });
+
+    it("should call database update with correct fields", async () => {
+      const userData = createMockUser();
+      const updatedData = {
+        ...userData,
+        name: "Updated Name",
+        updatedAt: new Date(),
+      };
+
+      const dbMock = vi.mocked(dbClient.db);
+      const eqMock = vi.mocked(eq);
+
+      const updateChain = setupUpdateChain([updatedData]);
+      dbMock.update.mockImplementation(() => updateChain as any);
+      eqMock.mockReturnValue({} as any);
+
+      await UserRepository.updateUser(updatedData);
+
+      expect(dbMock.update).toHaveBeenCalled();
+      const expectedSetData = {
+        email: updatedData.email,
+        name: updatedData.name,
+        emailVerified: updatedData.emailVerified,
+        image: updatedData.image,
+        updatedAt: updatedData.updatedAt,
+      };
+      expect(updateChain.set).toHaveBeenCalledWith(expectedSetData);
     });
   });
 });

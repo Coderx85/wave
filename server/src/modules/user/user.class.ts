@@ -11,11 +11,12 @@ export class UserModule implements IUserModule {
       id: userId,
       email,
       name,
-      password,
       createdAt: new Date(),
       updatedAt: null,
       emailVerified: false,
+      image: null,
     };
+    // TODO: Handle password hashing and storage in auth module
     return this.userStore.createUser(newUser);
   }
 
@@ -65,7 +66,7 @@ export class UserModule implements IUserModule {
 
     await this.userStore.updateUser({
       ...user,
-      imageUrl,
+      image: imageUrl,
       updatedAt: new Date(),
     });
 

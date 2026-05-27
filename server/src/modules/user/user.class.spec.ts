@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { UserModule } from "./user.class";
 import type { IUserStore, IUser, IUserDBDTO } from "./user.interface";
-import type { TUserId } from "@/types";
+import type { TUserId } from "../../types";
 
 describe("UserModule", () => {
   let userModule: UserModule;
@@ -11,10 +11,10 @@ describe("UserModule", () => {
     id: "user_123" as TUserId,
     email: "test@example.com",
     name: "Test User",
-    password: "hashedPassword123",
     createdAt: new Date("2024-01-01"),
     updatedAt: null,
     emailVerified: false,
+    image: null,
   };
 
   beforeEach(() => {
@@ -57,8 +57,8 @@ describe("UserModule", () => {
       const callArgs = vi.mocked(mockUserStore.createUser).mock.calls[0][0];
       expect(callArgs.email).toBe("test@example.com");
       expect(callArgs.name).toBe("Test User");
-      expect(callArgs.password).toBe("password123");
       expect(callArgs.emailVerified).toBe(false);
+      expect(callArgs.image).toBeNull();
     });
   });
 
@@ -151,7 +151,7 @@ describe("UserModule", () => {
 
       const updatedUser: IUserDBDTO = {
         ...mockUser,
-        imageUrl,
+        image: imageUrl,
         updatedAt: new Date(),
       };
 
