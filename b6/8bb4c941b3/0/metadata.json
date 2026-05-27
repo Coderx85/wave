@@ -1,0 +1,43 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "b68bb4c941b3",
+  "session_id": "ses_19571ca1cffeniNOvbcRg6b3qN",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-27T19:09:34.78043572Z",
+  "branch": "setup/auth-service",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "server/src/modules/user/index.ts",
+    "server/src/modules/user/repository/index.ts",
+    "server/src/modules/user/repository/user.repo.spec.ts",
+    "server/src/modules/user/repository/user.repo.ts",
+    "server/src/modules/user/user.class.spec.ts",
+    "server/src/modules/user/user.class.ts",
+    "server/src/modules/user/user.interface.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "claude-haiku-4.5",
+  "turn_id": "c6bc75e4ca39",
+  "token_usage": {
+    "input_tokens": 794,
+    "cache_creation_tokens": 651921,
+    "cache_read_tokens": 5553333,
+    "output_tokens": 61157,
+    "api_call_count": 113
+  },
+  "session_metrics": {
+    "turn_count": 9
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-27T19:09:34.721062977Z",
+    "agent_lines": 736,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 736,
+    "total_lines_changed": 736,
+    "agent_percentage": 100,
+    "metric_version": 2
+  }
+}
