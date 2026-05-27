@@ -7,10 +7,10 @@
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "ignoreDeprecations": "5.0",
-    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@/*": ["./src/*"],
+      "@env": ["./src/lib/config.ts"],
       "@test/*": ["./test/*"]
     },
 
