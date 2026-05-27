@@ -6,13 +6,14 @@
  * Concrete implementations (PostgreSQL, In-Memory, etc.) are in adapters/
  */
 
+import type { TUserId } from "@/types";
 import { User } from "../entities/user";
 
 export interface IUserRepository {
   /**
    * Find a user by ID
    */
-  findById(id: string): Promise<User | null>;
+  findById(id: TUserId): Promise<User | null>;
 
   /**
    * Find a user by email
@@ -38,5 +39,5 @@ export interface IUserRepository {
   /**
    * Delete a user
    */
-  delete(id: string): Promise<boolean>;
+  delete(id: TUserId): Promise<boolean>;
 }
