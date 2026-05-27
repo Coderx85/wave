@@ -1,0 +1,56 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "1c1ab4976b5e",
+  "session_id": "ses_19571667bffenaeBV5D8xBGvL1",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-27T18:59:33.471682591Z",
+  "branch": "setup/auth-service",
+  "checkpoints_count": 1,
+  "files_touched": [],
+  "agent": "OpenCode",
+  "model": "claude-haiku-4.5",
+  "turn_id": "afc9906bd5fe",
+  "token_usage": {
+    "input_tokens": 3930,
+    "cache_creation_tokens": 57660,
+    "cache_read_tokens": 50791,
+    "output_tokens": 4661,
+    "api_call_count": 9
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 300,
+      "user_lines_removed": 3,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "server/package.json": 1,
+        "server/pnpm-lock.yaml": 47,
+        "server/src/lib/auth.ts": 2,
+        "server/src/modules/auth/auth.class.ts": 78,
+        "server/src/modules/auth/auth.interface.ts": 43,
+        "server/src/modules/auth/utils/ID/generate-id.ts": 21,
+        "server/src/modules/auth/utils/ID/index.ts": 1,
+        "server/src/modules/auth/utils/passsword/index.ts": 1,
+        "server/src/modules/auth/utils/passsword/password.spec.ts": 61,
+        "server/src/modules/auth/utils/passsword/password.ts": 42,
+        "server/src/types/id.types.ts": 3
+      },
+      "user_removed_per_file": {
+        "server/src/lib/auth.ts": 2,
+        "server/src/types/id.types.ts": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 300,
+      "agent_lines_removed": 3
+    }
+  ]
+}
