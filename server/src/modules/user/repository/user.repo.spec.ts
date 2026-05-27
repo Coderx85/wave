@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import type { IUserDBDTO } from "../user.interface";
-import type { TUserId } from "@/types";
+import type { TUserId } from "../../../types";
 
 // Mock the database client and drizzle-orm BEFORE importing UserRepository
 vi.mock("../../database/client");
