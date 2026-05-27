@@ -1,0 +1,51 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "f3d69df16be6",
+  "session_id": "ses_19571ca1cffeniNOvbcRg6b3qN",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-27T19:03:29.965326526Z",
+  "branch": "setup/auth-service",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "server/package.json",
+    "server/pnpm-lock.yaml",
+    "server/src/lib/ID/generate-id.ts",
+    "server/src/lib/ID/index.ts",
+    "server/src/lib/auth.ts",
+    "server/src/types/id.types.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "claude-haiku-4.5",
+  "turn_id": "c6bc75e4ca39",
+  "token_usage": {
+    "input_tokens": 794,
+    "cache_creation_tokens": 651921,
+    "cache_read_tokens": 5553333,
+    "output_tokens": 61157,
+    "api_call_count": 113
+  },
+  "session_metrics": {
+    "turn_count": 9
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-27T19:03:29.927347444Z",
+    "agent_lines": 75,
+    "agent_removed": 3,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 75,
+    "total_lines_changed": 78,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}

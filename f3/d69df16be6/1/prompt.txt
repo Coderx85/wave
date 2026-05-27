@@ -1,0 +1,16 @@
+Complete the Auth module setup and write its test files @server/src/modules/auth/ 
+Called the Read tool with the following input: {"filePath":"/home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server/src/modules/auth/"}
+<path>/home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server/src/modules/auth/</path>
+<type>directory</type>
+<entries>
+adapters/
+auth.class.ts
+auth.interface.ts
+better-auth/
+domain/
+index.ts
+use-cases/
+utils/
+
+(8 entries)
+</entries>
