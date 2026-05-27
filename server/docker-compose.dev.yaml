@@ -1,18 +1,4 @@
-services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-      - "3001:3001"
-    volumes:
-      - .:/app
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@localhost:5432/wave
-    command: npm run dev
-    depends_on:
-      database:
-        condition: service_healthy
-
+services: 
   database: 
     image: postgres:18-alpine
     environment:
@@ -28,10 +14,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-networks:
-  default:
-    driver: bridge
 
 volumes:
   postgres_data:
