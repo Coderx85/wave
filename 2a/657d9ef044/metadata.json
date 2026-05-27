@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "2a657d9ef044",
+  "strategy": "manual-commit",
+  "branch": "setup/auth-service",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "server/src/modules/user/repository/user.repo.spec.ts",
+    "server/src/modules/user/repository/user.repo.ts",
+    "server/src/modules/user/user.class.spec.ts",
+    "server/src/modules/user/user.class.ts",
+    "server/src/modules/user/user.interface.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/2a/657d9ef044/0/metadata.json",
+      "transcript": "/2a/657d9ef044/0/full.jsonl",
+      "content_hash": "/2a/657d9ef044/0/content_hash.txt",
+      "prompt": "/2a/657d9ef044/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 449,
+    "cache_creation_tokens": 474986,
+    "cache_read_tokens": 2465057,
+    "output_tokens": 32822,
+    "api_call_count": 48
+  }
+}

@@ -1,0 +1,377 @@
+Update the @server/src/modules/user/repository/user.repo.spec.ts acc to new @server/src/modules/user/repository/user.repo.ts 
+Called the Read tool with the following input: {"filePath":"/home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server/src/modules/user/repository/user.repo.spec.ts"}
+<path>/home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server/src/modules/user/repository/user.repo.spec.ts</path>
+<type>file</type>
+<content>
+1: import { describe, it, expect, beforeEach } from "vitest";
+2: import { UserRepository } from "./user.repo";
+3: import type { IUserDBDTO } from "../user.interface";
+4: import type { TUserId } from "@/types";
+5: 
+6: describe("UserStore (Repository)", () => {
+7:   beforeEach(() => {
+8:     // Reset the users array by creating a new instance
+9:     // Note: Since UserStore is a singleton, we need to manually clear the state
+10:     // This is a limitation of the current design - ideally we'd have better test isolation
+11:   });
+12: 
+13:   const createMockUser = (overrides?: Partial<IUserDBDTO>): IUserDBDTO => ({
+14:     id: `user_${Math.random()}` as TUserId,
+15:     email: "test@example.com",
+16:     name: "Test User",
+17:     password: "hashedPassword123",
+18:     createdAt: new Date(),
+19:     updatedAt: null,
+20:     emailVerified: false,
+21:     ...overrides,
+22:   });
+23: 
+24:   describe("createUser", () => {
+25:     it("should create a new user", async () => {
+26:       const userData = createMockUser();
+27:       const result = await UserRepository.createUser(userData);
+28: 
+29:       expect(result).toBeDefined();
+30:       expect(result.email).toBe(userData.email);
+31:       expect(result.name).toBe(userData.name);
+32:       expect(result.emailVerified).toBe(false);
+33:     });
+34: 
+35:     it("should preserve user data when creating", async () => {
+36:       const userData = createMockUser({
+37:         email: "specific@example.com",
+38:         name: "Specific User",
+39:       });
+40: 
+41:       const result = await UserRepository.createUser(userData);
+42: 
+43:       expect(result.email).toBe("specific@example.com");
+44:       expect(result.name).toBe("Specific User");
+45:     });
+46: 
+47:     it("should set emailVerified to false by default", async () => {
+48:       const userData = createMockUser();
+49:       const result = await UserRepository.createUser(userData);
+50: 
+51:       expect(result.emailVerified).toBe(false);
+52:     });
+53:   });
+54: 
+55:   describe("getUserByEmail", () => {
+56:     it("should find user by email", async () => {
+57:       const userData = createMockUser({ email: "findme@example.com" });
+58:       await UserRepository.createUser(userData);
+59: 
+60:       const result = await UserRepository.getUserByEmail("findme@example.com");
+61: 
+62:       expect(result).toBeDefined();
+63:       expect(result?.email).toBe("findme@example.com");
+64:     });
+65: 
+66:     it("should return null if user not found by email", async () => {
+67:       const result = await UserRepository.getUserByEmail("notfound@example.com");
+68: 
+69:       expect(result).toBeNull();
+70:     });
+71: 
+72:     it("should find the correct user when multiple users exist", async () => {
+73:       const user1 = createMockUser({ email: "user1@example.com" });
+74:       const user2 = createMockUser({ email: "user2@example.com" });
+75: 
+76:       await UserRepository.createUser(user1);
+77:       await UserRepository.createUser(user2);
+78: 
+79:       const result = await UserRepository.getUserByEmail("user2@example.com");
+80: 
+81:       expect(result?.email).toBe("user2@example.com");
+82:       expect(result?.id).toBe(user2.id);
+83:     });
+84:   });
+85: 
+86:   describe("getUserById", () => {
+87:     it("should find user by id", async () => {
+88:       const userData = createMockUser();
+89:       await UserRepository.createUser(userData);
+90: 
+91:       const result = await UserRepository.getUserById(userData.id);
+92: 
+93:       expect(result).toBeDefined();
+94:       expect(result?.id).toBe(userData.id);
+95:     });
+96: 
+97:     it("should return null if user not found by id", async () => {
+98:       const fakeId = `user_fake_${Math.random()}` as TUserId;
+99:       const result = await UserRepository.getUserById(fakeId);
+100: 
+101:       expect(result).toBeNull();
+102:     });
+103: 
+104:     it("should find the correct user when multiple users exist", async () => {
+105:       const user1 = createMockUser();
+106:       const user2 = createMockUser();
+107: 
+108:       await UserRepository.createUser(user1);
+109:       await UserRepository.createUser(user2);
+110: 
+111:       const result = await UserRepository.getUserById(user1.id);
+112: 
+113:       expect(result?.id).toBe(user1.id);
+114:       expect(result?.email).toBe(user1.email);
+115:     });
+116:   });
+117: 
+118:   describe("deleteUser", () => {
+119:     it("should delete a user", async () => {
+120:       const userData = createMockUser();
+121:       await UserRepository.createUser(userData);
+122: 
+123:       await UserRepository.deleteUser(userData.id);
+124: 
+125:       const result = await UserRepository.getUserById(userData.id);
+126:       expect(result).toBeNull();
+127:     });
+128: 
+129:     it("should handle deleting non-existent user gracefully", async () => {
+130:       const fakeId = `user_fake_${Math.random()}` as TUserId;
+131: 
+132:       // Should not throw
+133:       await expect(UserRepository.deleteUser(fakeId)).resolves.not.toThrow();
+134:     });
+135: 
+136:     it("should not affect other users when deleting", async () => {
+137:       const user1 = createMockUser();
+138:       const user2 = createMockUser();
+139: 
+140:       await UserRepository.createUser(user1);
+141:       await UserRepository.createUser(user2);
+142: 
+143:       await UserRepository.deleteUser(user1.id);
+144: 
+145:       const result = await UserRepository.getUserById(user2.id);
+146:       expect(result).toBeDefined();
+147:       expect(result?.id).toBe(user2.id);
+148:     });
+149:   });
+150: 
+151:   describe("updateUser", () => {
+152:     it("should update user data", async () => {
+153:       const userData = createMockUser();
+154:       await UserRepository.createUser(userData);
+155: 
+156:       const updatedData = {
+157:         ...userData,
+158:         name: "Updated Name",
+159:         updatedAt: new Date(),
+160:       };
+161: 
+162:       const result = await UserRepository.updateUser(updatedData);
+163: 
+164:       expect(result.name).toBe("Updated Name");
+165:       expect(result.updatedAt).toBeDefined();
+166:     });
+167: 
+168:     it("should update multiple fields", async () => {
+169:       const userData = createMockUser();
+170:       await UserRepository.createUser(userData);
+171: 
+172:       const updatedData = {
+173:         ...userData,
+174:         name: "New Name",
+175:         email: "newemail@example.com",
+176:         emailVerified: true,
+177:         updatedAt: new Date(),
+178:       };
+179: 
+180:       const result = await UserRepository.updateUser(updatedData);
+181: 
+182:       expect(result.name).toBe("New Name");
+183:       expect(result.email).toBe("newemail@example.com");
+184:       expect(result.emailVerified).toBe(true);
+185:     });
+186: 
+187:     it("should update imageUrl", async () => {
+188:       const userData = createMockUser();
+189:       await UserRepository.createUser(userData);
+190: 
+191:       const updatedData = {
+192:         ...userData,
+193:         imageUrl: "/uploads/pic.jpg",
+194:         updatedAt: new Date(),
+195:       };
+196: 
+197:       const result = await UserRepository.updateUser(updatedData);
+198: 
+199:       expect(result.imageUrl).toBe("/uploads/pic.jpg");
+200:     });
+201: 
+202:     it("should preserve createdAt when updating", async () => {
+203:       const createdAt = new Date("2024-01-01");
+204:       const userData = createMockUser({ createdAt });
+205:       await UserRepository.createUser(userData);
+206: 
+207:       const updatedData = {
+208:         ...userData,
+209:         name: "Updated",
+210:         updatedAt: new Date(),
+211:       };
+212: 
+213:       const result = await UserRepository.updateUser(updatedData);
+214: 
+215:       expect(result.createdAt).toEqual(createdAt);
+216:     });
+217: 
+218:     it("should return updated user for non-existent user", async () => {
+219:       const userData = createMockUser();
+220:       const result = await UserRepository.updateUser(userData);
+221: 
+222:       // Since the user doesn't exist, it should return the provided data
+223:       expect(result).toBeDefined();
+224:     });
+225: 
+226:     it("should not affect other users when updating", async () => {
+227:       const user1 = createMockUser({ name: "User 1" });
+228:       const user2 = createMockUser({ name: "User 2" });
+229: 
+230:       await UserRepository.createUser(user1);
+231:       await UserRepository.createUser(user2);
+232: 
+233:       const updatedUser1 = {
+234:         ...user1,
+235:         name: "Updated User 1",
+236:         updatedAt: new Date(),
+237:       };
+238: 
+239:       await UserRepository.updateUser(updatedUser1);
+240: 
+241:       const result = await UserRepository.getUserById(user2.id);
+242:       expect(result?.name).toBe("User 2");
+243:     });
+244:   });
+245: 
+246:   describe("Integration tests", () => {
+247:     it("should perform CRUD operations in sequence", async () => {
+248:       const userData = createMockUser({ email: "crud@example.com", name: "CRUD User" });
+249: 
+250:       // Create
+251:       const created = await UserRepository.createUser(userData);
+252:       expect(created).toBeDefined();
+253: 
+254:       // Read by email
+255:       let found = await UserRepository.getUserByEmail("crud@example.com");
+256:       expect(found).toBeDefined();
+257: 
+258:       // Update
+259:       const updated = await UserRepository.updateUser({
+260:         ...userData,
+261:         name: "Updated CRUD User",
+262:         updatedAt: new Date(),
+263:       });
+264:       expect(updated.name).toBe("Updated CRUD User");
+265: 
+266:       // Read again to verify update
+267:       found = await UserRepository.getUserById(userData.id);
+268:       expect(found?.name).toBe("Updated CRUD User");
+269: 
+270:       // Delete
+271:       await UserRepository.deleteUser(userData.id);
+272:       found = await UserRepository.getUserById(userData.id);
+273:       expect(found).toBeNull();
+274:     });
+275: 
+276:     it("should maintain data integrity with concurrent operations", async () => {
+277:       const users = [
+278:         createMockUser({ email: "concurrent1@example.com" }),
+279:         createMockUser({ email: "concurrent2@example.com" }),
+280:         createMockUser({ email: "concurrent3@example.com" }),
+281:       ];
+282: 
+283:       await Promise.all(users.map(u => UserRepository.createUser(u)));
+284: 
+285:       const results = await Promise.all(
+286:         users.map(u => UserRepository.getUserByEmail(u.email))
+287:       );
+288: 
+289:       expect(results).toHaveLength(3);
+290:       expect(results.every(r => r !== null)).toBe(true);
+291:     });
+292:   });
+293: });
+
+(End of file - total 293 lines)
+</content>
+Called the Read tool with the following input: {"filePath":"/home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server/src/modules/user/repository/user.repo.ts"}
+<path>/home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server/src/modules/user/repository/user.repo.ts</path>
+<type>file</type>
+<content>
+1: import type { TUserId } from "@/types";
+2: import type { IUserStore, IUser, IUserDBDTO } from "../user.interface";
+3: import { db } from "../../database/client"; 
+4: import { eq } from "drizzle-orm";
+5: import { tryCatch } from "@/lib/try-catch-wrapper";
+6: import { users } from "../../database/schema/user.repository";
+7: 
+8: class UserStore implements IUserStore {
+9:   private static instance: UserStore;
+10: 
+11:   private constructor() {}
+12: 
+13:   public static getInstance(): UserStore {
+14:     if (!UserStore.instance) {
+15:       UserStore.instance = new UserStore();
+16:     } 
+17:     return UserStore.instance;
+18:   };
+19: 
+20:   async createUser(data: IUser): Promise<IUserDBDTO> {
+21:     return tryCatch({  
+22:     ctx: async () => {
+23:       const [createdUser] = await db.insert(users).values(data).returning();
+24:       if (!createdUser) {
+25:         throw new Error("Failed to create user");
+26:       }
+27: 
+28:       return createdUser;
+29:       }
+30:     });
+31:   };
+32:   
+33:   async getUserByEmail(email: string): Promise<IUserDBDTO | null> {
+34:     return tryCatch({
+35:       ctx: async () => {
+36:         const [user] = await db.select().from(users).where(eq(users.email, email));
+37:         return user || null;
+38:       }
+39:     });
+40:   };
+41: 
+42:   async getUserById(id: TUserId): Promise<IUserDBDTO | null> {
+43:     return tryCatch({
+44:       ctx: async () => {
+45:         const [user] = await db.select().from(users).where(eq(users.id, id));
+46:         return user || null;
+47:       }
+48:     });
+49:   };
+50: 
+51:   async deleteUser(id: TUserId): Promise<void> {
+52:     return tryCatch({
+53:       ctx: async () => {
+54:         await db.delete(users).where(eq(users.id, id));
+55:       }
+56:     });
+57:   };
+58: 
+59:   async updateUser(data: IUserDBDTO): Promise<IUserDBDTO> {
+60:     return tryCatch({
+61:       ctx: async () => {
+62:         const [updatedUser] = await db.update(users).set(data).where(eq(users.id, data.id)).returning();
+63:         return updatedUser || data;
+64:       }
+65:     });
+66:   };
+67: };
+68: 
+69: export const UserRepository = UserStore.getInstance();
+
+(End of file - total 69 lines)
+</content>
