@@ -9,3 +9,5 @@ export type TSessionId = Brand<string, typeof ID>;
 export type TAccountId = Brand<string, typeof ID>;
 
 export type TVerificationId = Brand<string, typeof ID>;
+
+export type TTokenId = Brand<string, typeof ID>;
