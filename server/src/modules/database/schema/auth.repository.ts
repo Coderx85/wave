@@ -20,8 +20,8 @@ export const sessions = pgTable(
   (table) => [index("sessions_userId_idx").on(table.userId)],
 );
 
-export const accounts = pgTable(
-  "accounts",
+export const auth_accounts = pgTable(
+  "auth_accounts",
   {
     id: text("id").primaryKey().$type<TAccountId>(),
     accountId: text("accountId").notNull(),
@@ -55,7 +55,7 @@ export const verifications = pgTable(
 
 export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),
-  accounts: many(accounts),
+  accounts: many(auth_accounts),
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -65,9 +65,9 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
   }),
 }));
 
-export const accountsRelations = relations(accounts, ({ one }) => ({
+export const accountsRelations = relations(auth_accounts, ({ one }) => ({
   users: one(users, {
-    fields: [accounts.userId],
+    fields: [auth_accounts.userId],
     references: [users.id],
   }),
 }));
