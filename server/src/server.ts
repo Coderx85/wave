@@ -44,6 +44,8 @@ async function fastifyServerPlugin(fastify: FastifyInstance) {
   });
 }
 
+
+
 // Export as a Fastify plugin for serverless
 export default fp(fastifyServerPlugin, {
   name: "fastify-server",

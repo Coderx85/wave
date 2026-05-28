@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { config } from "@env";
 import { db } from "@/modules/database/client";
+import { openAPI } from "better-auth/plugins";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -11,6 +12,7 @@ export const auth = betterAuth({
     debugLogs: config.env === "development",
     usePlural: true,
   }),
+  plugins: [openAPI()],
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL,
   basePath: "/api/auth",
