@@ -1,0 +1,116 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "b5c09310f936",
+  "session_id": "ses_19310f99bffeqtuwtnfUzQi4rA",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-28T16:22:00.028399425Z",
+  "branch": "setup/auth-service",
+  "checkpoints_count": 7,
+  "files_touched": [
+    "server/src/modules/database/schema/index.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "gpt-5.2-codex",
+  "turn_id": "33d1eb46687d",
+  "token_usage": {
+    "input_tokens": 63823,
+    "cache_creation_tokens": 623491,
+    "cache_read_tokens": 7592288,
+    "output_tokens": 104612,
+    "api_call_count": 161
+  },
+  "session_metrics": {
+    "turn_count": 9
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-28T16:21:59.991839056Z",
+    "agent_lines": 3,
+    "agent_removed": 0,
+    "human_added": 585,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 588,
+    "total_lines_changed": 593,
+    "agent_percentage": 0.5059021922428331,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 1,
+      "user_lines_removed": 1,
+      "agent_lines_added": 648,
+      "agent_lines_removed": 32,
+      "user_added_per_file": {
+        "server/src/modules/auth/plugins/custom-endpoints.plugin.ts": 1
+      },
+      "user_removed_per_file": {
+        "server/src/modules/auth/plugins/custom-endpoints.plugin.ts": 1
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 675,
+      "agent_lines_removed": 32
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 209,
+      "user_lines_removed": 33,
+      "agent_lines_added": 1077,
+      "agent_lines_removed": 32,
+      "user_added_per_file": {
+        "server/src/index.ts": 177,
+        "server/src/lib/auth.ts": 7,
+        "server/src/modules/auth/plugins/custom-endpoints.plugin.ts": 25
+      },
+      "user_removed_per_file": {
+        "bruno/Custom Sign Up.yml": 3,
+        "bruno/Get Session.yml": 12,
+        "bruno/Update User.yml": 13,
+        "server/src/index.ts": 4,
+        "server/src/modules/auth/plugins/custom-endpoints.plugin.ts": 1
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 28,
+      "agent_lines_added": 1378,
+      "agent_lines_removed": 35,
+      "user_removed_per_file": {
+        "bruno/Custom Sign Up.yml": 3,
+        "bruno/Get Session.yml": 12,
+        "bruno/Update User.yml": 13
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 0,
+      "user_lines_removed": 28,
+      "agent_lines_added": 1388,
+      "agent_lines_removed": 35,
+      "user_removed_per_file": {
+        "bruno/Custom Sign Up.yml": 3,
+        "bruno/Get Session.yml": 12,
+        "bruno/Update User.yml": 13
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
