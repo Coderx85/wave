@@ -54,6 +54,8 @@ export default fp(fastifyServerPlugin, {
 // Build function for standalone server
 export async function buildServer(opt: FastifyServerOptions) {
   const fastify = Fastify(opt).withTypeProvider<ZodTypeProvider>();
+  // Fastify automatically includes JSON body parsing for application/json content type
   await fastify.register(fastifyServerPlugin);
   return fastify;
 }
+

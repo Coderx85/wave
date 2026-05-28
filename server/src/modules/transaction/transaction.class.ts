@@ -1,23 +1,30 @@
-import type { ITransactionModule, ITransaction, ITransactionRepository } from "./transaction.interface";
+import type { 
+  ITransactionModule, 
+  ITransaction, 
+  ITransactionRepository, 
+} from "./transaction.interface";
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { ID } from "@/lib/ID";
+import { TransactionRepository } from "./repository/transaction.repo";
 
 
 export class TransactionModule implements ITransactionModule {
-  private transactionRepository: ITransactionRepository;
+  private transactionRepository: ITransactionRepository = new TransactionRepository();
   
   create(transaction: Omit<ITransaction, "id" | "status">): Promise<ITransaction> {
-    return tryCatch(() => {
+    return tryCatch({
       ctx: async () => {
         const newTransaction: ITransaction = {
           id: ID.TransactionId(),
-          amount: transaction.amount,
-          description: transaction.description,
-          date: transaction.date,
+          ...transaction,
+          status: "pending"
         };
+
         await this.transactionRepository.save(newTransaction);
+        
         return newTransaction;
-      }
+      },
+      errorMessage: "FAILED_TO_CREATE_TRANSACTION", 
     })  
   };
 
