@@ -1,4 +1,5 @@
-import type { IUserModule, IUserStore, IUser, IUserDBDTO } from "./user.interface";
+import type { IUserModule, IUser } from "./user-service.interface";
+import type { IUserStore, IUserDBDTO } from "../repository";
 import type { TUserId } from "@/types";
 import { ID } from "@/lib/ID";
 

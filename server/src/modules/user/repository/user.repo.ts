@@ -1,5 +1,13 @@
+/*
+ * User Repository Implementation 
+ *
+ */
 import type { TUserId } from "@/types";
-import type { IUserStore, IUser, IUserDBDTO } from "../user.interface";
+import type { IUserStore, IUserDBDTO } from "./user-repo.interface";
+
+/*
+ * Imports DB client and necessary utilities for database operations.
+ */
 import { db } from "../../database/client"; 
 import { eq } from "drizzle-orm";
 import { tryCatch } from "@/lib/try-catch-wrapper";

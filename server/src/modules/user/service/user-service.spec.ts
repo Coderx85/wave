@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { UserModule } from "./user.class";
-import type { IUserStore, IUser, IUserDBDTO } from "./user.interface";
-import type { TUserId } from "../../types";
+import type { TUserId } from "../../../types";
+import { type IUserDBDTO, type IUserStore} from "../repository";
+import { UserModule } from "../service";
 
 describe("UserModule", () => {
   let userModule: UserModule;
