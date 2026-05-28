@@ -1,0 +1,43 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "55a42728eb31",
+  "session_id": "ses_19571667bffenaeBV5D8xBGvL1",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-28T07:49:09.904572103Z",
+  "branch": "setup/auth-service",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "bruno/.gitignore",
+    "bruno/Sign Up.yml",
+    "bruno/Untitled.yml",
+    "bruno/environments/development.yml",
+    "bruno/opencollection.yml"
+  ],
+  "agent": "OpenCode",
+  "model": "claude-haiku-4.5",
+  "turn_id": "afc9906bd5fe",
+  "checkpoint_transcript_start": 10,
+  "transcript_lines_at_start": 10,
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-28T07:49:09.899011326Z",
+    "agent_lines": 74,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 74,
+    "total_lines_changed": 74,
+    "agent_percentage": 100,
+    "metric_version": 2
+  }
+}
