@@ -15,6 +15,20 @@
       "when": 1779874712255,
       "tag": "0001_handy_ozymandias",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779979148776,
+      "tag": "0002_reflective_mother_askani",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1779981321438,
+      "tag": "0003_auth_accounts",
+      "breakpoints": true
     }
   ]
 }
