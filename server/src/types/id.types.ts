@@ -11,3 +11,7 @@ export type TAccountId = Brand<string, typeof ID>;
 export type TVerificationId = Brand<string, typeof ID>;
 
 export type TTokenId = Brand<string, typeof ID>;
+
+export type TBankAccountId = Brand<string, typeof ID>;
+
+export type TTransactionId = Brand<string, typeof ID>;
