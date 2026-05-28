@@ -1,12 +1,8 @@
-import type { TSessionId, TTokenId, TUserId } from "@/types";
-import { ID } from "./utils/ID";
+import type { TTokenId, TUserId } from "@/types";
+import type { IUserStore } from "../user";
+import { UserRepository } from "@/modules/user/repository";
 import type { IAuthModule, Session, SignInDTO, SignUpDTO, User, UserDTO } from "./auth.interface";
 import { tryCatch } from "@/lib/try-catch-wrapper";
-import type { IUserRepository } from "./domain/interfaces/user-repository.interface";
-import { SignUpUseCase } from "./use-cases/sign-up.use-case";
-import { SignInUseCase } from "./use-cases/sign-in.use-case";
-import type { IPasswordHasher } from "./use-cases/sign-up.use-case";
-import type { IPasswordVerifier, ISessionFactory } from "./use-cases/sign-in.use-case";
 
 /**
  * Auth Module
@@ -17,54 +13,7 @@ import type { IPasswordVerifier, ISessionFactory } from "./use-cases/sign-in.use
  */
 export class AuthModule implements IAuthModule {
   private sessions: Map<TTokenId, Session> = new Map();
-  private signUpUseCase: SignUpUseCase;
-  private signInUseCase: SignInUseCase;
-
-  constructor(
-    private userRepository: IUserRepository,
-    private passwordHasher: IPasswordHasher,
-    private passwordVerifier: IPasswordVerifier,
-    private sessionFactory: ISessionFactory
-  ) {
-    this.signUpUseCase = new SignUpUseCase(userRepository, passwordHasher);
-    this.signInUseCase = new SignInUseCase(userRepository, passwordVerifier, sessionFactory);
-  }
-
-  /**
-   * Sign up a new user
-   */
-  async signUp(signUpDTO: SignUpDTO): Promise<void> {
-    return tryCatch({
-      ctx: async () => {
-        const result = await this.signUpUseCase.execute(signUpDTO);
-        if (!result.success) {
-          throw new Error(result.error);
-        }
-      },
-      errorMessage: "FAILED_TO_SIGN_UP",
-    });
-  }
-
-  /**
-   * Sign in and create a session
-   */
-  async signIn(signInDTO: SignInDTO): Promise<{ token: string }> {
-    return tryCatch({
-      ctx: async () => {
-        const result = await this.signInUseCase.execute(signInDTO);
-        if (!result.success) {
-          throw new Error(result.error);
-        }
-        
-        if (!result.sessionToken) {
-          throw new Error("Failed to create session token");
-        }
-
-        return { token: result.sessionToken };
-      },
-      errorMessage: "FAILED_TO_SIGN_IN",
-    });
-  }
+  private userRepository: IUserStore = UserRepository;
 
   /**
    * Get session by token
@@ -84,18 +33,18 @@ export class AuthModule implements IAuthModule {
   async getUserById(userId: TUserId): Promise<User | null> {
     return tryCatch({
       ctx: async () => {
-        const userEntity = await this.userRepository.findById(userId);
+        const userEntity = await this.userRepository.getUserById(userId);
         if (!userEntity) {
           return null;
         }
 
         return {
           id: userEntity.id,
-          email: userEntity.email.value,
+          email: userEntity.email,
           name: userEntity.name,
           image: null,
           createdAt: userEntity.createdAt,
-          updatedAt: userEntity.updatedAt,
+          updatedAt: userEntity.updatedAt ?? userEntity.createdAt,
           emailVerified: userEntity.emailVerified,
         };
       },

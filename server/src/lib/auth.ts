@@ -2,17 +2,21 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { config } from "@env";
 import { db } from "@/modules/database/client";
+import * as schema from "@/modules/database/schema";
 import { openAPI } from "better-auth/plugins";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
+    schema: schema,
     camelCase: true,
     transaction: true,
     debugLogs: config.env === "development",
     usePlural: true,
   }),
-  plugins: [openAPI()],
+  plugins: [
+    openAPI(),
+  ],
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL,
   basePath: "/api/auth",
@@ -41,6 +45,22 @@ export const auth = betterAuth({
     "http://localhost:3000",
     "http://localhost:3001",
   ],
+
+  account:{
+    modelName: "auth_account",
+  },
+  user: {
+    modelName: "user",
+    fields: {
+      id: "id",
+      name: "name",
+      email: "email",
+      emailVerified: "emailVerified",
+      image: "image",
+      createdAt: "createdAt",
+      updatedAt: "updatedAt",
+    }
+  }
 
 });
 

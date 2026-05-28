@@ -1,8 +1,6 @@
 import type { TSessionId, TTokenId, TUserId } from "@/types";
 
 export interface IAuthModule {
-  signUp(signUpDTO: SignUpDTO): Promise<void>;
-  signIn(signInDTO: SignInDTO): Promise<{ token: string }>;
   getSessionByToken(token: TTokenId): Promise<Session | null>;
   getUserById(userId: TUserId): Promise<User | null>;
 };
