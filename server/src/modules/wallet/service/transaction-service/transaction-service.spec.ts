@@ -84,7 +84,7 @@ describe("TransactionModule", () => {
     it("should create a new transaction with pending status", async () => {
       const createdTransaction: ITransaction = {
         ...mockTransaction,
-        id: "transaction-123-123-123-123" as ITransaction["id"],
+        id: "transaction_123e4567-e89b-12d3-a456-426614174000" as ITransaction["id"],
         status: "pending",
       };
 
@@ -97,25 +97,25 @@ describe("TransactionModule", () => {
     it("should calculate new balance for sender account", async () => {
       await transactionModule.create(mockTransaction);
 
-      // First call: validates sender can afford (positive amount)
+      // First call: validates sender can afford (positive amount as number)
       expect(calculateNewBalanceMock).toHaveBeenNthCalledWith(
         1,
         "account_sender",
         "5000"
       );
 
-      // Second call: calculates balance after debit (negative amount)
+      // Second call: calculates balance after debit (negative amount as number)
       expect(calculateNewBalanceMock).toHaveBeenNthCalledWith(
         2,
         "account_sender",
-        "-5000"
+        -5000
       );
 
-      // Third call: calculates receiver's new balance (positive amount)
+      // Third call: calculates receiver's new balance (positive amount as number)
       expect(calculateNewBalanceMock).toHaveBeenNthCalledWith(
         3,
         "account_receiver",
-        "5000"
+        5000
       );
     });
 
@@ -133,7 +133,7 @@ describe("TransactionModule", () => {
       const callArgs = saveMock.mock.calls[0][0];
       expect(callArgs.amount).toBe(BigInt(5000));
       expect(callArgs.status).toBe("pending");
-      expect(callArgs.id).toBe("transaction-123-123-123-123");
+      expect(callArgs.id).toBe("transaction_123e4567-e89b-12d3-a456-426614174000");
     });
 
     it("should return transaction with string amount", async () => {
