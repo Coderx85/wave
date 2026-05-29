@@ -11,7 +11,7 @@ export const AccountsTable = pgTable("accounts", {
   .notNull()
   .references(  
     () => users.id, { onDelete: "cascade" }
-  ),
+  ).$type<TUserId>(),
   accountNumber: text("accountNumber").notNull().unique(),
   balance: numeric("balance", { precision: 10, scale: 2 }).notNull(),
   ...timeStamps,
