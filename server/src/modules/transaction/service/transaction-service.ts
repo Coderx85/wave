@@ -1,12 +1,10 @@
 import type { 
   ITransactionModule, 
   ITransaction, 
-  ITransactionRepository, 
-} from "./transaction.interface";
+} from "./transaction-service.interface";
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { ID } from "@/lib/ID";
-import { TransactionRepository } from "./repository/transaction.repo";
-
+import { TransactionRepository, type ITransactionRepository } from "../repository";
 
 export class TransactionModule implements ITransactionModule {
   private transactionRepository: ITransactionRepository = new TransactionRepository();

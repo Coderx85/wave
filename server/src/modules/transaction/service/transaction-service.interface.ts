@@ -1,10 +1,11 @@
-import type { TAccountId, TTransactionId } from "@/types";
+import type { TAccountId, TTransactionId, TUserId } from "@/types";
 
 export type TransactionStatus = "pending" | "success" | "failed";
 
 export interface ITransaction {
   id: TTransactionId;
-  amount: number;
+  amount: string; 
+  userId: TUserId;
   senderAccountId: TAccountId;
   senderName: string;
   receiverAccountId: TAccountId;
@@ -23,11 +24,3 @@ export interface ITransactionModule {
   delete(transactionId: string): Promise<void>;
 };
 
-export interface ITransactionRepository {
-  save(transaction: ITransaction): Promise<void>;
-  findById(transactionId: string): Promise<ITransaction | null>;
-  findByUserId(userId: string): Promise<ITransaction[]>;
-  failedTransactions(): Promise<ITransaction[]>;
-  successfulTransactions(): Promise<ITransaction[]>;
-  delete(transactionId: string): Promise<void>;
-};
