@@ -4,7 +4,7 @@ export type TransactionStatus = "pending" | "success" | "failed";
 
 export interface ITransaction {
   id: TTransactionId;
-  amount: string; 
+  amount: number; 
   userId: TUserId;
   senderAccountId: TAccountId;
   senderName: string;
@@ -14,13 +14,25 @@ export interface ITransaction {
   createdAt: Date;
 };
 
+export type TTransactionQuery = 
+  | {
+      status?: "success";
+      dateRange?: {
+        from: Date;
+        to: Date;
+      };
+    }
+  | {
+      status?: "failed";
+      dateRange?: {
+        from: Date;
+        to: Date;
+      };
+    };
+
 export interface ITransactionModule {
   create(transaction: Omit<ITransaction, "id" | "status">): Promise<ITransaction>;
   list(userId: string): Promise<ITransaction[]>;
-  query(query: {
-    status?: "success" | "failed";
-    dateRange?: { from: Date; to: Date };
-  }): Promise<ITransaction[]>;
-  delete(transactionId: string): Promise<void>;
+  query(query: TTransactionQuery, userId: string): Promise<ITransaction[]>;
 };
 
