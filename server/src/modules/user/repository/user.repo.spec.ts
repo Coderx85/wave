@@ -4,7 +4,14 @@ import type { TUserId } from "../../../types";
 
 // Mock the database client and drizzle-orm BEFORE importing UserRepository
 vi.mock("../../database/client");
-vi.mock("drizzle-orm");
+vi.mock("drizzle-orm", () => ({
+  eq: vi.fn(),
+  between: vi.fn(),
+  or: vi.fn(),
+  relations: vi.fn(() => ({})),
+  one: vi.fn(),
+  many: vi.fn(),
+}));
 
 // Import after mocking
 import { UserRepository } from "./user.repo";
