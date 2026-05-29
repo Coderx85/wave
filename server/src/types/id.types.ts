@@ -15,3 +15,5 @@ export type TTokenId = Brand<string, typeof ID>;
 export type TBankAccountId = Brand<string, typeof ID>;
 
 export type TTransactionId = Brand<string, typeof ID>;
+
+export type TLedgerEntryId = Brand<string, typeof ID>;
