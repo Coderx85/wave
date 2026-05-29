@@ -1,7 +1,7 @@
 import type { 
   ITransactionModule, 
   ITransaction, 
-} from "./transaction-service.interface";
+} from "./transaction-service/transaction-service.interface";
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { ID } from "@/lib/ID";
 import { TransactionRepository, type ITransactionRepository } from "../repository";

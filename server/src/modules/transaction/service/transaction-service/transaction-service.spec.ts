@@ -13,7 +13,7 @@ vi.mock("../repository", () => ({
   },
 }));
 
-import { TransactionModule } from "./transaction-service";
+import { TransactionModule } from "../transaction-service";
 
 describe("TransactionModule", () => {
   let transactionModule: TransactionModule;
@@ -30,7 +30,10 @@ describe("TransactionModule", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(globalThis.crypto, "randomUUID").mockReturnValue("123");
+    // return value must match the template `${string}-${string}-${string}-${string}-${string}`
+    vi.spyOn(globalThis.crypto, "randomUUID").mockReturnValue(
+      "transaction-123-123-123-123"
+    );
     transactionModule = new TransactionModule();
   });
 
