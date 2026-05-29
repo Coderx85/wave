@@ -3,14 +3,33 @@ import type { ITransactionDBDTO } from "../transaction-repo.interface";
 import type { TTransactionId, TAccountId } from "../../../../types";
 
 // Mock the database client and drizzle-orm BEFORE importing TransactionRepository
-vi.mock("../../database/client");
-vi.mock("drizzle-orm", () => ({
-  eq: vi.fn(),
-  between: vi.fn(),
-  or: vi.fn(),
-  relations: vi.fn(() => ({})),
-  one: vi.fn(),
-  many: vi.fn(),
+vi.mock("../../database/client", () => ({
+  db: {
+    transaction: vi.fn(async (callback) => callback({
+      insert: vi.fn(),
+      select: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    })),
+    insert: vi.fn(),
+    select: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
+vi.mock("drizzle-orm", async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    eq: vi.fn(),
+    between: vi.fn(),
+    or: vi.fn(),
+  };
+});
+
+// Mock the try-catch wrapper
+vi.mock("@/lib/try-catch-wrapper", () => ({
+  tryCatch: vi.fn(({ ctx }) => ctx()),
 }));
 
 // Import after mocking
@@ -56,7 +75,9 @@ describe("TransactionRepository", () => {
         values: valuesMock,
       });
 
-      dbMock.insert.mockImplementation(insertMock);
+      (dbMock.transaction as any) = vi.fn(async (callback) => {
+        return callback({ insert: insertMock });
+      });
 
       await expect(repository.save(transactionData)).resolves.not.toThrow();
       expect(insertMock).toHaveBeenCalled();
@@ -73,13 +94,15 @@ describe("TransactionRepository", () => {
         values: valuesMock,
       });
 
-      dbMock.insert.mockImplementation(insertMock);
+      (dbMock.transaction as any) = vi.fn(async (callback) => {
+        return callback({ insert: insertMock });
+      });
 
       await repository.save(transactionData);
 
       const callArgs = valuesMock.mock.calls[0][0];
-      expect(typeof callArgs.amount).toBe("string");
-      expect(callArgs.amount).toBe("5000");
+      expect(typeof callArgs.amount).toBe("bigint");
+      expect(callArgs.amount).toBe(BigInt(5000));
     });
 
     it("should set status to pending when saving", async () => {
@@ -93,7 +116,9 @@ describe("TransactionRepository", () => {
         values: valuesMock,
       });
 
-      dbMock.insert.mockImplementation(insertMock);
+      (dbMock.transaction as any) = vi.fn(async (callback) => {
+        return callback({ insert: insertMock });
+      });
 
       await repository.save(transactionData);
 
@@ -112,7 +137,9 @@ describe("TransactionRepository", () => {
         values: valuesMock,
       });
 
-      dbMock.insert.mockImplementation(insertMock);
+      (dbMock.transaction as any) = vi.fn(async (callback) => {
+        return callback({ insert: insertMock });
+      });
 
       await repository.save(transactionData);
 
@@ -136,7 +163,9 @@ describe("TransactionRepository", () => {
         values: valuesMock,
       });
 
-      dbMock.insert.mockImplementation(insertMock);
+      (dbMock.transaction as any) = vi.fn(async (callback) => {
+        return callback({ insert: insertMock });
+      });
 
       await repository.save(transactionData);
 
@@ -152,7 +181,7 @@ describe("TransactionRepository", () => {
       const transactionData = createMockTransaction();
       const dbMock = vi.mocked(dbClient.db);
 
-      dbMock.insert.mockImplementation(() => {
+      (dbMock.transaction as any) = vi.fn(async () => {
         throw new Error("Database connection failed");
       });
 
@@ -500,7 +529,9 @@ describe("TransactionRepository", () => {
         values: valuesMock,
       });
 
-      dbMock.insert.mockImplementation(insertMock);
+      (dbMock.transaction as any) = vi.fn(async (callback) => {
+        return callback({ insert: insertMock });
+      });
 
       await repository.save(transactionData);
 

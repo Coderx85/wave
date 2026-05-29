@@ -16,6 +16,7 @@ export class TransactionRepository implements ITransactionRepository {
                 .values({
                 ...transaction,
                 amount: BigInt(transaction.amount),
+                status: "pending", // Always set new transactions to pending
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 });

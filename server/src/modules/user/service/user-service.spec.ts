@@ -2,14 +2,15 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import type { TUserId } from "../../../types";
 
 // Mock drizzle-orm to prevent relation errors
-vi.mock("drizzle-orm", () => ({
-  eq: vi.fn(),
-  between: vi.fn(),
-  or: vi.fn(),
-  relations: vi.fn(() => ({})),
-  one: vi.fn(),
-  many: vi.fn(),
-}));
+vi.mock("drizzle-orm", async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    eq: vi.fn(),
+    between: vi.fn(),
+    or: vi.fn(),
+  };
+});
 
 import { type IUserDBDTO, type IUserStore} from "../repository";
 import { UserModule } from "../service";
