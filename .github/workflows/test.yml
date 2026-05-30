@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: "coverage-${{ matrix.kind }}"
-          path: coverage
+          path: server/coverage
 
   build-and-report:
     runs-on: ubuntu-latest
