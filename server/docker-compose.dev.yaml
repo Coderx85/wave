@@ -15,5 +15,49 @@ services:
       timeout: 5s
       retries: 5
 
+  backend-server:
+    build: .
+    command: node --import tsx src/index.ts
+    env_file:
+      - src/.env.development
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/wave_db
+    ports:
+      - "3000:3000"
+    depends_on:
+      database:
+        condition: service_healthy  
+    profiles: [backend]
+
+  auth-service:
+    build: .
+    command: pnpm run build
+    ports:
+      - "3000:3000"
+    depends_on:
+      database:
+        condition: service_healthy  
+    profiles: [devops]
+  
+  bank-service:
+    build: .
+    command: pnpm run build
+    ports:
+      - "3002:3000"
+    depends_on:
+      database:
+        condition: service_healthy  
+    profiles: [devops]
+
+  wallet-service:
+    build: .
+    command: pnpm run build
+    ports:
+      - "3001:3000"
+    depends_on:
+      database:
+        condition: service_healthy  
+    profiles: [devops]
+    
 volumes:
   postgres_data:
