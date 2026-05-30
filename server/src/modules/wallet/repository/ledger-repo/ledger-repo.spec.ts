@@ -19,11 +19,11 @@ vi.mock("@/lib/try-catch-wrapper", () => ({
 }));
 
 // Import after mocking
-import { LedgerRepo } from "./ledger-repo";
+import { LedgerRepository } from "./ledger-repo";
 import * as dbClient from "../../../database/client";
 
-describe("LedgerRepo", () => {
-  let repository: LedgerRepo;
+describe("LedgerRepository", () => {
+  let repository: LedgerRepository;
 
   const createMockLedgerEntry = (
     overrides?: Partial<ILedgerEntryDBDTO>
@@ -39,7 +39,7 @@ describe("LedgerRepo", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    repository = new LedgerRepo();
+    repository = new LedgerRepository();
   });
 
   afterEach(() => {
@@ -613,7 +613,7 @@ describe("LedgerRepo", () => {
   describe("Repository instantiation", () => {
     it("should create a new instance successfully", () => {
       expect(repository).toBeDefined();
-      expect(repository).toBeInstanceOf(LedgerRepo);
+      expect(repository).toBeInstanceOf(LedgerRepository);
     });
 
     it("should have all required methods", () => {

@@ -1,11 +1,12 @@
-import type { ILedgerEntryDBDTO, ILedgerRepo, EntryType } from "./ledger-repo.interface";
+import type { ILedgerEntryDBDTO, ILedgerRepository, EntryType } from "./ledger-repo.interface";
 import { db } from "@/modules/database/client";
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { LedgerTable } from "@/modules/database/schema/ledger.repository";
 import { eq } from "drizzle-orm";
 import type { TLedgerEntryId, TTransactionId } from "@/types";
+import { ID } from "@/lib/ID";
 
-export class LedgerRepo implements ILedgerRepo {
+export class LedgerRepository implements ILedgerRepository {
   async create(entry: Omit<ILedgerEntryDBDTO, "id" | "createdAt" | "updatedAt">): Promise<ILedgerEntryDBDTO> {
     return tryCatch({
       ctx: async () => {
@@ -13,7 +14,7 @@ export class LedgerRepo implements ILedgerRepo {
           .insert(LedgerTable)
           .values({
             ...entry,
-            id: entry.transactionId as unknown as TLedgerEntryId,
+            id: ID.LedgerEntryId(),
             amount: BigInt(entry.amount),
             createdAt: new Date(),
             updatedAt: new Date(),

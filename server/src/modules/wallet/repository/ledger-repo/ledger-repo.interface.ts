@@ -11,7 +11,7 @@ export interface ILedgerEntryDBDTO {
   updatedAt: Date | null;
 }
 
-export interface ILedgerRepo {
+export interface ILedgerRepository {
   create(entry: Omit<ILedgerEntryDBDTO, "id" | "createdAt" | "updatedAt">): Promise<ILedgerEntryDBDTO>;
   findById(entryId: TLedgerEntryId): Promise<ILedgerEntryDBDTO | null>;
   findByTransactionId(transactionId: TTransactionId): Promise<ILedgerEntryDBDTO[]>;
