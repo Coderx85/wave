@@ -1,0 +1,212 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "dc408277d7d5",
+  "session_id": "8cc96a86-1b9b-4a14-be8a-ab8f01757967",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-30T09:15:04.190670194Z",
+  "branch": "setup/bank-service",
+  "checkpoints_count": 7,
+  "files_touched": [
+    "server/src/lib/ID/generate-id.ts",
+    "server/src/lib/try-catch-wrapper.ts"
+  ],
+  "agent": "Copilot CLI",
+  "model": "auto",
+  "turn_id": "3346eb224098",
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 46994,
+    "api_call_count": 114
+  },
+  "session_metrics": {
+    "turn_count": 7
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-30T09:15:03.99388147Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 4,
+    "total_committed": 0,
+    "total_lines_changed": 4,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 3105,
+      "user_lines_removed": 1449,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".antigravitycli/ad32ace6-8170-4170-a2e8-fdd2f4ee67d1.json": 14,
+        ".github/hooks/entire.json": 61,
+        "server/drizzle.config.ts": 1,
+        "server/package.json": 1,
+        "server/pnpm-lock.yaml": 264,
+        "server/pnpm-workspace.yaml": 3,
+        "server/src/lib/ID/generate-id.ts": 5,
+        "server/src/lib/try-catch-wrapper.ts": 5,
+        "server/src/modules/database/client.ts": 1,
+        "server/src/modules/database/supabase/migrations/20260530064413_past_bloodstorm/migration.sql": 99,
+        "server/src/modules/database/supabase/migrations/20260530064413_past_bloodstorm/snapshot.json": 1231,
+        "server/src/modules/user/repository/user.repo.ts": 4,
+        "server/src/modules/user/service/user-service.ts": 3,
+        "server/src/modules/wallet/playground.ts": 87,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.interface.ts": 1,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.spec.ts": 5,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.ts": 4,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.interface.ts": 1,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.ts": 25,
+        "server/src/modules/wallet/service/account-service/account-service.interface.ts": 19,
+        "server/src/modules/wallet/service/account-service/account-service.spec.ts": 267,
+        "server/src/modules/wallet/service/account-service/account-service.ts": 83,
+        "server/src/modules/wallet/service/account-service/index.ts": 3,
+        "server/src/modules/wallet/service/index.ts": 22,
+        "server/src/modules/wallet/service/ledger-service/ledger-service.spec.ts": 177,
+        "server/src/modules/wallet/service/ledger-service/ledger-service.ts": 30,
+        "server/src/modules/wallet/service/transaction-service/transaction-service.spec.ts": 7,
+        "server/src/modules/wallet/service/transaction-service/transaction-service.ts": 8,
+        "server/src/modules/wallet/service/wallet-service.interface.ts": 40,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 413,
+        "server/src/modules/wallet/service/wallet-service.ts": 221
+      },
+      "user_removed_per_file": {
+        "server/drizzle.config.ts": 1,
+        "server/package.json": 1,
+        "server/pnpm-lock.yaml": 254,
+        "server/src/lib/ID/generate-id.ts": 1,
+        "server/src/lib/try-catch-wrapper.ts": 3,
+        "server/src/modules/database/supabase/migrations/0000_marvelous_spirit.sql": 8,
+        "server/src/modules/database/supabase/migrations/0001_handy_ozymandias.sql": 52,
+        "server/src/modules/database/supabase/migrations/0002_reflective_mother_askani.sql": 35,
+        "server/src/modules/database/supabase/migrations/0003_auth_accounts.sql": 19,
+        "server/src/modules/database/supabase/migrations/meta/0000_snapshot.json": 71,
+        "server/src/modules/database/supabase/migrations/meta/0001_snapshot.json": 388,
+        "server/src/modules/database/supabase/migrations/meta/0002_snapshot.json": 512,
+        "server/src/modules/database/supabase/migrations/meta/_journal.json": 34,
+        "server/src/modules/user/repository/user.repo.ts": 6,
+        "server/src/modules/user/service/user-service.ts": 2,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.interface.ts": 1,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.spec.ts": 5,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.ts": 3,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.ts": 1,
+        "server/src/modules/wallet/service/index.ts": 1,
+        "server/src/modules/wallet/service/ledger-service/ledger-service.ts": 2,
+        "server/src/modules/wallet/service/transaction-service/transaction-service.spec.ts": 49
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 3105,
+      "agent_lines_removed": 1449
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 38,
+      "user_lines_removed": 57,
+      "agent_lines_added": 3232,
+      "agent_lines_removed": 1566,
+      "user_added_per_file": {
+        "server/src/modules/wallet/service/account-service/account-service.spec.ts": 11,
+        "server/src/modules/wallet/service/account-service/account-service.ts": 1,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 20,
+        "server/src/modules/wallet/service/wallet-service.ts": 6
+      },
+      "user_removed_per_file": {
+        "server/src/modules/wallet/service/account-service/account-service.spec.ts": 13,
+        "server/src/modules/wallet/service/account-service/account-service.ts": 3,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 22,
+        "server/src/modules/wallet/service/wallet-service.ts": 19
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 38,
+      "user_lines_removed": 57,
+      "agent_lines_added": 3232,
+      "agent_lines_removed": 1566,
+      "user_added_per_file": {
+        "server/src/modules/wallet/service/account-service/account-service.spec.ts": 11,
+        "server/src/modules/wallet/service/account-service/account-service.ts": 1,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 20,
+        "server/src/modules/wallet/service/wallet-service.ts": 6
+      },
+      "user_removed_per_file": {
+        "server/src/modules/wallet/service/account-service/account-service.spec.ts": 13,
+        "server/src/modules/wallet/service/account-service/account-service.ts": 3,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 22,
+        "server/src/modules/wallet/service/wallet-service.ts": 19
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 38,
+      "user_lines_removed": 57,
+      "agent_lines_added": 3232,
+      "agent_lines_removed": 1566,
+      "user_added_per_file": {
+        "server/src/modules/wallet/service/account-service/account-service.spec.ts": 11,
+        "server/src/modules/wallet/service/account-service/account-service.ts": 1,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 20,
+        "server/src/modules/wallet/service/wallet-service.ts": 6
+      },
+      "user_removed_per_file": {
+        "server/src/modules/wallet/service/account-service/account-service.spec.ts": 13,
+        "server/src/modules/wallet/service/account-service/account-service.ts": 3,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 22,
+        "server/src/modules/wallet/service/wallet-service.ts": 19
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 46,
+      "user_lines_removed": 58,
+      "agent_lines_added": 3232,
+      "agent_lines_removed": 1566,
+      "user_added_per_file": {
+        "server/src/modules/wallet/playground.ts": 8,
+        "server/src/modules/wallet/service/account-service/account-service.spec.ts": 11,
+        "server/src/modules/wallet/service/account-service/account-service.ts": 1,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 20,
+        "server/src/modules/wallet/service/wallet-service.ts": 6
+      },
+      "user_removed_per_file": {
+        "server/src/modules/wallet/playground.ts": 1,
+        "server/src/modules/wallet/service/account-service/account-service.spec.ts": 13,
+        "server/src/modules/wallet/service/account-service/account-service.ts": 3,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 22,
+        "server/src/modules/wallet/service/wallet-service.ts": 19
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 58,
+      "user_lines_removed": 76,
+      "agent_lines_added": 3252,
+      "agent_lines_removed": 1592,
+      "user_added_per_file": {
+        "server/src/modules/wallet/playground.ts": 8,
+        "server/src/modules/wallet/service/account-service/account-service.spec.ts": 11,
+        "server/src/modules/wallet/service/account-service/account-service.ts": 1,
+        "server/src/modules/wallet/service/wallet-service.interface.ts": 3,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 25,
+        "server/src/modules/wallet/service/wallet-service.ts": 10
+      },
+      "user_removed_per_file": {
+        "server/src/modules/wallet/playground.ts": 1,
+        "server/src/modules/wallet/service/account-service/account-service.spec.ts": 13,
+        "server/src/modules/wallet/service/account-service/account-service.ts": 3,
+        "server/src/modules/wallet/service/wallet-service.interface.ts": 1,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 26,
+        "server/src/modules/wallet/service/wallet-service.ts": 32
+      }
+    }
+  ]
+}
