@@ -2,7 +2,7 @@ import type { ITransactionDBDTO, ITransactionRepository } from "./transaction-re
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { TransactionsTable } from "@/modules/database/schema/transaction.repository";
 import { db } from "@/modules/database/client";
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export class TransactionRepository implements ITransactionRepository {
   async save(transaction: ITransactionDBDTO): Promise<void> {
@@ -15,7 +15,6 @@ export class TransactionRepository implements ITransactionRepository {
               await tx.insert(TransactionsTable)
                 .values({
                 ...transaction,
-                amount: BigInt(transaction.amount),
                 status: "pending", // Always set new transactions to pending
                 createdAt: new Date(),
                 updatedAt: new Date(),
@@ -24,6 +23,29 @@ export class TransactionRepository implements ITransactionRepository {
           )
       }
     });
+  };
+
+  // If the transaction is successful, update the record with status "success". 
+  // If the transaction is in pending state for too long or fails, 
+  // update the record with status "failed" with a cron job.
+  async update(transaction: ITransactionDBDTO): Promise<ITransactionDBDTO> {
+    return tryCatch({
+      ctx: async () => {
+        const [updatedTransaction] = await db.update(TransactionsTable)
+          .set({
+            ...transaction,
+            updatedAt: new Date(),
+          })
+          .where(eq(TransactionsTable.id, transaction.id))
+          .returning();
+
+        if (!updatedTransaction) {
+          throw new Error(`Failed to update transaction with id: ${transaction.id}`);
+        }
+
+        return updatedTransaction
+      }
+    })
   };
 
   async findById(transactionId: ITransactionDBDTO["id"]): Promise<ITransactionDBDTO | null> {

@@ -17,7 +17,7 @@ vi.mock("@/lib/try-catch-wrapper", () => ({
   },
 }));
 
-vi.mock("../../repository", () => ({
+vi.mock("../../../repository", () => ({
   LedgerRepo: function LedgerRepoMock(this: {
     create: typeof createMock;
     findByTransactionId: typeof findByTransactionIdMock;
@@ -43,7 +43,14 @@ describe("LedgerService", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    ledgerService = new LedgerService();
+    ledgerService = new LedgerService({
+      create: createMock,
+      findById: vi.fn(),
+      findByTransactionId: findByTransactionIdMock,
+      findByEntryType: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    } as any);
   });
 
   afterEach(() => {

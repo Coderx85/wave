@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import type { IAccount } from "./account-service.interface";
+import type { IAccountRepository } from "../../../repository";
 
 const { createMock, findByIdMock, findByUserIdMock, checkBalanceMock, calculateNewBalanceMock, adjustBalanceMock, updateBalanceMock } = vi.hoisted(() => ({
   createMock: vi.fn(),
@@ -59,7 +60,15 @@ describe("AccountService", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    accountService = new AccountService();
+    accountService = new AccountService({
+      create: createMock,
+      findById: findByIdMock,
+      findByUserId: findByUserIdMock,
+      checkBalance: checkBalanceMock,
+      calculateNewBalance: calculateNewBalanceMock,
+      adjustBalance: adjustBalanceMock,
+      updateBalance: updateBalanceMock,
+    } as unknown as IAccountRepository);
   });
 
   afterEach(() => {

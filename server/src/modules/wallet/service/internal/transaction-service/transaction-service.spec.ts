@@ -22,7 +22,7 @@ vi.mock("@/lib/try-catch-wrapper", () => ({
   },
 }));
 
-vi.mock("../../repository", () => ({
+vi.mock("../../../repository", () => ({
   TransactionRepository: function TransactionRepositoryMock(this: {
     save: typeof saveMock;
     findByUserId: typeof findByUserIdMock;

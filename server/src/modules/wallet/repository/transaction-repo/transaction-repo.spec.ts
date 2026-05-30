@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
-import type { ITransactionDBDTO } from "../transaction-repo.interface";
+import type { ITransactionDBDTO } from "./transaction-repo.interface";
 import type { TTransactionId, TAccountId } from "../../../../types";
 
 // Mock the database client and drizzle-orm BEFORE importing TransactionRepository
@@ -18,7 +18,7 @@ vi.mock("../../database/client", () => ({
   },
 }));
 vi.mock("drizzle-orm", async (importOriginal) => {
-  const actual = await importOriginal();
+  const actual = await importOriginal<any>();
   return {
     ...actual,
     eq: vi.fn(),

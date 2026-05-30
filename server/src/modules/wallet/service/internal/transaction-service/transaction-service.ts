@@ -11,13 +11,21 @@ import {
   type ITransactionRepository,
   AccountRepository, 
   type IAccountRepository,
-}  from "../../repository";
-import { IdempotencyManager } from "../../utils";
+}  from "../../../repository";
+import { IdempotencyManager } from "../../../utils";
 import type { TUserId } from "@/types";
 
 export class TransactionModule implements ITransactionModule {
-  private transactionRepository: ITransactionRepository = new TransactionRepository();
-  private accountRepository: IAccountRepository = new AccountRepository();
+  private transactionRepository: ITransactionRepository;
+  private accountRepository: IAccountRepository;
+
+  constructor(
+    transactionRepository: ITransactionRepository = new TransactionRepository(),
+    accountRepository: IAccountRepository = new AccountRepository(),
+  ) {
+    this.transactionRepository = transactionRepository;
+    this.accountRepository = accountRepository;
+  }
   
   create(transaction: TransactionInput): Promise<ITransaction> {
     const totalAmount = transaction.amount;

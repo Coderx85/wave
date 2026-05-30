@@ -1,10 +1,14 @@
 import type { ILedgerService, ILedger, TEntryType } from "./ledger-service.interface";
 import type { TTransactionId } from "@/types";
 import { tryCatch } from "@/lib/try-catch-wrapper";
-import { LedgerRepository, type ILedgerRepository } from "../../repository";
+import { LedgerRepository, type ILedgerRepository } from "../../../repository";
 
 export class LedgerService implements ILedgerService {
-  private ledgerRepository: ILedgerRepository = new LedgerRepository();
+  private ledgerRepository: ILedgerRepository;
+
+  constructor(ledgerRepository: ILedgerRepository = new LedgerRepository()) {
+    this.ledgerRepository = ledgerRepository;
+  }
 
   createEntry(transactionId: TTransactionId, amount: number, entryType: TEntryType): Promise<ILedger> {
     return tryCatch({

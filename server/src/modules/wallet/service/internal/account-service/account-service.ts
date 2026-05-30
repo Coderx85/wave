@@ -2,11 +2,15 @@ import type { IAccountService, IAccount } from "./account-service.interface";
 import type { TBankAccountId, TUserId } from "@/types";
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { ID } from "@/lib/ID";
-import { AccountRepository, type IAccountRepository } from "../../repository";
-import { IdempotencyManager } from "../../utils";
+import { AccountRepository, type IAccountRepository } from "../../../repository";
+import { IdempotencyManager } from "../../../utils";
 
 export class AccountService implements IAccountService {
-  private accountRepository: IAccountRepository = new AccountRepository();
+  private accountRepository: IAccountRepository;
+
+  constructor(accountRepository: IAccountRepository = new AccountRepository()) {
+    this.accountRepository = accountRepository;
+  }
 
   create(account: Omit<IAccount, "id" | "createdAt" | "updatedAt">): Promise<IAccount> {
     // Generate idempotency key to prevent duplicate account creation
