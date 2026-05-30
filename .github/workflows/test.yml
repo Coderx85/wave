@@ -86,7 +86,7 @@ jobs:
           path: coverage-base
 
       - name: "Test Action by generating coverage"
-        uses: ./
+        uses: davelosert/vitest-coverage-report-action@v2
         with:
           file-coverage-mode: "all"
           json-summary-compare-path: coverage-base/coverage-summary.json
