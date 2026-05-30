@@ -85,6 +85,14 @@ jobs:
           name: coverage-base
           path: server/coverage-base
 
+      - name: "Normalize base coverage summary path"
+        run: |
+          base_summary="$(find server/coverage-base -name coverage-summary.json -print -quit)"
+          test -n "$base_summary"
+          if [ "$base_summary" != "server/coverage-base/coverage-summary.json" ]; then
+            cp "$base_summary" server/coverage-base/coverage-summary.json
+          fi
+
       - name: "Test Action by generating coverage"
         uses: davelosert/vitest-coverage-report-action@v2
         with:
