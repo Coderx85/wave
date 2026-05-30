@@ -1,4 +1,3 @@
-import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, index } from "drizzle-orm/pg-core";
 import { users } from "./user.repository";
 import type { TSessionId, TVerificationId, TAccountId } from "@/types";
@@ -52,22 +51,3 @@ export const verifications = pgTable(
   },
   (table) => [index("verifications_identifier_idx").on(table.identifier)],
 );
-
-export const usersRelations = relations(users, ({ many }) => ({
-  sessions: many(sessions),
-  accounts: many(auth_accounts),
-}));
-
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  users: one(users, {
-    fields: [sessions.userId],
-    references: [users.id],
-  }),
-}));
-
-export const accountsRelations = relations(auth_accounts, ({ one }) => ({
-  users: one(users, {
-    fields: [auth_accounts.userId],
-    references: [users.id],
-  }),
-}));

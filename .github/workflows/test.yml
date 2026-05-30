@@ -1,0 +1,109 @@
+name: "Build and Test"
+on:
+  pull_request:
+
+jobs:
+  test:
+    permissions:
+      contents: read
+      pull-requests: write
+
+    strategy:
+      matrix:
+        include:
+          - ref: refs/pull/${{ github.event.pull_request.number }}/head
+            kind: incoming
+          - ref: ${{ github.event.pull_request.base.ref }}
+            kind: base
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ matrix.ref }}
+          repository: ${{ github.repository }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24.x"
+
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.5.0 --activate
+
+      - name: Install server dependencies
+        working-directory: server
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests with coverage
+        working-directory: server
+        run: pnpm test --coverage        
+      - name: "Upload Coverage"
+        uses: actions/upload-artifact@v5
+        with:
+          name: "coverage-${{ matrix.kind }}"
+          path: server/coverage
+
+  build-and-report:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v6
+      - name: "Install Node"
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24.x"
+
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.5.0 --activate
+
+      - name: "Install Deps"
+        working-directory: server
+        run: pnpm install --frozen-lockfile
+      
+      - name: "Build"
+        working-directory: server
+        run: pnpm run build
+      # Remove node_modules to see if this action runs entirely compiled
+      - name: "Remove Node Modules"
+        working-directory: server
+        run: rm -rf node_modules
+
+      - name: "Download Coverage Artifacts for ${{ github.head_ref}}"
+        uses: actions/download-artifact@v6
+        with:
+          name: coverage-incoming
+          path: server/coverage
+
+      - name: "Download Coverage Artifacts for main"
+        uses: actions/download-artifact@v6
+        with:
+          name: coverage-base
+          path: server/coverage-base
+
+      - name: "Normalize base coverage summary path"
+        run: |
+          mkdir -p server/coverage-base
+          if [ ! -f server/coverage-base/coverage-summary.json ]; then
+            cp server/coverage/coverage-summary.json server/coverage-base/coverage-summary.json
+          fi
+
+      - name: "Test Action by generating coverage"
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          working-directory: server
+          file-coverage-mode: "all"
+          json-summary-compare-path: coverage-base/coverage-summary.json
+          comment-on: 'pr,commit'
+          threshold-icons: '{"0": "🔴", "74": "🟠", "75": "🟢"}'
+
+      - name: "Upload build"
+        if: env.ACTIONS_STEP_DEBUG == 'true'
+        uses: actions/upload-artifact@v5
+        with:
+          name: dist
+          path: dist
