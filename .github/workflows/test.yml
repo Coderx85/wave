@@ -11,11 +11,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - ref: ${{ github.head_ref }}
-            repo: ${{ github.event.pull_request.head.repo.full_name }}
+          - ref: refs/pull/${{ github.event.pull_request.number }}/head
             kind: incoming
           - ref: ${{ github.event.pull_request.base.ref }}
-            repo: ${{ github.event.pull_request.base.repo.full_name }}
             kind: base
 
     runs-on: ubuntu-latest
@@ -23,8 +21,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           ref: ${{ matrix.ref }}
-          ## Set repository to correctly checkout from forks
-          repository: ${{ matrix.repo }}
+          repository: ${{ github.repository }}
 
       - name: Setup Node
         uses: actions/setup-node@v6
