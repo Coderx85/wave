@@ -77,17 +77,18 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: coverage-incoming
-          path: coverage 
+          path: server/coverage
 
       - name: "Download Coverage Artifacts for main"
         uses: actions/download-artifact@v6
         with:
           name: coverage-base
-          path: coverage-base
+          path: server/coverage-base
 
       - name: "Test Action by generating coverage"
         uses: davelosert/vitest-coverage-report-action@v2
         with:
+          working-directory: server
           file-coverage-mode: "all"
           json-summary-compare-path: coverage-base/coverage-summary.json
           comment-on: 'pr,commit'
