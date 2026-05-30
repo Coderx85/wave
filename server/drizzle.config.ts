@@ -15,7 +15,7 @@ function setMigrationPath(env: string) {
 }
 
 export default {
-  schema: './src/modules/database/schema',
+  schema: './src/modules/database/schema/index.ts',
   out: setMigrationPath(config.env),
   dialect: "postgresql",
   casing: "snake_case",

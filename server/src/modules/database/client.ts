@@ -7,4 +7,5 @@ import { relations } from "./relations";
 export const db = drizzle(config.databaseUrl, {
   schema,
   relations,
+  casing: "snake_case",
 });
