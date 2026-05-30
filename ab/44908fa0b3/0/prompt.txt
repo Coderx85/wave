@@ -1,0 +1,287 @@
+❯ pnpm dlx node watch ./src/modules/wallet/playground.ts
+Packages: +2
+++
+Progress: resolved 2, reused 0, downloaded 2, added 2, done
+.local/share/pnpm/store/v11/links/@/node/24.16.0/1659b249d71e5607daaf2ea3311a3aff687ae42788c264944bb4ebbf2de44fad/node_modules/node: Running preinstal.local/share/pnpm/store/v11/links/@/node/24.16.0/1659b249d71e5607daaf2ea3311a3aff687ae42788c264944bb4ebbf2de44fad/node_modules/node: Running preinstall script, failed in 1.6s
+.../node_modules/node preinstall$ node installArchSpecificPackage
+│ (node:23892) [DEP0190] DeprecationWarning: Passing args to a child pr…
+│ (Use `node --trace-deprecation ...` to show where the warning was cre…
+└─ Failed in 1.6s at /home/coderx85/.local/share/pnpm/store/v11/links/@/node/24.16.0/1659b249d71e5607daaf2ea3311a3aff687ae42788c264944bb4ebbf2de44fad/node_modules/node
+
+❯ pnpm with-dev-env tsx src/modules/wallet/playground.ts
+
+> fastify-template@1.0.0 with-dev-env /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> dotenv -e src/.env.development --  tsx src/modules/wallet/playground.ts
+
+❯ sudo docker sudo systemctl
+[sudo] password for coderx85:          
+docker: unknown command: docker sudo
+
+Run 'docker --help' for more information
+❯ pnpm with-dev-env pnpm db generate
+
+> fastify-template@1.0.0 with-dev-env /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> dotenv -e src/.env.development --  pnpm db generate
+
+
+> fastify-template@1.0.0 db /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> drizzle-kit generate
+
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server/drizzle.config.ts'
+Your migrations folder format is outdated, please run drizzle-kit up
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+❯ pnpm with-dev-env pnpm db up
+
+> fastify-template@1.0.0 with-dev-env /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> dotenv -e src/.env.development --  pnpm db up
+
+
+> fastify-template@1.0.0 db /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> drizzle-kit up
+
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server/drizzle.config.ts'
+No snapshot was found
+ ELIFECYCLE  Command failed with exit code 1.
+❯ pnpm with-dev-env pnpm db generate
+
+> fastify-template@1.0.0 with-dev-env /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> dotenv -e src/.env.development --  pnpm db generate
+
+
+> fastify-template@1.0.0 db /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> drizzle-kit generate
+
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server/drizzle.config.ts'
+Your migrations folder format is outdated, please run drizzle-kit up
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+❯ pnpm with-dev-env pnpm db up
+
+> fastify-template@1.0.0 with-dev-env /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> dotenv -e src/.env.development --  pnpm db up
+
+
+> fastify-template@1.0.0 db /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> drizzle-kit up
+
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server/drizzle.config.ts'
+No snapshot was found
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+❯ pnpm with-dev-env pnpm db drop
+
+> fastify-template@1.0.0 with-dev-env /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> dotenv -e src/.env.development --  pnpm db drop
+
+
+> fastify-template@1.0.0 db /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> drizzle-kit drop
+
+This command is deprecated. To drop a migration you can remove a migration folder manually
+This command is deprecated, please use updated 'undefined' command (see https://orm.drizzle.team/kit-docs/upgrade-21#how-to-migrate-to-0210)
+
+~/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server setu
+❯ pnpm with-dev-env pnpm db generate
+
+> fastify-template@1.0.0 with-dev-env /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> dotenv -e src/.env.development --  pnpm db generate
+
+
+> fastify-template@1.0.0 db /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> drizzle-kit generate
+
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server/drizzle.config.ts'
+ Warning  There's a duplicate enum name 'entry_type' in "public" schema
+ Warning  There's a duplicate enum name 'transaction_status' in "public" schema
+ Warning  There's a duplicate table name "auth_accounts" in "public" schema
+ Warning  There's a duplicate table name "sessions" in "public" schema
+ Warning  There's a duplicate table name "verifications" in "public" schema
+ Warning  There's a duplicate table name "ledger_entries" in "public" schema
+ Warning  There's a duplicate table name "accounts" in "public" schema
+ Warning  There's a duplicate table name "transactions" in "public" schema
+ Warning  There's a duplicate table name "users" in "public" schema
+ Warning  There's a duplicate column name 'id' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'accountId' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'providerId' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'userId' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'accessToken' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'refreshToken' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'idToken' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'accessTokenExpiresAt' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'refreshTokenExpiresAt' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'scope' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'password' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'created_at' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'id' in "public"."sessions" table
+ Warning  There's a duplicate column name 'expiresAt' in "public"."sessions" table
+ Warning  There's a duplicate column name 'token' in "public"."sessions" table
+ Warning  There's a duplicate column name 'ipAddress' in "public"."sessions" table
+ Warning  There's a duplicate column name 'userAgent' in "public"."sessions" table
+ Warning  There's a duplicate column name 'userId' in "public"."sessions" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."sessions" table
+ Warning  There's a duplicate column name 'created_at' in "public"."sessions" table
+ Warning  There's a duplicate column name 'id' in "public"."verifications" table
+ Warning  There's a duplicate column name 'identifier' in "public"."verifications" table
+ Warning  There's a duplicate column name 'value' in "public"."verifications" table
+ Warning  There's a duplicate column name 'expiresAt' in "public"."verifications" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."verifications" table
+ Warning  There's a duplicate column name 'created_at' in "public"."verifications" table
+ Warning  There's a duplicate column name 'id' in "public"."ledger_entries" table
+ Warning  There's a duplicate column name 'transactionId' in "public"."ledger_entries" table
+ Warning  There's a duplicate column name 'amount' in "public"."ledger_entries" table
+ Warning  There's a duplicate column name 'entry_type' in "public"."ledger_entries" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."ledger_entries" table
+ Warning  There's a duplicate column name 'created_at' in "public"."ledger_entries" table
+ Warning  There's a duplicate column name 'id' in "public"."accounts" table
+ Warning  There's a duplicate column name 'name' in "public"."accounts" table
+ Warning  There's a duplicate column name 'userId' in "public"."accounts" table
+ Warning  There's a duplicate column name 'accountNumber' in "public"."accounts" table
+ Warning  There's a duplicate column name 'balance' in "public"."accounts" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."accounts" table
+ Warning  There's a duplicate column name 'created_at' in "public"."accounts" table
+ Warning  There's a duplicate column name 'id' in "public"."transactions" table
+ Warning  There's a duplicate column name 'senderName' in "public"."transactions" table
+ Warning  There's a duplicate column name 'userId' in "public"."transactions" table
+ Warning  There's a duplicate column name 'receiverName' in "public"."transactions" table
+ Warning  There's a duplicate column name 'amount' in "public"."transactions" table
+ Warning  There's a duplicate column name 'status' in "public"."transactions" table
+ Warning  There's a duplicate column name 'senderAccountId' in "public"."transactions" table
+ Warning  There's a duplicate column name 'receiverAccountId' in "public"."transactions" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."transactions" table
+ Warning  There's a duplicate column name 'created_at' in "public"."transactions" table
+ Warning  There's a duplicate column name 'id' in "public"."users" table
+ Warning  There's a duplicate column name 'name' in "public"."users" table
+ Warning  There's a duplicate column name 'email' in "public"."users" table
+ Warning  There's a duplicate column name 'emailVerified' in "public"."users" table
+ Warning  There's a duplicate column name 'image' in "public"."users" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."users" table
+ Warning  There's a duplicate column name 'created_at' in "public"."users" table
+ Warning  There's a duplicate index name 'accounts_userId_idx' in "public" schema in "public"."auth_accounts"
+ Warning  There's a duplicate index name 'sessions_userId_idx' in "public" schema in "public"."sessions"
+ Warning  There's a duplicate index name 'verifications_identifier_idx' in "public" schema in "public"."verifications"
+ Warning  There's a duplicate index name 'ledger_entries_transaction_id_idx' in "public" schema in "public"."ledger_entries"
+ Warning  There's a duplicate index name 'accounts_user_id_idx' in "public" schema in "public"."accounts"
+ Warning  There's a duplicate index name 'transactions_sender_account_id_idx' in "public" schema in "public"."transactions"
+ Warning  There's a duplicate index name 'transactions_receiver_account_id_idx' in "public" schema in "public"."transactions"
+ Warning  There's a duplicate index name 'users_email_idx' in "public" schema in "public"."users"
+ Warning  There's a duplicate constraint name 'auth_accounts_userId_users_id_fkey' in "public"."auth_accounts" table
+ Warning  There's a duplicate constraint name 'sessions_userId_users_id_fkey' in "public"."sessions" table
+ Warning  There's a duplicate constraint name 'ledger_entries_transactionId_transactions_id_fkey' in "public"."ledger_entries" table
+ Warning  There's a duplicate constraint name 'accounts_userId_users_id_fkey' in "public"."accounts" table
+ Warning  There's a duplicate constraint name 'transactions_userId_users_id_fkey' in "public"."transactions" table
+ Warning  There's a duplicate constraint name 'transactions_senderAccountId_accounts_id_fkey' in "public"."transactions" table
+ Warning  There's a duplicate constraint name 'transactions_receiverAccountId_accounts_id_fkey' in "public"."transactions" table
+ Warning  There's a duplicate constraint name 'amount_positive' in "public"."ledger_entries" table
+ Warning  There's a duplicate constraint name 'balance_non_negative' in "public"."accounts" table
+ Warning  There's a duplicate constraint name 'name_not_empty' in "public"."accounts" table
+ Warning  There's a duplicate constraint name 'amount_positive' in "public"."transactions" table
+ ELIFECYCLE  Command failed with exit code 1.
+❯ pnpm with-dev-env pnpm db generate
+
+> fastify-template@1.0.0 with-dev-env /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> dotenv -e src/.env.development --  pnpm db generate
+
+
+> fastify-template@1.0.0 db /home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server
+> drizzle-kit generate
+
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/home/coderx85/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server/drizzle.config.ts'
+ Warning  There's a duplicate enum name 'entry_type' in "public" schema
+ Warning  There's a duplicate enum name 'transaction_status' in "public" schema
+ Warning  There's a duplicate table name "auth_accounts" in "public" schema
+ Warning  There's a duplicate table name "sessions" in "public" schema
+ Warning  There's a duplicate table name "verifications" in "public" schema
+ Warning  There's a duplicate table name "ledger_entries" in "public" schema
+ Warning  There's a duplicate table name "accounts" in "public" schema
+ Warning  There's a duplicate table name "transactions" in "public" schema
+ Warning  There's a duplicate table name "users" in "public" schema
+ Warning  There's a duplicate column name 'id' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'accountId' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'providerId' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'userId' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'accessToken' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'refreshToken' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'idToken' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'accessTokenExpiresAt' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'refreshTokenExpiresAt' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'scope' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'password' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'created_at' in "public"."auth_accounts" table
+ Warning  There's a duplicate column name 'id' in "public"."sessions" table
+ Warning  There's a duplicate column name 'expiresAt' in "public"."sessions" table
+ Warning  There's a duplicate column name 'token' in "public"."sessions" table
+ Warning  There's a duplicate column name 'ipAddress' in "public"."sessions" table
+ Warning  There's a duplicate column name 'userAgent' in "public"."sessions" table
+ Warning  There's a duplicate column name 'userId' in "public"."sessions" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."sessions" table
+ Warning  There's a duplicate column name 'created_at' in "public"."sessions" table
+ Warning  There's a duplicate column name 'id' in "public"."verifications" table
+ Warning  There's a duplicate column name 'identifier' in "public"."verifications" table
+ Warning  There's a duplicate column name 'value' in "public"."verifications" table
+ Warning  There's a duplicate column name 'expiresAt' in "public"."verifications" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."verifications" table
+ Warning  There's a duplicate column name 'created_at' in "public"."verifications" table
+ Warning  There's a duplicate column name 'id' in "public"."ledger_entries" table
+ Warning  There's a duplicate column name 'transactionId' in "public"."ledger_entries" table
+ Warning  There's a duplicate column name 'amount' in "public"."ledger_entries" table
+ Warning  There's a duplicate column name 'entry_type' in "public"."ledger_entries" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."ledger_entries" table
+ Warning  There's a duplicate column name 'created_at' in "public"."ledger_entries" table
+ Warning  There's a duplicate column name 'id' in "public"."accounts" table
+ Warning  There's a duplicate column name 'name' in "public"."accounts" table
+ Warning  There's a duplicate column name 'userId' in "public"."accounts" table
+ Warning  There's a duplicate column name 'accountNumber' in "public"."accounts" table
+ Warning  There's a duplicate column name 'balance' in "public"."accounts" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."accounts" table
+ Warning  There's a duplicate column name 'created_at' in "public"."accounts" table
+ Warning  There's a duplicate column name 'id' in "public"."transactions" table
+ Warning  There's a duplicate column name 'senderName' in "public"."transactions" table
+ Warning  There's a duplicate column name 'userId' in "public"."transactions" table
+ Warning  There's a duplicate column name 'receiverName' in "public"."transactions" table
+ Warning  There's a duplicate column name 'amount' in "public"."transactions" table
+ Warning  There's a duplicate column name 'status' in "public"."transactions" table
+ Warning  There's a duplicate column name 'senderAccountId' in "public"."transactions" table
+ Warning  There's a duplicate column name 'receiverAccountId' in "public"."transactions" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."transactions" table
+ Warning  There's a duplicate column name 'created_at' in "public"."transactions" table
+ Warning  There's a duplicate column name 'id' in "public"."users" table
+ Warning  There's a duplicate column name 'name' in "public"."users" table
+ Warning  There's a duplicate column name 'email' in "public"."users" table
+ Warning  There's a duplicate column name 'emailVerified' in "public"."users" table
+ Warning  There's a duplicate column name 'image' in "public"."users" table
+ Warning  There's a duplicate column name 'updated_at' in "public"."users" table
+ Warning  There's a duplicate column name 'created_at' in "public"."users" table
+ Warning  There's a duplicate index name 'accounts_userId_idx' in "public" schema in "public"."auth_accounts"
+ Warning  There's a duplicate index name 'sessions_userId_idx' in "public" schema in "public"."sessions"
+ Warning  There's a duplicate index name 'verifications_identifier_idx' in "public" schema in "public"."verifications"
+ Warning  There's a duplicate index name 'ledger_entries_transaction_id_idx' in "public" schema in "public"."ledger_entries"
+ Warning  There's a duplicate index name 'accounts_user_id_idx' in "public" schema in "public"."accounts"
+ Warning  There's a duplicate index name 'transactions_sender_account_id_idx' in "public" schema in "public"."transactions"
+ Warning  There's a duplicate index name 'transactions_receiver_account_id_idx' in "public" schema in "public"."transactions"
+ Warning  There's a duplicate index name 'users_email_idx' in "public" schema in "public"."users"
+ Warning  There's a duplicate constraint name 'auth_accounts_userId_users_id_fkey' in "public"."auth_accounts" table
+ Warning  There's a duplicate constraint name 'sessions_userId_users_id_fkey' in "public"."sessions" table
+ Warning  There's a duplicate constraint name 'ledger_entries_transactionId_transactions_id_fkey' in "public"."ledger_entries" table
+ Warning  There's a duplicate constraint name 'accounts_userId_users_id_fkey' in "public"."accounts" table
+ Warning  There's a duplicate constraint name 'transactions_userId_users_id_fkey' in "public"."transactions" table
+ Warning  There's a duplicate constraint name 'transactions_senderAccountId_accounts_id_fkey' in "public"."transactions" table
+ Warning  There's a duplicate constraint name 'transactions_receiverAccountId_accounts_id_fkey' in "public"."transactions" table
+ Warning  There's a duplicate constraint name 'amount_positive' in "public"."ledger_entries" table
+ Warning  There's a duplicate constraint name 'balance_non_negative' in "public"."accounts" table
+ Warning  There's a duplicate constraint name 'name_not_empty' in "public"."accounts" table
+ Warning  There's a duplicate constraint name 'amount_positive' in "public"."transactions" table
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+
+~/Projects/Personal/Milestone-1_Full-Stack-Projects/wave/server setup/bank-service*                                                           
+
+#file:schema
