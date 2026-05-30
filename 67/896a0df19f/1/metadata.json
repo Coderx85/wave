@@ -1,0 +1,66 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "67896a0df19f",
+  "session_id": "8cc96a86-1b9b-4a14-be8a-ab8f01757967",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-30T09:43:59.713248598Z",
+  "branch": "setup/bank-service",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "server/src/modules/wallet/index.ts",
+    "server/src/modules/wallet/service/index.ts"
+  ],
+  "agent": "Copilot CLI",
+  "model": "auto",
+  "turn_id": "e22113c389dd",
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 57015,
+    "api_call_count": 166
+  },
+  "session_metrics": {
+    "turn_count": 9
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 650,
+      "user_lines_removed": 10,
+      "agent_lines_added": 32,
+      "agent_lines_removed": 6,
+      "user_added_per_file": {
+        "server/src/modules/wallet/index.ts": 1,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.interface.ts": 2,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.spec.ts": 2,
+        "server/src/modules/wallet/service/internal/account-service/account-service.ts": 2,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.ts": 1,
+        "server/src/modules/wallet/service/internal/transaction-service/transaction-service.ts": 2,
+        "server/src/modules/wallet/service/wallet-service.interface.ts": 30,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 411,
+        "server/src/modules/wallet/service/wallet-service.ts": 199
+      },
+      "user_removed_per_file": {
+        "server/src/modules/wallet/index.ts": 1,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.interface.ts": 2,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.spec.ts": 2,
+        "server/src/modules/wallet/service/internal/account-service/account-service.ts": 2,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.ts": 1,
+        "server/src/modules/wallet/service/internal/transaction-service/transaction-service.ts": 2
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 640,
+      "user_lines_removed": 0,
+      "agent_lines_added": 60,
+      "agent_lines_removed": 18,
+      "user_added_per_file": {
+        "server/src/modules/wallet/service/wallet-service.interface.ts": 30,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 411,
+        "server/src/modules/wallet/service/wallet-service.ts": 199
+      }
+    }
+  ]
+}
