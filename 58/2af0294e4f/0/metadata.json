@@ -1,0 +1,91 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "582af0294e4f",
+  "session_id": "494dd822-31f4-4e9c-a0a1-3021a9bbf12f",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-30T09:15:34.791280607Z",
+  "branch": "setup/bank-service",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "server/src/modules/database/supabase/migrations/0000_marvelous_spirit.sql",
+    "server/src/modules/database/supabase/migrations/0001_handy_ozymandias.sql",
+    "server/src/modules/database/supabase/migrations/0002_reflective_mother_askani.sql",
+    "server/src/modules/database/supabase/migrations/0003_auth_accounts.sql",
+    "server/src/modules/database/supabase/migrations/20260530064413_past_bloodstorm/migration.sql",
+    "server/src/modules/database/supabase/migrations/20260530064413_past_bloodstorm/snapshot.json",
+    "server/src/modules/database/supabase/migrations/meta/0000_snapshot.json",
+    "server/src/modules/database/supabase/migrations/meta/0001_snapshot.json",
+    "server/src/modules/database/supabase/migrations/meta/0002_snapshot.json",
+    "server/src/modules/database/supabase/migrations/meta/_journal.json"
+  ],
+  "agent": "Copilot CLI",
+  "model": "",
+  "turn_id": "cc2d20c5325c",
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-30T09:15:34.765608702Z",
+    "agent_lines": 211,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 1119,
+    "total_committed": 211,
+    "total_lines_changed": 1330,
+    "agent_percentage": 15.86466165413534,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 1400,
+      "user_lines_removed": 1179,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".antigravitycli/ad32ace6-8170-4170-a2e8-fdd2f4ee67d1.json": 14,
+        ".github/hooks/entire.json": 61,
+        "server/src/modules/wallet/playground.ts": 34,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.interface.ts": 1,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.spec.ts": 5,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.ts": 2,
+        "server/src/modules/wallet/service/account-service/account-service.interface.ts": 19,
+        "server/src/modules/wallet/service/account-service/account-service.spec.ts": 267,
+        "server/src/modules/wallet/service/account-service/account-service.ts": 83,
+        "server/src/modules/wallet/service/account-service/index.ts": 3,
+        "server/src/modules/wallet/service/index.ts": 22,
+        "server/src/modules/wallet/service/ledger-service/ledger-service.spec.ts": 177,
+        "server/src/modules/wallet/service/ledger-service/ledger-service.ts": 30,
+        "server/src/modules/wallet/service/transaction-service/transaction-service.spec.ts": 7,
+        "server/src/modules/wallet/service/transaction-service/transaction-service.ts": 8,
+        "server/src/modules/wallet/service/wallet-service.interface.ts": 40,
+        "server/src/modules/wallet/service/wallet-service.spec.ts": 413,
+        "server/src/modules/wallet/service/wallet-service.ts": 214
+      },
+      "user_removed_per_file": {
+        "server/src/modules/database/supabase/migrations/0000_marvelous_spirit.sql": 8,
+        "server/src/modules/database/supabase/migrations/0001_handy_ozymandias.sql": 52,
+        "server/src/modules/database/supabase/migrations/0002_reflective_mother_askani.sql": 35,
+        "server/src/modules/database/supabase/migrations/0003_auth_accounts.sql": 19,
+        "server/src/modules/database/supabase/migrations/meta/0000_snapshot.json": 71,
+        "server/src/modules/database/supabase/migrations/meta/0001_snapshot.json": 388,
+        "server/src/modules/database/supabase/migrations/meta/0002_snapshot.json": 512,
+        "server/src/modules/database/supabase/migrations/meta/_journal.json": 34,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.interface.ts": 1,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.spec.ts": 5,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.ts": 2,
+        "server/src/modules/wallet/service/index.ts": 1,
+        "server/src/modules/wallet/service/ledger-service/ledger-service.ts": 2,
+        "server/src/modules/wallet/service/transaction-service/transaction-service.spec.ts": 49
+      }
+    }
+  ]
+}

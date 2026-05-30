@@ -1,0 +1,34 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "582af0294e4f",
+  "strategy": "manual-commit",
+  "branch": "setup/bank-service",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "server/src/modules/database/supabase/migrations/0000_marvelous_spirit.sql",
+    "server/src/modules/database/supabase/migrations/0001_handy_ozymandias.sql",
+    "server/src/modules/database/supabase/migrations/0002_reflective_mother_askani.sql",
+    "server/src/modules/database/supabase/migrations/0003_auth_accounts.sql",
+    "server/src/modules/database/supabase/migrations/20260530064413_past_bloodstorm/migration.sql",
+    "server/src/modules/database/supabase/migrations/20260530064413_past_bloodstorm/snapshot.json",
+    "server/src/modules/database/supabase/migrations/meta/0000_snapshot.json",
+    "server/src/modules/database/supabase/migrations/meta/0001_snapshot.json",
+    "server/src/modules/database/supabase/migrations/meta/0002_snapshot.json",
+    "server/src/modules/database/supabase/migrations/meta/_journal.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/58/2af0294e4f/0/metadata.json",
+      "transcript": "/58/2af0294e4f/0/full.jsonl",
+      "content_hash": "/58/2af0294e4f/0/content_hash.txt",
+      "prompt": "/58/2af0294e4f/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  }
+}
