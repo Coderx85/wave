@@ -1,0 +1,48 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "63c0346ca1dd",
+  "session_id": "8cc96a86-1b9b-4a14-be8a-ab8f01757967",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-30T11:46:33.047500902Z",
+  "branch": "setup/bank-service",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".github/workflows/pr-tests.yml"
+  ],
+  "agent": "Copilot CLI",
+  "model": "auto",
+  "turn_id": "0aaa933f8f01",
+  "checkpoint_transcript_start": 2665,
+  "transcript_lines_at_start": 2665,
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 7665,
+    "api_call_count": 8
+  },
+  "session_metrics": {
+    "turn_count": 11
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-30T11:46:32.971787338Z",
+    "agent_lines": 54,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 54,
+    "total_lines_changed": 54,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Make a github runner that will run the test on every PR on the main branch, and make sure to use the latest version. and comment a Test Ceverage Report.

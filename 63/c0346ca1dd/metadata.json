@@ -1,0 +1,25 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "63c0346ca1dd",
+  "strategy": "manual-commit",
+  "branch": "setup/bank-service",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".github/workflows/pr-tests.yml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/63/c0346ca1dd/0/metadata.json",
+      "transcript": "/63/c0346ca1dd/0/full.jsonl",
+      "content_hash": "/63/c0346ca1dd/0/content_hash.txt",
+      "prompt": "/63/c0346ca1dd/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 7665,
+    "api_call_count": 8
+  }
+}
