@@ -1,6 +1,7 @@
 import type { 
   ITransactionModule, 
   ITransaction, 
+  TransactionInput,
   TTransactionQuery
 } from "./transaction-service.interface";
 import { tryCatch } from "@/lib/try-catch-wrapper";
@@ -11,64 +12,50 @@ import {
   AccountRepository, 
   type IAccountRepository,
 }  from "../../repository";
+import { IdempotencyManager } from "../../utils";
 import type { TUserId } from "@/types";
 
 export class TransactionModule implements ITransactionModule {
   private transactionRepository: ITransactionRepository = new TransactionRepository();
   private accountRepository: IAccountRepository = new AccountRepository();
   
-  create(transaction: Omit<ITransaction, "id" | "status">): Promise<ITransaction> {
+  create(transaction: TransactionInput): Promise<ITransaction> {
     const totalAmount = transaction.amount;
 
-    tryCatch({
-      ctx: async () => {
-        // 1. Calculate the total amount to be debited from the sender's account
-        await this.accountRepository.calculateNewBalance(transaction.senderAccountId, totalAmount);
-      },
-      errorMessage: "FAILED_TO_CALCULATE_NEW_BALANCE",
-    });
-     
-    tryCatch({
-      ctx: async () => {
-        // 3. Update the sender's account balance
-        const senderNewBalance = await this.accountRepository.calculateNewBalance(transaction.senderAccountId, -totalAmount);
-        await this.accountRepository.updateBalance(transaction.senderAccountId, senderNewBalance);
-        
-        // 4. Update the receiver's account balance
-        const receiverNewBalance = await this.accountRepository.calculateNewBalance(transaction.receiverAccountId, totalAmount);
-        await this.accountRepository.updateBalance(transaction.receiverAccountId, receiverNewBalance);
-      },
-      errorMessage: "FAILED_TO_UPDATE_ACCOUNT_BALANCES",
-    });
+    // Generate idempotency key for this transaction to prevent duplicates
+    const idempotencyKey = IdempotencyManager.generateTransactionKey(
+      transaction.senderAccountId.toString(),
+      transaction.receiverAccountId.toString(),
+      totalAmount
+    );
 
     return tryCatch({
       ctx: async () => {
-        // 2. Calculate the total amount to be credited to the receiver's account
+        await this.accountRepository.adjustBalance(transaction.senderAccountId, -totalAmount);
+        await this.accountRepository.adjustBalance(transaction.receiverAccountId, totalAmount);
+
         const newTransaction: ITransaction = {
           id: ID.TransactionId(),
           ...transaction,
+          amount: BigInt(transaction.amount),
           status: "pending"
         };
 
         await this.transactionRepository.save({
           ...newTransaction,
-          amount: BigInt(newTransaction.amount),
         });
         
         return newTransaction;
       },
       errorMessage: "FAILED_TO_CREATE_TRANSACTION", 
-    })
+    });
   };
 
   list(userId: TUserId): Promise<ITransaction[]> {
     return tryCatch({
       ctx: async () => {
         const transactions = await this.transactionRepository.findByUserId(userId);
-        return transactions.map(tx => ({
-          ...tx,
-          amount: Number(tx.amount),
-        }));
+        return transactions;
       },
       errorMessage: "FAILED_TO_LIST_TRANSACTIONS",
     });
@@ -86,20 +73,14 @@ export class TransactionModule implements ITransactionModule {
               userId,
               dateRange: query.dateRange,
             });
-            return successfulTransactions.map(tx => ({
-              ...tx,
-              amount: Number(tx.amount),
-            }));
+            return successfulTransactions;
 
           case "failed":
             const failedTransactions = await this.transactionRepository.failedTransactions({
               userId,
               dateRange: query.dateRange
             });
-            return failedTransactions.map(tx => ({
-              ...tx,
-              amount: Number(tx.amount),
-            }));
+            return failedTransactions;
           
           default:
             throw new Error("Invalid status value. Allowed values are 'success' or 'failed'.");

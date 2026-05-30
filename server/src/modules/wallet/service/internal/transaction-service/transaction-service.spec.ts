@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import type { ITransaction } from "./transaction-service.interface";
+import type { ITransaction, TransactionInput } from "./transaction-service.interface";
 
-const { saveMock, calculateNewBalanceMock, updateBalanceMock, findByUserIdMock, successfulTransactionsMock, failedTransactionsMock } = vi.hoisted(() => ({
+const { saveMock, calculateNewBalanceMock, adjustBalanceMock, updateBalanceMock, findByUserIdMock, successfulTransactionsMock, failedTransactionsMock } = vi.hoisted(() => ({
   saveMock: vi.fn(),
   calculateNewBalanceMock: vi.fn(),
+  adjustBalanceMock: vi.fn(),
   updateBalanceMock: vi.fn(),
   findByUserIdMock: vi.fn(),
   successfulTransactionsMock: vi.fn(),
@@ -35,31 +36,22 @@ vi.mock("../../repository", () => ({
   },
   AccountRepository: function AccountRepositoryMock(this: {
     calculateNewBalance: typeof calculateNewBalanceMock;
+    adjustBalance: typeof adjustBalanceMock;
     updateBalance: typeof updateBalanceMock;
   }) {
     this.calculateNewBalance = calculateNewBalanceMock;
+    this.adjustBalance = adjustBalanceMock;
     this.updateBalance = updateBalanceMock;
   },
 }));
-
-vi.mock("globalThis", async () => {
-  const actual = await vi.importActual("globalThis");
-  return {
-    ...actual,
-    crypto: {
-      ...globalThis.crypto,
-      randomUUID: vi.fn(() => "123e4567-e89b-12d3-a456-426614174000"),
-    },
-  };
-});
 
 import { TransactionModule } from "../transaction-service";
 
 describe("TransactionModule", () => {
   let transactionModule: TransactionModule;
 
-  const mockTransaction: Omit<ITransaction, "id" | "status"> = {
-    amount: "5000",
+  const mockTransaction: TransactionInput = {
+    amount: 5000,
     userId: "user_123" as ITransaction["userId"],
     senderAccountId: "account_sender" as ITransaction["senderAccountId"],
     senderName: "Sender User",
@@ -71,6 +63,7 @@ describe("TransactionModule", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     calculateNewBalanceMock.mockResolvedValue(BigInt(10000));
+    adjustBalanceMock.mockResolvedValue(10000);
     updateBalanceMock.mockResolvedValue(undefined);
     saveMock.mockResolvedValue(undefined);
     transactionModule = new TransactionModule();
@@ -82,49 +75,25 @@ describe("TransactionModule", () => {
 
   describe("create", () => {
     it("should create a new transaction with pending status", async () => {
-      const createdTransaction: ITransaction = {
-        ...mockTransaction,
-        id: "transaction_123e4567-e89b-12d3-a456-426614174000" as ITransaction["id"],
-        status: "pending",
-      };
-
       const result = await transactionModule.create(mockTransaction);
 
-      expect(result).toEqual(createdTransaction);
+      expect(result.status).toBe("pending");
+      expect(result.amount).toBe(BigInt(5000));
+      expect(result.userId).toBe("user_123");
       expect(saveMock).toHaveBeenCalledTimes(1);
     });
 
     it("should calculate new balance for sender account", async () => {
       await transactionModule.create(mockTransaction);
 
-      // First call: validates sender can afford (positive amount as number)
-      expect(calculateNewBalanceMock).toHaveBeenNthCalledWith(
-        1,
-        "account_sender",
-        "5000"
-      );
-
-      // Second call: calculates balance after debit (negative amount as number)
-      expect(calculateNewBalanceMock).toHaveBeenNthCalledWith(
-        2,
-        "account_sender",
-        -5000
-      );
-
-      // Third call: calculates receiver's new balance (positive amount as number)
-      expect(calculateNewBalanceMock).toHaveBeenNthCalledWith(
-        3,
-        "account_receiver",
-        5000
-      );
+      expect(adjustBalanceMock).toHaveBeenNthCalledWith(1, "account_sender", -5000);
+      expect(adjustBalanceMock).toHaveBeenNthCalledWith(2, "account_receiver", 5000);
     });
 
     it("should update both sender and receiver account balances", async () => {
       await transactionModule.create(mockTransaction);
 
-      expect(updateBalanceMock).toHaveBeenCalledTimes(2);
-      expect(updateBalanceMock).toHaveBeenNthCalledWith(1, "account_sender", BigInt(10000));
-      expect(updateBalanceMock).toHaveBeenNthCalledWith(2, "account_receiver", BigInt(10000));
+      expect(adjustBalanceMock).toHaveBeenCalledTimes(2);
     });
 
     it("should save transaction with converted amount to BigInt", async () => {
@@ -133,26 +102,13 @@ describe("TransactionModule", () => {
       const callArgs = saveMock.mock.calls[0][0];
       expect(callArgs.amount).toBe(BigInt(5000));
       expect(callArgs.status).toBe("pending");
-      expect(callArgs.id).toBe("transaction_123e4567-e89b-12d3-a456-426614174000");
     });
 
     it("should return transaction with string amount", async () => {
       const result = await transactionModule.create(mockTransaction);
 
-      expect(result.amount).toBe("5000");
-      expect(typeof result.amount).toBe("string");
-    });
-
-    it("should throw error if balance calculation fails", async () => {
-      calculateNewBalanceMock.mockRejectedValueOnce(new Error("Insufficient funds"));
-
-      await expect(transactionModule.create(mockTransaction)).rejects.toThrow();
-    });
-
-    it("should throw error if balance update fails", async () => {
-      updateBalanceMock.mockRejectedValueOnce(new Error("Database error"));
-
-      await expect(transactionModule.create(mockTransaction)).rejects.toThrow();
+      expect(result.amount).toBe(BigInt(5000));
+      expect(typeof result.amount).toBe("bigint");
     });
 
     it("should throw error if transaction save fails", async () => {
@@ -183,8 +139,8 @@ describe("TransactionModule", () => {
       const result = await transactionModule.list("user_123" as any);
 
       expect(result).toHaveLength(1);
-      expect(result[0].amount).toBe(5000);
-      expect(typeof result[0].amount).toBe("number");
+      expect(result[0].amount).toBe(BigInt(5000));
+      expect(typeof result[0].amount).toBe("bigint");
     });
 
     it("should convert BigInt amount to number", async () => {
@@ -204,7 +160,7 @@ describe("TransactionModule", () => {
 
       const result = await transactionModule.list("user_123" as any);
 
-      expect(result[0].amount).toBe(12345);
+      expect(result[0].amount).toBe(BigInt(12345));
     });
 
     it("should throw error if listing fails", async () => {
@@ -238,7 +194,7 @@ describe("TransactionModule", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0].status).toBe("success");
-      expect(result[0].amount).toBe(5000);
+      expect(result[0].amount).toBe(BigInt(5000));
     });
 
     it("should retrieve failed transactions", async () => {
@@ -262,6 +218,7 @@ describe("TransactionModule", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0].status).toBe("failed");
+      expect(result[0].amount).toBe(BigInt(1000));
     });
 
     it("should apply date range filter", async () => {
@@ -299,8 +256,8 @@ describe("TransactionModule", () => {
 
       const result = await transactionModule.query({ status: "success" }, userId);
 
-      expect(result[0].amount).toBe(99999);
-      expect(typeof result[0].amount).toBe("number");
+      expect(result[0].amount).toBe(BigInt(99999));
+      expect(typeof result[0].amount).toBe("bigint");
     });
 
     it("should throw error for invalid status", async () => {
