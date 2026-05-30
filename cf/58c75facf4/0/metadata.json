@@ -1,0 +1,41 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "cf58c75facf4",
+  "session_id": "8cc96a86-1b9b-4a14-be8a-ab8f01757967",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-30T11:40:21.42658823Z",
+  "branch": "setup/bank-service",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "server/src/routes/api/wallet/definition.ts",
+    "server/src/routes/api/wallet/handler.ts",
+    "server/src/routes/api/wallet/index.spec.ts",
+    "server/src/routes/api/wallet/index.ts",
+    "server/src/schemas/wallet.schema.ts"
+  ],
+  "agent": "Copilot CLI",
+  "model": "auto",
+  "turn_id": "29b39b7ca057",
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 82893,
+    "api_call_count": 247
+  },
+  "session_metrics": {
+    "turn_count": 10
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-30T11:40:21.226962083Z",
+    "agent_lines": 322,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 322,
+    "total_lines_changed": 322,
+    "agent_percentage": 100,
+    "metric_version": 2
+  }
+}
