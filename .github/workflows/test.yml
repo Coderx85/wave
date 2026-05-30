@@ -31,7 +31,7 @@ jobs:
       - name: Enable Corepack
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack prepare pnpm@11.5.0 --activate
 
       - name: Install server dependencies
         working-directory: server
@@ -56,12 +56,21 @@ jobs:
         with:
           node-version: "24.x"
 
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.5.0 --activate
+
       - name: "Install Deps"
+        working-directory: server
         run: pnpm install --frozen-lockfile
+      
       - name: "Build"
+        working-directory: server
         run: pnpm run build
       # Remove node_modules to see if this action runs entirely compiled
       - name: "Remove Node Modules"
+        working-directory: server
         run: rm -rf node_modules
 
       - name: "Download Coverage Artifacts for ${{ github.head_ref}}"
