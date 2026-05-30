@@ -1,0 +1,4 @@
+Now. Make a controller folder in the @server/src/modules/wallet/, (take inspiration from @server/src/routes/api/sample/), and make "API ENDPOINTS" in @server/src/routes/api/. )
+
+- Make their related schema "defi" like in @server/src/schemas/sample.schema.ts 
+- Make all other from -  @server/src/routes/api/sample/.
