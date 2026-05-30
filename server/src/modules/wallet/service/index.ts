@@ -1,3 +1,5 @@
-export * from "./ledger-service";
+export * from "./wallet-service.interface";
 
-export * from "./transaction-service";
+export * from "./wallet-service";
+
+export * as WalletInternalService from "./internal";
