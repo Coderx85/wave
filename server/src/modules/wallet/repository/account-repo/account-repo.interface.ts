@@ -15,6 +15,7 @@ export interface IAccountRepository {
   findById(accountId: TBankAccountId): Promise<IAccountDBDTO | null>;
   findByUserId(userId: TUserId): Promise<IAccountDBDTO[]>;
   calculateNewBalance(accountId: TBankAccountId, amount: number): Promise<number>;
+  adjustBalance(accountId: TBankAccountId, amount: number): Promise<number>;
   checkBalance(accountId: TBankAccountId): Promise<IAccountDBDTO>;
   updateBalance(accountId: TBankAccountId, newBalance: number): Promise<void>;
 };

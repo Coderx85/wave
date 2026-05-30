@@ -79,23 +79,18 @@ export class AccountRepository implements IAccountRepository {
   calculateNewBalance(accountId: TBankAccountId, amount: number): Promise<number> {
     return tryCatch({
       ctx: async () => {
-        const account = await this.findById(accountId);
+        const [account] = await db
+          .select()
+          .from(AccountsTable)
+          .for("update")
+          .where(eq(AccountsTable.id, accountId))
+          .execute();
 
         if (!account) {
           throw new Error("Account not found");
         }
 
-        // lock the account row for update to prevent race conditions
-        await db
-          .select()
-          .from(AccountsTable)
-          .for("update", {
-            skipLocked: true,
-          })
-          .where(eq(AccountsTable.id, accountId))
-          .execute();
-          
-        const newBalance = account.balance + amount;
+        const newBalance = Number(account.balance) + amount;
 
         if (newBalance <= 0.00) {
           throw new Error("Insufficient funds");
@@ -103,6 +98,43 @@ export class AccountRepository implements IAccountRepository {
 
         return newBalance;
       }
+    });
+  }
+
+  adjustBalance(accountId: TBankAccountId, amount: number): Promise<number> {
+    return tryCatch({
+      ctx: async () => {
+        return await db.transaction(async (tx) => {
+          const [account] = await tx
+            .select()
+            .from(AccountsTable)
+            .for("update")
+            .where(eq(AccountsTable.id, accountId))
+            .execute();
+
+          if (!account) {
+            throw new Error("Account not found");
+          }
+
+          const newBalance = Number(account.balance) + amount;
+
+          if (newBalance <= 0.00) {
+            throw new Error("Insufficient funds");
+          }
+
+          await tx
+            .update(AccountsTable)
+            .set({
+              balance: newBalance.toString(),
+              updatedAt: new Date(),
+            })
+            .where(eq(AccountsTable.id, accountId))
+            .execute();
+
+          return newBalance;
+        });
+      },
+      errorMessage: "FAILED_TO_ADJUST_BALANCE",
     });
   }
 
