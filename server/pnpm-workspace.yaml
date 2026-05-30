@@ -2,6 +2,6 @@ overrides:
   vite: "npm:@voidzero-dev/vite-plus-core@latest"
   vitest: "npm:@voidzero-dev/vite-plus-test@latest"
 
-onlyBuiltDependencies:
-  - argon2
-  - esbuild
+allowBuilds:
+  argon2: true
+  esbuild: true
