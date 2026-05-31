@@ -20,9 +20,9 @@
     },
     "cost": 0,
     "tokens": {
-      "input": 715740,
-      "output": 3246,
-      "reasoning": 4516,
+      "input": 742249,
+      "output": 3452,
+      "reasoning": 4895,
       "cache": {
         "read": 0,
         "write": 0
@@ -3954,23 +3954,75 @@
         },
         "cost": 0,
         "tokens": {
-          "input": 0,
-          "output": 0,
-          "reasoning": 0,
+          "total": 27094,
+          "input": 26509,
+          "output": 206,
+          "reasoning": 379,
           "cache": {
-            "read": 0,
-            "write": 0
+            "write": 0,
+            "read": 0
           }
         },
         "modelID": "nemotron-3-super-free",
         "providerID": "opencode",
         "time": {
-          "created": 1780254585601
+          "created": 1780254585601,
+          "completed": 1780254642136
         },
+        "finish": "stop",
         "id": "msg_e7f713301001N8E3yA5zVcmnKF",
         "sessionID": "ses_1809729d5ffetQ2frVuPx7vCKA"
       },
-      "parts": []
+      "parts": [
+        {
+          "snapshot": "559c057b15b5d214f2407ae7bb1df3fb8d0cdf4f",
+          "type": "step-start",
+          "id": "prt_e7f720f6f001dmdz2iAv9yh3p3",
+          "sessionID": "ses_1809729d5ffetQ2frVuPx7vCKA",
+          "messageID": "msg_e7f713301001N8E3yA5zVcmnKF"
+        },
+        {
+          "type": "reasoning",
+          "text": "The user wanted me to check the working of the @server/src/modules/notification/index.ts and rewrite the @server/src/routes/api/notification/index.spec.ts. I've done that - I read the notification module files and updated the spec file accordingly.\n\nThen the user said \"Update the @bruno accordingly, with new endpoints files.\" So I needed to update the Bruno collection with the new notification endpoints.\n\nI:\n1. Checked if there was a Bruno directory (found ./server/bruno)\n2. Looked for existing notification-related Bruno files (none found)\n3. Created two new Bruno request files:\n   - Get Notifications.yml for the GET /api/users/:userId/notifications endpoint\n   - Stream Notifications.yml for the GET /api/users/:userId/notifications/stream endpoint\n4. Created a notification directory in Bruno and moved the files there\n5. Updated the README.md to document the new endpoints:\n   - Added entries in the \"Files Created\" section\n   - Added steps for testing the new endpoints in the \"Testing Workflow\" section\n   - Added new scenarios for testing notifications\n   - Updated the frontend integration example to show how to use the notification endpoints\n   - Updated the opencollection.yml to change the name from \"Paypal\" to \"Better Auth API\"\n\nAll tasks have been completed. The notification API spec has been rewritten to match the actual implementation, and the Bruno collection has been updated with the new notification endpoints and documentation.\n",
+          "time": {
+            "start": 1780254642038,
+            "end": 1780254642045
+          },
+          "id": "prt_e7f720f76001eSENuR3vVGLZXf",
+          "sessionID": "ses_1809729d5ffetQ2frVuPx7vCKA",
+          "messageID": "msg_e7f713301001N8E3yA5zVcmnKF"
+        },
+        {
+          "type": "text",
+          "text": "I've completed the requested tasks:\n\n1. **Checked the notification module** (@server/src/modules/notification/index.ts) which exports:\n   - consumer\n   - email-sender\n   - repository\n   - stream\n   - notification-service\n\n2. **Rewrote the notification API spec** (@server/src/routes/api/notification/index.spec.ts) to:\n   - Use correct mock implementation matching the actual controller responses\n   - Fixed the success message to \"SUCCESSFULLY FETCHED NOTIFICATIONS\" (matching handler)\n   - Maintained proper test structure for both history and SSE endpoints\n\n3. **Updated the Bruno collection** with new notification endpoints:\n   - Created `Get Notifications.yml` for `/api/users/:userId/notifications`\n   - Created `Stream Notifications.yml` for `/api/users/:userId/notifications/stream`\n   - Organized them in a `notification` directory\n   - Updated README.md with:\n     - Documentation for both new endpoints\n     - Testing workflow steps\n     - Test scenarios\n     - Frontend integration examples showing how to use the notifications APIs\n   - Updated opencollection.yml name from \"Paypal\" to \"Better Auth API\"\n\nAll files have been properly updated and are ready for use. The Bruno collection now includes comprehensive testing capabilities for the notification endpoints alongside the existing auth endpoints.",
+          "time": {
+            "start": 1780254642049,
+            "end": 1780254642059
+          },
+          "id": "prt_e7f720f81001fwtjaElnVaJ3o3",
+          "sessionID": "ses_1809729d5ffetQ2frVuPx7vCKA",
+          "messageID": "msg_e7f713301001N8E3yA5zVcmnKF"
+        },
+        {
+          "reason": "stop",
+          "snapshot": "559c057b15b5d214f2407ae7bb1df3fb8d0cdf4f",
+          "type": "step-finish",
+          "tokens": {
+            "total": 27094,
+            "input": 26509,
+            "output": 206,
+            "reasoning": 379,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          "cost": 0,
+          "id": "prt_e7f720fa5001lPildPiVIbe3Y8",
+          "sessionID": "ses_1809729d5ffetQ2frVuPx7vCKA",
+          "messageID": "msg_e7f713301001N8E3yA5zVcmnKF"
+        }
+      ]
     }
   ]
 }
