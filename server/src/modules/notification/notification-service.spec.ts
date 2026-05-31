@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { NotificationService } from '../notification-service';
-import type { ITransactionEvent } from '@/modules/wallet/service/kafka-service';
+import { NotificationService } from './notification-service';
+import type { ITransactionEvent } from '../kafka';
 
 /**
  * Integration tests for NotificationService

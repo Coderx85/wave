@@ -1,6 +1,13 @@
 import { NotificationConsumer } from "./consumer";
 import { EmailSender } from "./email-sender";
 import { NotificationRepository } from "./repository";
+import { notificationStream } from "./stream";
+import type {
+  INotificationRepository,
+} from "./repository";
+import type { IEmailSender } from "./email-sender";
+import type { INotificationConsumer } from "./consumer";
+import type { INotificationStream } from "./stream";
 import type { ITransactionEvent } from "@/modules/kafka";
 import { Logger } from "@/lib/logger";
 import { db } from "@/modules/database/client";
@@ -10,19 +17,23 @@ import { eq } from "drizzle-orm";
 const logger = Logger("NotificationService");
 
 export class NotificationService {
-  private consumer: NotificationConsumer;
-  private emailSender: EmailSender;
-  private notificationRepository: NotificationRepository;
+  private consumer: INotificationConsumer;
+  private emailSender: IEmailSender;
+  private notificationRepository: INotificationRepository;
+  private stream: INotificationStream;
 
+  // userLookup: optional injection to resolve user email by id (for tests)
   constructor(
-    consumer?: NotificationConsumer,
-    emailSender?: EmailSender,
-    notificationRepository?: NotificationRepository
+    consumer: INotificationConsumer = new NotificationConsumer(),
+    emailSender: IEmailSender = new EmailSender(),
+    notificationRepository: INotificationRepository = new NotificationRepository(),
+    stream: INotificationStream = notificationStream,
+    private readonly userLookup?: (userId: string) => Promise<{ email: string } | null>
   ) {
-    this.consumer = consumer || new NotificationConsumer();
-    this.emailSender = emailSender || new EmailSender();
-    this.notificationRepository =
-      notificationRepository || new NotificationRepository();
+    this.consumer = consumer;
+    this.emailSender = emailSender;
+    this.notificationRepository = notificationRepository;
+    this.stream = stream;
   }
 
   async start(): Promise<void> {
@@ -60,19 +71,30 @@ export class NotificationService {
 
   private async handleTransactionEvent(event: ITransactionEvent): Promise<void> {
     try {
-      // Get user from database to find email
-      const userResults = await db
-        .select()
-        .from(users)
-        .where(eq(users.id, event.userId as any));
+      // Resolve user email. Allow injecting a mock lookup for tests.
+      let userEmail: string | null = null;
+      if (this.userLookup) {
+        const u = await this.userLookup(event.userId as string);
+        userEmail = u?.email ?? null;
+      } else {
+        const userResults = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, event.userId as any));
 
-      if (!userResults || userResults.length === 0) {
-        logger.warn(`User ${event.userId} not found for transaction ${event.transactionId}`);
-        return;
+        if (!userResults || userResults.length === 0) {
+          logger.warn(`User ${event.userId} not found for transaction ${event.transactionId}`);
+          return;
+        }
+
+        const user = userResults[0]!;
+        userEmail = user.email as string;
       }
 
-      const user = userResults[0]!;
-      const userEmail = user.email as string;
+      if (!userEmail) {
+        logger.warn(`User ${event.userId} has no email for transaction ${event.transactionId}`);
+        return;
+      }
 
       // Create notification in database
       const notification = await this.notificationRepository.create({
@@ -83,6 +105,10 @@ export class NotificationService {
         message: `You have received a transaction from ${event.senderName} for ${event.amount}`,
         status: "pending",
         sentAt: null,
+      });
+      this.stream.publish({
+        type: "notification.created",
+        notification,
       });
 
       // Send email
@@ -101,6 +127,16 @@ export class NotificationService {
           "sent",
           new Date()
         );
+        const sentAt = new Date();
+        this.stream.publish({
+          type: "notification.updated",
+          notification: {
+            ...notification,
+            status: "sent",
+            sentAt,
+            updatedAt: sentAt,
+          },
+        });
 
         logger.info(
           `Notification sent for transaction ${event.transactionId} to ${userEmail}`
@@ -111,6 +147,15 @@ export class NotificationService {
           notification.id,
           "failed"
         );
+        const updatedAt = new Date();
+        this.stream.publish({
+          type: "notification.updated",
+          notification: {
+            ...notification,
+            status: "failed",
+            updatedAt,
+          },
+        });
 
         logger.error(
           `Failed to send notification email for transaction ${event.transactionId}`,

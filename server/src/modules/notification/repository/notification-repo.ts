@@ -1,4 +1,4 @@
-import { eq, and } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { db } from "@/modules/database/client";
 import { NotificationsTable } from "@/modules/database/schema";
@@ -6,8 +6,6 @@ import { ID } from "@/lib/ID";
 import type { INotification, INotificationRepository } from "./notification-repo.interface";
 
 export class NotificationRepository implements INotificationRepository {
-  constructor() {}
-
   async create(
     notification: Omit<INotification, "id" | "createdAt" | "updatedAt">
   ): Promise<INotification> {
@@ -122,6 +120,32 @@ export class NotificationRepository implements INotificationRepository {
           createdAt: row.createdAt,
           updatedAt: row.updatedAt,
         };
+      },
+    });
+  }
+
+  async findByUserId(userId: string, limit: number = 50): Promise<INotification[]> {
+    return tryCatch({
+      ctx: async () => {
+        const results = await db
+          .select()
+          .from(NotificationsTable)
+          .where(eq(NotificationsTable.userId, userId))
+          .orderBy(desc(NotificationsTable.createdAt))
+          .limit(limit);
+
+        return results.map((row) => ({
+          id: row.id,
+          transactionId: row.transactionId,
+          userId: row.userId,
+          email: row.email,
+          subject: row.subject,
+          message: row.message,
+          status: row.status as "pending" | "sent" | "failed",
+          sentAt: row.sentAt,
+          createdAt: row.createdAt,
+          updatedAt: row.updatedAt,
+        }));
       },
     });
   }
