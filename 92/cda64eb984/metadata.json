@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "92cda64eb984",
+  "strategy": "manual-commit",
+  "branch": "setup/devops",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "server/src/index.ts",
+    "server/src/modules/notification/index.ts",
+    "server/src/modules/notification/notification-service.ts",
+    "server/src/modules/notification/repository/notification-repo.interface.ts",
+    "server/src/modules/notification/repository/notification-repo.test.ts",
+    "server/src/modules/notification/repository/notification-repo.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/92/cda64eb984/0/metadata.json",
+      "transcript": "/92/cda64eb984/0/full.jsonl",
+      "content_hash": "/92/cda64eb984/0/content_hash.txt",
+      "prompt": "/92/cda64eb984/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 416148,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 2781,
+    "api_call_count": 13
+  }
+}
