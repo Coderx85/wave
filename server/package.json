@@ -32,6 +32,8 @@
     "fastify-cli": "^7.4.1",
     "fastify-plugin": "^5.1.0",
     "fastify-type-provider-zod": "^6.1.0",
+    "kafkajs": "^2.2.4",
+    "nodemailer": "^6.9.13",
     "pg": "^8.21.0",
     "pino": "^10.1.0",
     "typescript": "^5",
