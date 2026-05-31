@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import type { ITransaction, TransactionInput } from "./transaction-service.interface";
 
-const { saveMock, calculateNewBalanceMock, adjustBalanceMock, updateBalanceMock, findByUserIdMock, successfulTransactionsMock, failedTransactionsMock } = vi.hoisted(() => ({
+const { saveMock, calculateNewBalanceMock, adjustBalanceMock, updateBalanceMock, findByUserIdMock, successfulTransactionsMock, failedTransactionsMock, outboxCreateMock, markAsPublishedMock, kafkaPublishMock } = vi.hoisted(() => ({
   saveMock: vi.fn(),
   calculateNewBalanceMock: vi.fn(),
   adjustBalanceMock: vi.fn(),
@@ -9,6 +9,9 @@ const { saveMock, calculateNewBalanceMock, adjustBalanceMock, updateBalanceMock,
   findByUserIdMock: vi.fn(),
   successfulTransactionsMock: vi.fn(),
   failedTransactionsMock: vi.fn(),
+  outboxCreateMock: vi.fn(),
+  markAsPublishedMock: vi.fn(),
+  kafkaPublishMock: vi.fn(),
 }));
 
 vi.mock("@/lib/try-catch-wrapper", () => ({
@@ -43,6 +46,21 @@ vi.mock("../../../repository", () => ({
     this.adjustBalance = adjustBalanceMock;
     this.updateBalance = updateBalanceMock;
   },
+  OutboxRepository: function OutboxRepositoryMock(this: {
+    create: typeof outboxCreateMock;
+    markAsPublished: typeof markAsPublishedMock;
+  }) {
+    this.create = outboxCreateMock;
+    this.markAsPublished = markAsPublishedMock;
+  },
+}));
+
+vi.mock("../../kafka-service", () => ({
+  KafkaService: function KafkaServiceMock(this: {
+    publishTransactionEvent: typeof kafkaPublishMock;
+  }) {
+    this.publishTransactionEvent = kafkaPublishMock;
+  },
 }));
 
 import { TransactionModule } from "../transaction-service";
@@ -66,6 +84,9 @@ describe("TransactionModule", () => {
     adjustBalanceMock.mockResolvedValue(10000);
     updateBalanceMock.mockResolvedValue(undefined);
     saveMock.mockResolvedValue(undefined);
+    outboxCreateMock.mockResolvedValue(undefined);
+    markAsPublishedMock.mockResolvedValue(undefined);
+    kafkaPublishMock.mockResolvedValue(undefined);
     transactionModule = new TransactionModule();
   });
 
