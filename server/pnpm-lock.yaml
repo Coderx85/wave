@@ -24,6 +24,9 @@ importers:
       '@fastify/env':
         specifier: ^5.0.3
         version: 5.0.3
+      '@fastify/sse':
+        specifier: ^0.4.0
+        version: 0.4.0(fastify@5.8.4)
       '@vitest/coverage-v8':
         specifier: ^4.1.7
         version: 4.1.7(@voidzero-dev/vite-plus-test@0.1.23)
@@ -781,6 +784,12 @@ packages:
 
   '@fastify/proxy-addr@5.1.0':
     resolution: {integrity: sha512-INS+6gh91cLUjB+PVHfu1UqcB76Sqtpyp7bnL+FYojhjygvOPA9ctiD/JDKsyD9Xgu4hUhCSJBPig/w7duNajw==}
+
+  '@fastify/sse@0.4.0':
+    resolution: {integrity: sha512-bBV96iT2kHEw6h3i8IMkZGaqA7Gk81ugUzTNctXuE6N2BEC/qBnUuzlD/O17V43OkJP73h0/kf3Bp/asXlSuFA==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      fastify: ^5.x
 
   '@fastify/swagger@9.7.0':
     resolution: {integrity: sha512-Vp1SC1GC2Hrkd3faFILv86BzUNyFz5N4/xdExqtCgkGASOzn/x+eMe4qXIGq7cdT6wif/P/oa6r1Ruqx19paZA==}
@@ -2959,6 +2968,11 @@ snapshots:
     dependencies:
       '@fastify/forwarded': 3.0.1
       ipaddr.js: 2.3.0
+
+  '@fastify/sse@0.4.0(fastify@5.8.4)':
+    dependencies:
+      fastify: 5.8.4
+      fastify-plugin: 5.1.0
 
   '@fastify/swagger@9.7.0':
     dependencies:
