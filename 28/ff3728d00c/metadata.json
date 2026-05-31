@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "28ff3728d00c",
+  "strategy": "manual-commit",
+  "branch": "setup/devops",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "server/src/modules/notification/stream/index.ts",
+    "server/src/modules/notification/stream/notification-stream.interface.ts",
+    "server/src/modules/notification/stream/notification-stream.spec.ts",
+    "server/src/modules/notification/stream/notification-stream.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/28/ff3728d00c/0/metadata.json",
+      "transcript": "/28/ff3728d00c/0/full.jsonl",
+      "content_hash": "/28/ff3728d00c/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 690067,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 3246,
+    "api_call_count": 38
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "28ff3728d00c",
+  "session_id": "ses_1809729d5ffetQ2frVuPx7vCKA",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-31T19:09:42.904674641Z",
+  "branch": "setup/devops",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "server/src/modules/notification/stream/index.ts",
+    "server/src/modules/notification/stream/notification-stream.interface.ts",
+    "server/src/modules/notification/stream/notification-stream.spec.ts",
+    "server/src/modules/notification/stream/notification-stream.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "nemotron-3-super-free",
+  "turn_id": "2cc1de98cf7b",
+  "token_usage": {
+    "input_tokens": 690067,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 3246,
+    "api_call_count": 38
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-31T19:09:42.876668141Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 0,
+    "total_lines_changed": 0,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 601,
+      "user_lines_removed": 117,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "server/package.json": 1,
+        "server/pnpm-lock.yaml": 14,
+        "server/src/index.ts": 8,
+        "server/src/modules/notification/index.ts": 1,
+        "server/src/modules/notification/notification-service.ts": 65,
+        "server/src/modules/notification/repository/notification-repo.interface.ts": 1,
+        "server/src/modules/notification/repository/notification-repo.ts": 27,
+        "server/src/modules/notification/stream/index.ts": 2,
+        "server/src/modules/notification/stream/notification-stream.interface.ts": 11,
+        "server/src/modules/notification/stream/notification-stream.spec.ts": 54,
+        "server/src/modules/notification/stream/notification-stream.ts": 32,
+        "server/src/routes/api/notification/definition.ts": 30,
+        "server/src/routes/api/notification/handler.spec.ts": 132,
+        "server/src/routes/api/notification/handler.ts": 94,
+        "server/src/routes/api/notification/index.spec.ts": 74,
+        "server/src/routes/api/notification/index.ts": 23,
+        "server/src/schemas/notification.schema.ts": 32
+      },
+      "user_removed_per_file": {
+        "server/src/.env.development.observability": 51,
+        "server/src/.env.development.production": 43,
+        "server/src/modules/notification/notification-service.ts": 20,
+        "server/src/modules/notification/repository/notification-repo.ts": 3
+      }
+    }
+  ]
+}
