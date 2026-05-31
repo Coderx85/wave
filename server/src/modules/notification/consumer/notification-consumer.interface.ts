@@ -1,4 +1,4 @@
-import type { ITransactionEvent } from "@/modules/wallet/service/kafka-service";
+import type { ITransactionEvent } from "@/modules/kafka";
 
 export interface INotificationConsumer {
   connect(): Promise<void>;

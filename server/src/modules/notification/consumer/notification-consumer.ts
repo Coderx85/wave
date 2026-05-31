@@ -1,5 +1,5 @@
 import type { INotificationConsumer } from "./notification-consumer.interface";
-import type { ITransactionEvent } from "@/modules/wallet/service/kafka-service";
+import type { ITransactionEvent } from "@/modules/kafka";
 import { Logger } from "@/lib/logger";
 
 const logger = Logger("NotificationConsumer");

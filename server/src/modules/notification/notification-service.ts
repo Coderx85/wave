@@ -1,7 +1,7 @@
 import { NotificationConsumer } from "./consumer";
 import { EmailSender } from "./email-sender";
 import { NotificationRepository } from "./repository";
-import type { ITransactionEvent } from "@/modules/wallet/service/kafka-service";
+import type { ITransactionEvent } from "@/modules/kafka";
 import { Logger } from "@/lib/logger";
 import { db } from "@/modules/database/client";
 import { users } from "@/modules/database/schema";

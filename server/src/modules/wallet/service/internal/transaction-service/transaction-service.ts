@@ -15,7 +15,7 @@ import {
   type IOutboxRepository,
 }  from "../../../repository";
 import { IdempotencyManager } from "../../../utils";
-import { KafkaService, type IKafkaService } from "../../kafka-service";
+import { KafkaService, type IKafkaService } from "../../../../kafka";
 import type { TUserId } from "@/types";
 
 export class TransactionModule implements ITransactionModule {

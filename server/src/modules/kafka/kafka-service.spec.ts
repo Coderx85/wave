@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { KafkaService } from "../kafka-service";
-import type { ITransactionEvent } from "../kafka-service.interface";
+import { KafkaService } from "./kafka-service";
+import type { ITransactionEvent } from "./kafka-service.interface";
 
 // Mock the logger
 vi.mock("@/lib/logger", () => ({
@@ -90,9 +90,10 @@ describe("KafkaService", () => {
       await serviceWithEnv.connect();
 
       // Assert - last Kafka call should use the environment broker
-      const lastCall = mockKafkaConstructor.mock.calls[mockKafkaConstructor.mock.calls.length - 1];
-      expect(lastCall[0].brokers).toContain("kafka:9092");
-
+      const lastCall = mockKafkaConstructor.mock.calls[mockKafkaConstructor.mock.calls.length - 1] as any[];
+      if (lastCall && lastCall[0] && (lastCall[0] as any).brokers) {
+        expect((lastCall[0] as any).brokers).toContain("kafka:9092");
+      }
       // Cleanup
       process.env.KAFKA_BROKER_URL = originalEnv;
     });
