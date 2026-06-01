@@ -1,3 +1,5 @@
+version: '3.8'
+
 services: 
   database: 
     image: postgres:18-alpine
@@ -14,6 +16,135 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  backend-server:
+    build: .
+    command: node --import tsx src/index.ts
+    env_file:
+      - src/.env.development
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/wave_db
+    expose:
+      - "3000"
+    depends_on:
+      database:
+        condition: service_healthy  
+    profiles: [backend]
+
+  auth-service:
+    build: .
+    command: node --import tsx src/index.ts
+    env_file:
+      - src/.env.development
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/wave_db
+    ports:
+      - "3003:3000"
+    depends_on:
+      database:
+        condition: service_healthy  
+    profiles: [devops]
+  
+  user-service:
+    build: .
+    command: node --import tsx src/index.ts
+    env_file:
+      - src/.env.development
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/wave_db
+    ports:
+      - "3002:3000"
+    depends_on:
+      database:
+        condition: service_healthy  
+    profiles: [devops]
+
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: redpanda
+    command:
+      - redpanda
+      - start
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+      - --node-id
+      - "1"
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster info"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      REDPANDA_AUTO_CREATE_TOPICS_ENABLED: "true"
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8025"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  wallet-service:
+    build: .
+    command: node --import tsx src/index.ts
+    env_file:
+      - src/.env.development
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/wave_db
+      KAFKA_BROKER_URL: redpanda:29092
+      EMAIL_HOST: mailhog
+      EMAIL_PORT: 1025
+    ports:
+      - "3001:3000"
+    depends_on:
+      database:
+        condition: service_healthy
+      redpanda:
+        condition: service_healthy
+      mailhog:
+        condition: service_healthy
+    profiles: [devops]
+
+  notification-service:
+    build: .
+    command: node --import tsx src/notification-service.ts
+    env_file:
+      - src/.env.development
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/wave_db
+      KAFKA_BROKER_URL: redpanda:29092
+      EMAIL_HOST: mailhog
+      EMAIL_PORT: 1025
+    depends_on:
+      database:
+        condition: service_healthy
+      redpanda:
+        condition: service_healthy
+      mailhog:
+        condition: service_healthy
+    profiles: [devops]
+
+  nginx:
+    image: nginx:1.27-alpine
+    depends_on:
+      - auth-service
+      - wallet-service
+      - user-service
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    profiles: [devops]
 
 volumes:
   postgres_data:

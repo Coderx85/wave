@@ -28,6 +28,10 @@ class IDService {
   public LedgerEntryId(): TLedgerEntryId {
     return `ledger_${crypto.randomUUID()}` as TLedgerEntryId;
   };
+
+  public outboxId(): string {
+    return `outbox_${crypto.randomUUID()}`;
+  };
 };
 
 export const ID = new IDService();

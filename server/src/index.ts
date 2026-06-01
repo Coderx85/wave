@@ -3,6 +3,8 @@ import { buildServer } from "./server";
 import { type FastifyServerOptions } from "fastify";
 import { fromNodeHeaders } from "better-auth/node";
 import { auth } from "./lib/auth";
+import { type SSEPluginOptions } from "@fastify/sse"
+import { initializeKafkaRPC } from "./modules/kafka";
 
 const PORT = config.port;
 
@@ -21,8 +23,18 @@ const opt: FastifyServerOptions = {
   },
 };
 
+// Initialize Kafka RPC before building the server
+await initializeKafkaRPC();
+
 const app = await buildServer(opt);
 
+// 1. Register the SSE plugin
+const sseOptions: SSEPluginOptions = {
+  heartbeatInterval: 30000, // Send a heartbeat every 30 seconds to keep the connection alive
+};
+await app.register(require("@fastify/sse"), sseOptions);
+
+// 2. Authentication route - Proxy to authentication service
 app.route({
   method: ["GET", "POST"],
   url: "/api/auth/*",

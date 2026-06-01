@@ -11,20 +11,29 @@ import {
   type ITransactionRepository,
   AccountRepository, 
   type IAccountRepository,
+  OutboxRepository,
+  type IOutboxRepository,
 }  from "../../../repository";
 import { IdempotencyManager } from "../../../utils";
+import { kafkaRPCClient, type IKafkaService } from "../../../../kafka";
 import type { TUserId } from "@/types";
 
 export class TransactionModule implements ITransactionModule {
   private transactionRepository: ITransactionRepository;
   private accountRepository: IAccountRepository;
+  private outboxRepository: IOutboxRepository;
+  private kafkaService: IKafkaService;
 
   constructor(
     transactionRepository: ITransactionRepository = new TransactionRepository(),
     accountRepository: IAccountRepository = new AccountRepository(),
+    outboxRepository: IOutboxRepository = new OutboxRepository(),
+    kafkaService: IKafkaService = kafkaRPCClient,
   ) {
     this.transactionRepository = transactionRepository;
     this.accountRepository = accountRepository;
+    this.outboxRepository = outboxRepository;
+    this.kafkaService = kafkaService;
   }
   
   create(transaction: TransactionInput): Promise<ITransaction> {
@@ -52,6 +61,41 @@ export class TransactionModule implements ITransactionModule {
         await this.transactionRepository.save({
           ...newTransaction,
         });
+
+        // Create outbox entry for event publishing
+        const event = {
+          eventType: "transaction.created" as const,
+          transactionId: newTransaction.id,
+          userId: newTransaction.userId,
+          senderAccountId: newTransaction.senderAccountId,
+          receiverAccountId: newTransaction.receiverAccountId,
+          amount: totalAmount.toString(),
+          senderName: newTransaction.senderName,
+          receiverName: newTransaction.receiverName,
+          status: newTransaction.status,
+          timestamp: new Date().toISOString(),
+        };
+
+        await this.outboxRepository.create({
+          transactionId: newTransaction.id,
+          eventType: "transaction.created",
+          payload: event,
+          published: false,
+          publishedAt: null,
+        });
+
+        // Publish event to Kafka asynchronously (don't block on publish)
+        this.kafkaService
+          .publishTransactionEvent(event)
+          .then(() => {
+            // Mark as published after successful publish
+            this.outboxRepository.markAsPublished(newTransaction.id);
+          })
+          .catch((error) => {
+            console.error(`Failed to publish transaction event: ${error}`);
+            // In production, this should be handled by a background job
+            // that periodically retries unpublished events
+          });
         
         return newTransaction;
       },
