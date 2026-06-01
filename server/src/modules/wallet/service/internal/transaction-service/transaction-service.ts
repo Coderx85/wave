@@ -15,7 +15,7 @@ import {
   type IOutboxRepository,
 }  from "../../../repository";
 import { IdempotencyManager } from "../../../utils";
-import { KafkaService, type IKafkaService } from "../../../../kafka";
+import { kafkaRPCClient, type IKafkaService } from "../../../../kafka";
 import type { TUserId } from "@/types";
 
 export class TransactionModule implements ITransactionModule {
@@ -28,7 +28,7 @@ export class TransactionModule implements ITransactionModule {
     transactionRepository: ITransactionRepository = new TransactionRepository(),
     accountRepository: IAccountRepository = new AccountRepository(),
     outboxRepository: IOutboxRepository = new OutboxRepository(),
-    kafkaService: IKafkaService = new KafkaService(),
+    kafkaService: IKafkaService = kafkaRPCClient,
   ) {
     this.transactionRepository = transactionRepository;
     this.accountRepository = accountRepository;

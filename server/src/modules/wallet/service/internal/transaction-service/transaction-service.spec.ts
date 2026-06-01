@@ -55,11 +55,11 @@ vi.mock("../../../repository", () => ({
   },
 }));
 
-vi.mock("../../kafka-service", () => ({
-  KafkaService: function KafkaServiceMock(this: {
-    publishTransactionEvent: typeof kafkaPublishMock;
-  }) {
-    this.publishTransactionEvent = kafkaPublishMock;
+vi.mock("../../../../kafka", () => ({
+  kafkaRPCClient: {
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+    publishTransactionEvent: kafkaPublishMock,
   },
 }));
 

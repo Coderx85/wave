@@ -4,6 +4,7 @@ import { type FastifyServerOptions } from "fastify";
 import { fromNodeHeaders } from "better-auth/node";
 import { auth } from "./lib/auth";
 import { type SSEPluginOptions } from "@fastify/sse"
+import { initializeKafkaRPC } from "./modules/kafka";
 
 const PORT = config.port;
 
@@ -21,6 +22,9 @@ const opt: FastifyServerOptions = {
     ignoreTrailingSlash: true,
   },
 };
+
+// Initialize Kafka RPC before building the server
+await initializeKafkaRPC();
 
 const app = await buildServer(opt);
 
