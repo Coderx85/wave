@@ -1,0 +1,72 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "c6d1e45c9852",
+  "session_id": "ses_176b79044ffeVxJC6nvON6EMWa",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-02T17:12:25.390779587Z",
+  "branch": "setup/wave-fe",
+  "checkpoints_count": 1,
+  "files_touched": [],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "3b0f1ad77adc",
+  "token_usage": {
+    "input_tokens": 48710,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 100352,
+    "output_tokens": 10276,
+    "api_call_count": 6
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 2477,
+      "user_lines_removed": 65,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "client/.gitignore": 34,
+        "client/CLAUDE.md": 106,
+        "client/README.md": 15,
+        "client/bun.lock": 368,
+        "client/index.html": 15,
+        "client/index.ts": 41,
+        "client/package.json": 31,
+        "client/src/App.css": 46,
+        "client/src/App.tsx": 26,
+        "client/src/__tests__/App.spec.tsx": 66,
+        "client/src/__tests__/AuthPage.spec.tsx": 119,
+        "client/src/__tests__/NotificationPage.spec.tsx": 236,
+        "client/src/__tests__/auth-client.spec.ts": 12,
+        "client/src/components/AuthPage.css": 209,
+        "client/src/components/AuthPage.tsx": 122,
+        "client/src/components/NotificationPage.css": 409,
+        "client/src/components/NotificationPage.tsx": 202,
+        "client/src/index.css": 132,
+        "client/src/lib/auth-client.ts": 11,
+        "client/src/main.tsx": 7,
+        "client/src/test/setup.ts": 1,
+        "client/tsconfig.json": 30,
+        "client/vitest.config.ts": 12,
+        "server/package.json": 1,
+        "server/pnpm-lock.yaml": 207,
+        "server/src/lib/auth.ts": 1,
+        "server/src/server.ts": 18
+      },
+      "user_removed_per_file": {
+        "server/pnpm-lock.yaml": 64,
+        "server/src/server.ts": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 2477,
+      "agent_lines_removed": 65
+    }
+  ]
+}
