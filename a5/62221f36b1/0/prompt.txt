@@ -1,0 +1,12 @@
+Explore the Wave server codebase to identify architectural friction points, shallow modules, and opportunities for deepening. Focus on:
+1. Where understanding one concept requires bouncing between many small modules
+2. Where modules are shallow (interface nearly as complex as implementation)
+3. Where pure functions were extracted just for testability but bugs hide in how they're called
+4. Where tightly-coupled modules leak across their seams
+5. Parts that are untested or hard to test through current interface
+
+Apply the deletion test: imagine deleting the module. If complexity vanishes, it was a pass-through. If complexity reappears across N callers, it was earning its keep.
+
+Look at the domain concepts in the codebase and identify seams where behavior could be altered without editing in place.
+
+Return your findings as a list of architectural friction points with specific file references.
