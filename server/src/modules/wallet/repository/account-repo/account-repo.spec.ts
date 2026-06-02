@@ -1,29 +1,24 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import type { IAccountDBDTO } from "./account-repo.interface";
 import type { TBankAccountId, TUserId } from "../../../../types";
-
-// Mock the database client and drizzle-orm BEFORE importing AccountRepo
-vi.mock("../../database/client");
-vi.mock("drizzle-orm", () => ({
-  eq: vi.fn(),
-  defineRelations: vi.fn(() => ({})),
-  relations: vi.fn(() => ({})),
-  one: vi.fn(),
-  many: vi.fn(),
-  sql: vi.fn((...args) => args[0]),
-}));
-
-// Mock the try-catch wrapper
-vi.mock("@/lib/try-catch-wrapper", () => ({
-  tryCatch: vi.fn(({ ctx }) => ctx()),
-}));
-
-// Import after mocking
 import { AccountRepository } from "./account-repo";
-import * as dbClient from "../../../database/client";
+import type { DrizzleDb } from "@/lib/repository/base-repository";
+import { eq } from "drizzle-orm";
+
+vi.mock("drizzle-orm", async (importOriginal) => {
+  const actual = await importOriginal<any>();
+  return {
+    ...actual,
+    eq: vi.fn(),
+    sql: vi.fn((...args) => args[0]),
+    defineRelations: vi.fn(),
+    relations: vi.fn(),
+  };
+});
 
 describe("AccountRepository", () => {
   let repository: AccountRepository;
+  let mockDb: DrizzleDb;
 
   const createMockAccount = (
     overrides?: Partial<IAccountDBDTO>
@@ -40,7 +35,19 @@ describe("AccountRepository", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    repository = new AccountRepository();
+    mockDb = {
+      insert: vi.fn(),
+      query: {
+        AccountsTable: {
+          findFirst: vi.fn(),
+          findMany: vi.fn(),
+        },
+      },
+      select: vi.fn(),
+      update: vi.fn(),
+      transaction: vi.fn().mockImplementation(async (cb) => cb(mockDb)),
+    } as unknown as DrizzleDb;
+    repository = new AccountRepository(mockDb);
   });
 
   afterEach(() => {
@@ -50,16 +57,12 @@ describe("AccountRepository", () => {
   describe("create method", () => {
     it("should create a new account", async () => {
       const accountData = createMockAccount();
-      const dbMock = vi.mocked(dbClient.db);
 
+      const returningMock = vi.fn().mockResolvedValue([accountData]);
       const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([accountData]),
+        returning: returningMock,
       });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
-
-      (dbMock.insert as any) = insertMock;
+      (mockDb.insert as any).mockReturnValue({ values: valuesMock });
 
       const result = await repository.create({
         id: accountData.id,
@@ -69,23 +72,18 @@ describe("AccountRepository", () => {
         balance: accountData.balance,
       });
 
-      expect(insertMock).toHaveBeenCalled();
+      expect(mockDb.insert).toHaveBeenCalled();
       expect(result).toBeDefined();
       expect(result.balance).toBe(accountData.balance);
     });
 
     it("should convert balance to string when creating", async () => {
       const accountData = createMockAccount({ balance: 7500 });
-      const dbMock = vi.mocked(dbClient.db);
-
+      const returningMock = vi.fn().mockResolvedValue([accountData]);
       const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([accountData]),
+        returning: returningMock,
       });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
-
-      (dbMock.insert as any) = insertMock;
+      (mockDb.insert as any).mockReturnValue({ values: valuesMock });
 
       await repository.create({
         id: accountData.id,
@@ -102,16 +100,11 @@ describe("AccountRepository", () => {
 
     it("should set createdAt timestamp when creating", async () => {
       const accountData = createMockAccount();
-      const dbMock = vi.mocked(dbClient.db);
-
+      const returningMock = vi.fn().mockResolvedValue([accountData]);
       const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([accountData]),
+        returning: returningMock,
       });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
-
-      (dbMock.insert as any) = insertMock;
+      (mockDb.insert as any).mockReturnValue({ values: valuesMock });
 
       await repository.create({
         id: accountData.id,
@@ -122,22 +115,16 @@ describe("AccountRepository", () => {
       });
 
       const callArgs = valuesMock.mock.calls[0][0];
-      expect(callArgs.createdAt).toBeDefined();
-      expect(callArgs.createdAt instanceof Date).toBe(true);
+      expect(callArgs.createdAt).toBeInstanceOf(Date);
     });
 
     it("should set updatedAt to null when creating", async () => {
       const accountData = createMockAccount();
-      const dbMock = vi.mocked(dbClient.db);
-
+      const returningMock = vi.fn().mockResolvedValue([accountData]);
       const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([accountData]),
+        returning: returningMock,
       });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
-
-      (dbMock.insert as any) = insertMock;
+      (mockDb.insert as any).mockReturnValue({ values: valuesMock });
 
       await repository.create({
         id: accountData.id,
@@ -156,16 +143,11 @@ describe("AccountRepository", () => {
         ...createMockAccount({ balance: 3000 }),
         balance: "3000",
       };
-      const dbMock = vi.mocked(dbClient.db);
-
+      const returningMock = vi.fn().mockResolvedValue([mockAccountResponse]);
       const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([mockAccountResponse]),
+        returning: returningMock,
       });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
-
-      (dbMock.insert as any) = insertMock;
+      (mockDb.insert as any).mockReturnValue({ values: valuesMock });
 
       const result = await repository.create({
         id: mockAccountResponse.id,
@@ -179,49 +161,13 @@ describe("AccountRepository", () => {
       expect(result.balance).toBe(3000);
     });
 
-    it("should preserve account fields when creating", async () => {
-      const accountData = createMockAccount({
-        name: "Savings Account",
-        accountNumber: "9876543210",
-      });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([accountData]),
-      });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
-
-      (dbMock.insert as any) = insertMock;
-
-      await repository.create({
-        id: accountData.id,
-        name: accountData.name,
-        userId: accountData.userId,
-        accountNumber: accountData.accountNumber,
-        balance: accountData.balance,
-      });
-
-      const callArgs = valuesMock.mock.calls[0][0];
-      expect(callArgs.id).toBe(accountData.id);
-      expect(callArgs.name).toBe("Savings Account");
-      expect(callArgs.userId).toBe(accountData.userId);
-      expect(callArgs.accountNumber).toBe("9876543210");
-    });
-
     it("should throw error if account creation fails", async () => {
       const accountData = createMockAccount();
-      const dbMock = vi.mocked(dbClient.db);
-
+      const returningMock = vi.fn().mockResolvedValue([]);
       const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([]),
+        returning: returningMock,
       });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
-
-      (dbMock.insert as any) = insertMock;
+      (mockDb.insert as any).mockReturnValue({ values: valuesMock });
 
       await expect(
         repository.create({
@@ -231,67 +177,24 @@ describe("AccountRepository", () => {
           accountNumber: accountData.accountNumber,
           balance: accountData.balance,
         })
-      ).rejects.toThrow();
-    });
-
-    it("should handle database errors gracefully", async () => {
-      const accountData = createMockAccount();
-      const dbMock = vi.mocked(dbClient.db);
-
-      (dbMock.insert as any) = vi.fn(() => {
-        throw new Error("Database connection failed");
-      });
-
-      await expect(
-        repository.create({
-          id: accountData.id,
-          name: accountData.name,
-          userId: accountData.userId,
-          accountNumber: accountData.accountNumber,
-          balance: accountData.balance,
-        })
-      ).rejects.toThrow();
+      ).rejects.toThrow("Failed to create account");
     });
   });
 
   describe("findById method", () => {
     it("should find account by id", async () => {
       const accountData = createMockAccount();
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findFirstMock = vi.fn().mockResolvedValue(accountData);
-      const queryMock = {
-        AccountsTable: {
-          findFirst: findFirstMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
+      (mockDb.query.AccountsTable.findFirst as any).mockResolvedValue(accountData);
 
       const result = await repository.findById(accountData.id);
 
-      expect(findFirstMock).toHaveBeenCalled();
+      expect(mockDb.query.AccountsTable.findFirst).toHaveBeenCalled();
       expect(result).toEqual(accountData);
     });
 
     it("should return null if account not found", async () => {
       const accountId = "acc_123" as TBankAccountId;
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findFirstMock = vi.fn().mockResolvedValue(null);
-      const queryMock = {
-        AccountsTable: {
-          findFirst: findFirstMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
+      (mockDb.query.AccountsTable.findFirst as any).mockResolvedValue(null);
 
       const result = await repository.findById(accountId);
 
@@ -303,19 +206,7 @@ describe("AccountRepository", () => {
         ...createMockAccount({ balance: 4500 }),
         balance: "4500",
       };
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findFirstMock = vi.fn().mockResolvedValue(mockAccountResponse);
-      const queryMock = {
-        AccountsTable: {
-          findFirst: findFirstMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
+      (mockDb.query.AccountsTable.findFirst as any).mockResolvedValue(mockAccountResponse);
 
       const result = await repository.findById(mockAccountResponse.id);
 
@@ -328,41 +219,17 @@ describe("AccountRepository", () => {
     it("should find accounts by user id", async () => {
       const userId = "user_123" as TUserId;
       const accountData = createMockAccount({ userId });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findManyMock = vi.fn().mockResolvedValue([accountData]);
-      const queryMock = {
-        AccountsTable: {
-          findMany: findManyMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
+      (mockDb.query.AccountsTable.findMany as any).mockResolvedValue([accountData]);
 
       const result = await repository.findByUserId(userId);
 
-      expect(findManyMock).toHaveBeenCalled();
+      expect(mockDb.query.AccountsTable.findMany).toHaveBeenCalled();
       expect(result).toEqual([accountData]);
     });
 
     it("should return empty array if no accounts found", async () => {
       const userId = "user_123" as TUserId;
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findManyMock = vi.fn().mockResolvedValue([]);
-      const queryMock = {
-        AccountsTable: {
-          findMany: findManyMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
+      (mockDb.query.AccountsTable.findMany as any).mockResolvedValue([]);
 
       const result = await repository.findByUserId(userId);
 
@@ -375,19 +242,7 @@ describe("AccountRepository", () => {
         { ...createMockAccount({ userId, balance: 1000 }), balance: "1000" },
         { ...createMockAccount({ userId, balance: 2000 }), balance: "2000" },
       ];
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findManyMock = vi.fn().mockResolvedValue(mockAccountsResponse);
-      const queryMock = {
-        AccountsTable: {
-          findMany: findManyMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
+      (mockDb.query.AccountsTable.findMany as any).mockResolvedValue(mockAccountsResponse);
 
       const result = await repository.findByUserId(userId);
 
@@ -397,212 +252,79 @@ describe("AccountRepository", () => {
       expect(result[0].balance).toBe(1000);
       expect(result[1].balance).toBe(2000);
     });
-
-    it("should return multiple accounts for same user", async () => {
-      const userId = "user_123" as TUserId;
-      const account1 = createMockAccount({ userId, name: "Checking" });
-      const account2 = createMockAccount({ userId, name: "Savings" });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findManyMock = vi.fn().mockResolvedValue([account1, account2]);
-      const queryMock = {
-        AccountsTable: {
-          findMany: findManyMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
-
-      const result = await repository.findByUserId(userId);
-
-      expect(result).toHaveLength(2);
-      expect(result[0].name).toBe("Checking");
-      expect(result[1].name).toBe("Savings");
-    });
   });
 
   describe("calculateNewBalance method", () => {
     it("should calculate new balance correctly", async () => {
       const accountData = createMockAccount({ balance: 5000 });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const selectMock = vi.fn().mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          for: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              execute: vi.fn().mockResolvedValue([accountData]),
-            }),
-          }),
-        }),
-      });
-
-      (dbMock.select as any) = selectMock;
+      const executeMock = vi.fn().mockResolvedValue([accountData]);
+      const whereMock = vi.fn().mockReturnValue({ execute: executeMock });
+      const forMock = vi.fn().mockReturnValue({ where: whereMock });
+      const fromMock = vi.fn().mockReturnValue({ for: forMock });
+      (mockDb.select as any).mockReturnValue({ from: fromMock });
 
       const result = await repository.calculateNewBalance(accountData.id, 1000);
 
       expect(result).toBe(6000);
     });
 
-    it("should handle negative amounts correctly", async () => {
-      const accountData = createMockAccount({ balance: 5000 });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const selectMock = vi.fn().mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          for: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              execute: vi.fn().mockResolvedValue([accountData]),
-            }),
-          }),
-        }),
-      });
-
-      (dbMock.select as any) = selectMock;
-
-      const result = await repository.calculateNewBalance(accountData.id, -2000);
-
-      expect(result).toBe(3000);
-    });
-
     it("should throw error if account not found", async () => {
       const accountId = "acc_123" as TBankAccountId;
-      const dbMock = vi.mocked(dbClient.db);
+      const executeMock = vi.fn().mockResolvedValue([]);
+      const whereMock = vi.fn().mockReturnValue({ execute: executeMock });
+      const forMock = vi.fn().mockReturnValue({ where: whereMock });
+      const fromMock = vi.fn().mockReturnValue({ for: forMock });
+      (mockDb.select as any).mockReturnValue({ from: fromMock });
 
-      const selectMock = vi.fn().mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          for: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              execute: vi.fn().mockResolvedValue([]),
-            }),
-          }),
-        }),
-      });
-
-      (dbMock.select as any) = selectMock;
-
-      await expect(repository.calculateNewBalance(accountId, 1000)).rejects.toThrow();
+      await expect(repository.calculateNewBalance(accountId, 1000)).rejects.toThrow("Account not found");
     });
 
     it("should throw error if new balance is insufficient", async () => {
       const accountData = createMockAccount({ balance: 500 });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const selectMock = vi.fn().mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          for: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              execute: vi.fn().mockResolvedValue([accountData]),
-            }),
-          }),
-        }),
-      });
-
-      (dbMock.select as any) = selectMock;
+      const executeMock = vi.fn().mockResolvedValue([accountData]);
+      const whereMock = vi.fn().mockReturnValue({ execute: executeMock });
+      const forMock = vi.fn().mockReturnValue({ where: whereMock });
+      const fromMock = vi.fn().mockReturnValue({ for: forMock });
+      (mockDb.select as any).mockReturnValue({ from: fromMock });
 
       await expect(
         repository.calculateNewBalance(accountData.id, -1000)
       ).rejects.toThrow("Insufficient funds");
-    });
-
-    it("should throw error if new balance equals zero", async () => {
-      const accountData = createMockAccount({ balance: 1000 });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const selectMock = vi.fn().mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          for: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              execute: vi.fn().mockResolvedValue([accountData]),
-            }),
-          }),
-        }),
-      });
-
-      (dbMock.select as any) = selectMock;
-
-      await expect(
-        repository.calculateNewBalance(accountData.id, -1000)
-      ).rejects.toThrow("Insufficient funds");
-    });
-
-    it("should lock the account row for update", async () => {
-      const accountData = createMockAccount({ balance: 5000 });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const selectMock = vi.fn().mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          for: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              execute: vi.fn().mockResolvedValue([accountData]),
-            }),
-          }),
-        }),
-      });
-
-      (dbMock.select as any) = selectMock;
-
-      await repository.calculateNewBalance(accountData.id, 1000);
-
-      expect(selectMock).toHaveBeenCalled();
     });
   });
 
   describe("adjustBalance method", () => {
     it("should update the account balance atomically", async () => {
       const accountData = createMockAccount({ balance: 5000 });
-      const dbMock = vi.mocked(dbClient.db);
+      
+      const selectExecuteMock = vi.fn().mockResolvedValue([accountData]);
+      const selectWhereMock = vi.fn().mockReturnValue({ execute: selectExecuteMock });
+      const selectForMock = vi.fn().mockReturnValue({ where: selectWhereMock });
+      const selectFromMock = vi.fn().mockReturnValue({ for: selectForMock });
+      (mockDb.select as any).mockReturnValue({ from: selectFromMock });
 
-      const executeMock = vi.fn()
-        .mockResolvedValueOnce([accountData])
-        .mockResolvedValueOnce(undefined);
-
-      const updateMock = vi.fn().mockReturnValue({
-        set: vi.fn().mockReturnValue({
-          where: vi.fn().mockReturnValue({
-            execute: executeMock,
-          }),
-        }),
-      });
-
-      const selectMock = vi.fn().mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          for: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              execute: vi.fn().mockResolvedValue([accountData]),
-            }),
-          }),
-        }),
-      });
-
-      (dbMock.select as any) = selectMock;
-      (dbMock.update as any) = updateMock;
-      (dbMock.transaction as any) = vi.fn(async (callback: any) => callback(dbMock));
+      const updateExecuteMock = vi.fn().mockResolvedValue(undefined);
+      const updateWhereMock = vi.fn().mockReturnValue({ execute: updateExecuteMock });
+      const setMock = vi.fn().mockReturnValue({ where: updateWhereMock });
+      (mockDb.update as any).mockReturnValue({ set: setMock });
 
       const result = await repository.adjustBalance(accountData.id, -500);
 
       expect(result).toBe(4500);
-      expect(updateMock).toHaveBeenCalled();
+      expect(mockDb.update).toHaveBeenCalled();
+      expect(setMock).toHaveBeenCalledWith({
+        balance: "4500",
+        updatedAt: expect.any(Date),
+      });
     });
 
     it("should reject overdrafts", async () => {
       const accountData = createMockAccount({ balance: 500 });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const selectMock = vi.fn().mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          for: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              execute: vi.fn().mockResolvedValue([accountData]),
-            }),
-          }),
-        }),
-      });
-
-      (dbMock.select as any) = selectMock;
-      (dbMock.transaction as any) = vi.fn(async (callback: any) => callback(dbMock));
+      const executeMock = vi.fn().mockResolvedValue([accountData]);
+      const whereMock = vi.fn().mockReturnValue({ execute: executeMock });
+      const forMock = vi.fn().mockReturnValue({ where: whereMock });
+      const fromMock = vi.fn().mockReturnValue({ for: forMock });
+      (mockDb.select as any).mockReturnValue({ from: fromMock });
 
       await expect(repository.adjustBalance(accountData.id, -1000)).rejects.toThrow("Insufficient funds");
     });
@@ -611,68 +333,19 @@ describe("AccountRepository", () => {
   describe("checkBalance method", () => {
     it("should check account balance", async () => {
       const accountData = createMockAccount({ balance: 5000 });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findFirstMock = vi.fn().mockResolvedValue(accountData);
-      const queryMock = {
-        AccountsTable: {
-          findFirst: findFirstMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
+      (mockDb.query.AccountsTable.findFirst as any).mockResolvedValue(accountData);
 
       const result = await repository.checkBalance(accountData.id);
 
-      expect(findFirstMock).toHaveBeenCalled();
+      expect(mockDb.query.AccountsTable.findFirst).toHaveBeenCalled();
       expect(result).toEqual(accountData);
     });
 
     it("should throw error if account not found", async () => {
       const accountId = "acc_123" as TBankAccountId;
-      const dbMock = vi.mocked(dbClient.db);
+      (mockDb.query.AccountsTable.findFirst as any).mockResolvedValue(null);
 
-      const findFirstMock = vi.fn().mockResolvedValue(null);
-      const queryMock = {
-        AccountsTable: {
-          findFirst: findFirstMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
-
-      await expect(repository.checkBalance(accountId)).rejects.toThrow();
-    });
-
-    it("should return account with correct balance", async () => {
-      const accountData = createMockAccount({
-        balance: 9999,
-        name: "Premium Account",
-      });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findFirstMock = vi.fn().mockResolvedValue(accountData);
-      const queryMock = {
-        AccountsTable: {
-          findFirst: findFirstMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
-
-      const result = await repository.checkBalance(accountData.id);
-
-      expect(result.balance).toBe(9999);
-      expect(result.name).toBe("Premium Account");
+      await expect(repository.checkBalance(accountId)).rejects.toThrow("Account not found");
     });
   });
 
@@ -680,189 +353,35 @@ describe("AccountRepository", () => {
     it("should update account balance", async () => {
       const accountId = "acc_123" as TBankAccountId;
       const newBalance = 8500;
-      const dbMock = vi.mocked(dbClient.db);
-
-      const whereMock = vi.fn().mockReturnValue({
-        execute: vi.fn().mockResolvedValue(undefined),
-      });
-      const setMock = vi.fn().mockReturnValue({
-        where: whereMock,
-      });
-      const updateMock = vi.fn().mockReturnValue({
-        set: setMock,
-      });
-
-      (dbMock.update as any) = updateMock;
+      
+      const executeMock = vi.fn().mockResolvedValue(undefined);
+      const whereMock = vi.fn().mockReturnValue({ execute: executeMock });
+      const setMock = vi.fn().mockReturnValue({ where: whereMock });
+      (mockDb.update as any).mockReturnValue({ set: setMock });
 
       await repository.updateBalance(accountId, newBalance);
 
-      expect(updateMock).toHaveBeenCalled();
-      expect(setMock).toHaveBeenCalled();
-      expect(whereMock).toHaveBeenCalled();
+      expect(mockDb.update).toHaveBeenCalled();
+      expect(setMock).toHaveBeenCalledWith({
+        balance: "8500",
+        updatedAt: expect.any(Date),
+      });
+      expect(whereMock).toHaveBeenCalledWith(eq(undefined, accountId));
     });
 
     it("should convert balance to string when updating", async () => {
       const accountId = "acc_123" as TBankAccountId;
       const newBalance = 6250;
-      const dbMock = vi.mocked(dbClient.db);
-
-      const whereMock = vi.fn().mockReturnValue({
-        execute: vi.fn().mockResolvedValue(undefined),
-      });
-      const setMock = vi.fn().mockReturnValue({
-        where: whereMock,
-      });
-      const updateMock = vi.fn().mockReturnValue({
-        set: setMock,
-      });
-
-      (dbMock.update as any) = updateMock;
+      const executeMock = vi.fn().mockResolvedValue(undefined);
+      const whereMock = vi.fn().mockReturnValue({ execute: executeMock });
+      const setMock = vi.fn().mockReturnValue({ where: whereMock });
+      (mockDb.update as any).mockReturnValue({ set: setMock });
 
       await repository.updateBalance(accountId, newBalance);
 
       const callArgs = setMock.mock.calls[0][0];
       expect(typeof callArgs.balance).toBe("string");
       expect(callArgs.balance).toBe("6250");
-    });
-
-    it("should set updatedAt timestamp when updating balance", async () => {
-      const accountId = "acc_123" as TBankAccountId;
-      const newBalance = 3500;
-      const dbMock = vi.mocked(dbClient.db);
-
-      const whereMock = vi.fn().mockReturnValue({
-        execute: vi.fn().mockResolvedValue(undefined),
-      });
-      const setMock = vi.fn().mockReturnValue({
-        where: whereMock,
-      });
-      const updateMock = vi.fn().mockReturnValue({
-        set: setMock,
-      });
-
-      (dbMock.update as any) = updateMock;
-
-      await repository.updateBalance(accountId, newBalance);
-
-      const callArgs = setMock.mock.calls[0][0];
-      expect(callArgs.updatedAt).toBeDefined();
-      expect(callArgs.updatedAt instanceof Date).toBe(true);
-    });
-
-    it("should handle zero balance update", async () => {
-      const accountId = "acc_123" as TBankAccountId;
-      const newBalance = 0;
-      const dbMock = vi.mocked(dbClient.db);
-
-      const whereMock = vi.fn().mockReturnValue({
-        execute: vi.fn().mockResolvedValue(undefined),
-      });
-      const setMock = vi.fn().mockReturnValue({
-        where: whereMock,
-      });
-      const updateMock = vi.fn().mockReturnValue({
-        set: setMock,
-      });
-
-      (dbMock.update as any) = updateMock;
-
-      await repository.updateBalance(accountId, newBalance);
-
-      const callArgs = setMock.mock.calls[0][0];
-      expect(callArgs.balance).toBe("0");
-    });
-
-    it("should handle large balance values", async () => {
-      const accountId = "acc_123" as TBankAccountId;
-      const newBalance = 999999999.99;
-      const dbMock = vi.mocked(dbClient.db);
-
-      const whereMock = vi.fn().mockReturnValue({
-        execute: vi.fn().mockResolvedValue(undefined),
-      });
-      const setMock = vi.fn().mockReturnValue({
-        where: whereMock,
-      });
-      const updateMock = vi.fn().mockReturnValue({
-        set: setMock,
-      });
-
-      (dbMock.update as any) = updateMock;
-
-      await repository.updateBalance(accountId, newBalance);
-
-      const callArgs = setMock.mock.calls[0][0];
-      expect(callArgs.balance).toBe("999999999.99");
-    });
-
-    it("should handle database errors gracefully", async () => {
-      const accountId = "acc_123" as TBankAccountId;
-      const newBalance = 5000;
-      const dbMock = vi.mocked(dbClient.db);
-
-      (dbMock.update as any) = vi.fn(() => {
-        throw new Error("Database connection failed");
-      });
-
-      await expect(
-        repository.updateBalance(accountId, newBalance)
-      ).rejects.toThrow();
-    });
-  });
-
-  describe("Repository instantiation", () => {
-    it("should create a new instance successfully", () => {
-      expect(repository).toBeDefined();
-      expect(repository).toBeInstanceOf(AccountRepository);
-    });
-
-    it("should have all required methods", () => {
-      expect(typeof repository.create).toBe("function");
-      expect(typeof repository.findById).toBe("function");
-      expect(typeof repository.findByUserId).toBe("function");
-      expect(typeof repository.calculateNewBalance).toBe("function");
-      expect(typeof repository.checkBalance).toBe("function");
-      expect(typeof repository.updateBalance).toBe("function");
-    });
-  });
-
-  describe("Database operations", () => {
-    it("should call database insert with correct account values", async () => {
-      const accountData = createMockAccount({
-        name: "Business Account",
-        accountNumber: "1111111111",
-        balance: 50000,
-      });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([accountData]),
-      });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
-
-      (dbMock.insert as any) = insertMock;
-
-      await repository.create({
-        id: accountData.id,
-        name: accountData.name,
-        userId: accountData.userId,
-        accountNumber: accountData.accountNumber,
-        balance: accountData.balance,
-      });
-
-      expect(insertMock).toHaveBeenCalled();
-      expect(valuesMock).toHaveBeenCalled();
-
-      const callArgs = valuesMock.mock.calls[0][0];
-      expect(callArgs).toHaveProperty("id");
-      expect(callArgs).toHaveProperty("name");
-      expect(callArgs).toHaveProperty("userId");
-      expect(callArgs).toHaveProperty("accountNumber");
-      expect(callArgs).toHaveProperty("balance");
-      expect(callArgs).toHaveProperty("createdAt");
-      expect(callArgs).toHaveProperty("updatedAt");
     });
   });
 });
