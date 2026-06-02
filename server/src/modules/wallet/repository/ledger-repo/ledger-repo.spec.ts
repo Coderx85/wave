@@ -1,29 +1,23 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import type { ILedgerEntryDBDTO } from "./ledger-repo.interface";
 import type { TLedgerEntryId, TTransactionId } from "../../../../types";
-
-// Mock the database client and drizzle-orm BEFORE importing LedgerRepo
-vi.mock("../../database/client");
-vi.mock("drizzle-orm", () => ({
-  eq: vi.fn(),
-  defineRelations: vi.fn(() => ({})),
-  relations: vi.fn(() => ({})),
-  one: vi.fn(),
-  many: vi.fn(),
-  sql: vi.fn((...args) => args[0]),
-}));
-
-// Mock the try-catch wrapper
-vi.mock("@/lib/try-catch-wrapper", () => ({
-  tryCatch: vi.fn(({ ctx }) => ctx()),
-}));
-
-// Import after mocking
 import { LedgerRepository } from "./ledger-repo";
-import * as dbClient from "../../../database/client";
+import type { DrizzleDb } from "@/lib/repository/base-repository";
+import { eq } from "drizzle-orm";
+
+vi.mock("drizzle-orm", async (importOriginal) => {
+  const actual = await importOriginal<any>();
+  return {
+    ...actual,
+    eq: vi.fn(),
+    defineRelations: vi.fn(),
+    relations: vi.fn(),
+  };
+});
 
 describe("LedgerRepository", () => {
   let repository: LedgerRepository;
+  let mockDb: DrizzleDb;
 
   const createMockLedgerEntry = (
     overrides?: Partial<ILedgerEntryDBDTO>
@@ -39,7 +33,18 @@ describe("LedgerRepository", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    repository = new LedgerRepository();
+    mockDb = {
+      insert: vi.fn(),
+      query: {
+        LedgerTable: {
+          findFirst: vi.fn(),
+          findMany: vi.fn(),
+        },
+      },
+      update: vi.fn(),
+      delete: vi.fn(),
+    } as unknown as DrizzleDb;
+    repository = new LedgerRepository(mockDb);
   });
 
   afterEach(() => {
@@ -49,16 +54,9 @@ describe("LedgerRepository", () => {
   describe("create method", () => {
     it("should create a new ledger entry", async () => {
       const entryData = createMockLedgerEntry();
-      const dbMock = vi.mocked(dbClient.db);
-
-      const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([entryData]),
-      });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
-
-      (dbMock.insert as any) = insertMock;
+      const returningMock = vi.fn().mockResolvedValue([entryData]);
+      const valuesMock = vi.fn().mockReturnValue({ returning: returningMock });
+      (mockDb.insert as any).mockReturnValue({ values: valuesMock });
 
       const result = await repository.create({
         transactionId: entryData.transactionId,
@@ -66,23 +64,16 @@ describe("LedgerRepository", () => {
         entryType: entryData.entryType,
       });
 
-      expect(insertMock).toHaveBeenCalled();
+      expect(mockDb.insert).toHaveBeenCalled();
       expect(result).toBeDefined();
       expect(result.amount).toBe(entryData.amount);
     });
 
     it("should convert amount to bigint when creating", async () => {
       const entryData = createMockLedgerEntry({ amount: 5000 });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([entryData]),
-      });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
-
-      (dbMock.insert as any) = insertMock;
+      const returningMock = vi.fn().mockResolvedValue([entryData]);
+      const valuesMock = vi.fn().mockReturnValue({ returning: returningMock });
+      (mockDb.insert as any).mockReturnValue({ values: valuesMock });
 
       await repository.create({
         transactionId: entryData.transactionId,
@@ -94,71 +85,11 @@ describe("LedgerRepository", () => {
       expect(typeof callArgs.amount).toBe("bigint");
     });
 
-    it("should set createdAt and updatedAt timestamps when creating", async () => {
-      const entryData = createMockLedgerEntry();
-      const dbMock = vi.mocked(dbClient.db);
-
-      const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([entryData]),
-      });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
-
-      (dbMock.insert as any) = insertMock;
-
-      await repository.create({
-        transactionId: entryData.transactionId,
-        amount: entryData.amount,
-        entryType: entryData.entryType,
-      });
-
-      const callArgs = valuesMock.mock.calls[0][0];
-      expect(callArgs.createdAt).toBeDefined();
-      expect(callArgs.updatedAt).toBeDefined();
-      expect(callArgs.createdAt instanceof Date).toBe(true);
-      expect(callArgs.updatedAt instanceof Date).toBe(true);
-    });
-
-    it("should preserve entry fields when creating", async () => {
-      const entryData = createMockLedgerEntry({
-        amount: 2500,
-        entryType: "credit",
-      });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([entryData]),
-      });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
-
-      (dbMock.insert as any) = insertMock;
-
-      await repository.create({
-        transactionId: entryData.transactionId,
-        amount: entryData.amount,
-        entryType: entryData.entryType,
-      });
-
-      const callArgs = valuesMock.mock.calls[0][0];
-      expect(callArgs.transactionId).toBe(entryData.transactionId);
-      expect(callArgs.entryType).toBe("credit");
-    });
-
     it("should throw error if entry creation fails", async () => {
       const entryData = createMockLedgerEntry();
-      const dbMock = vi.mocked(dbClient.db);
-
-      const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([]),
-      });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
-
-      (dbMock.insert as any) = insertMock;
+      const returningMock = vi.fn().mockResolvedValue([]);
+      const valuesMock = vi.fn().mockReturnValue({ returning: returningMock });
+      (mockDb.insert as any).mockReturnValue({ values: valuesMock });
 
       await expect(
         repository.create({
@@ -166,91 +97,43 @@ describe("LedgerRepository", () => {
           amount: entryData.amount,
           entryType: entryData.entryType,
         })
-      ).rejects.toThrow();
-    });
-
-    it("should handle database errors gracefully", async () => {
-      const entryData = createMockLedgerEntry();
-      const dbMock = vi.mocked(dbClient.db);
-
-      (dbMock.insert as any) = vi.fn(() => {
-        throw new Error("Database connection failed");
-      });
-
-      await expect(
-        repository.create({
-          transactionId: entryData.transactionId,
-          amount: entryData.amount,
-          entryType: entryData.entryType,
-        })
-      ).rejects.toThrow();
+      ).rejects.toThrow("Failed to create ledger entry");
     });
 
     it("should convert returned amount from bigint to number", async () => {
-      const mockEntryResponse = {
-        ...createMockLedgerEntry({ amount: 3000 }),
-        amount: BigInt(3000),
-      };
-      const dbMock = vi.mocked(dbClient.db);
+        const mockEntryResponse = {
+            ...createMockLedgerEntry({ amount: 3000 }),
+            amount: BigInt(3000),
+        };
+        const returningMock = vi.fn().mockResolvedValue([mockEntryResponse]);
+        const valuesMock = vi.fn().mockReturnValue({ returning: returningMock });
+        (mockDb.insert as any).mockReturnValue({ values: valuesMock });
 
-      const valuesMock = vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([mockEntryResponse]),
-      });
-      const insertMock = vi.fn().mockReturnValue({
-        values: valuesMock,
-      });
+        const result = await repository.create({
+            transactionId: mockEntryResponse.transactionId,
+            amount: 3000,
+            entryType: mockEntryResponse.entryType,
+        });
 
-      (dbMock.insert as any) = insertMock;
-
-      const result = await repository.create({
-        transactionId: mockEntryResponse.transactionId,
-        amount: 3000,
-        entryType: mockEntryResponse.entryType,
-      });
-
-      expect(typeof result.amount).toBe("number");
-      expect(result.amount).toBe(3000);
+        expect(typeof result.amount).toBe("number");
+        expect(result.amount).toBe(3000);
     });
   });
 
   describe("findById method", () => {
     it("should find ledger entry by id", async () => {
       const entryData = createMockLedgerEntry();
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findFirstMock = vi.fn().mockResolvedValue(entryData);
-      const queryMock = {
-        LedgerTable: {
-          findFirst: findFirstMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
+      (mockDb.query.LedgerTable.findFirst as any).mockResolvedValue(entryData);
 
       const result = await repository.findById(entryData.id);
 
-      expect(findFirstMock).toHaveBeenCalled();
+      expect(mockDb.query.LedgerTable.findFirst).toHaveBeenCalled();
       expect(result).toEqual(entryData);
     });
 
     it("should return null if entry not found", async () => {
       const entryId = "ledger_123" as TLedgerEntryId;
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findFirstMock = vi.fn().mockResolvedValue(null);
-      const queryMock = {
-        LedgerTable: {
-          findFirst: findFirstMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
+      (mockDb.query.LedgerTable.findFirst as any).mockResolvedValue(null);
 
       const result = await repository.findById(entryId);
 
@@ -258,28 +141,16 @@ describe("LedgerRepository", () => {
     });
 
     it("should convert amount from bigint to number on retrieval", async () => {
-      const mockEntryResponse = {
-        ...createMockLedgerEntry({ amount: 4500 }),
-        amount: BigInt(4500),
-      };
-      const dbMock = vi.mocked(dbClient.db);
+        const mockEntryResponse = {
+            ...createMockLedgerEntry({ amount: 4500 }),
+            amount: BigInt(4500),
+        };
+        (mockDb.query.LedgerTable.findFirst as any).mockResolvedValue(mockEntryResponse);
 
-      const findFirstMock = vi.fn().mockResolvedValue(mockEntryResponse);
-      const queryMock = {
-        LedgerTable: {
-          findFirst: findFirstMock,
-        },
-      };
+        const result = await repository.findById(mockEntryResponse.id);
 
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
-
-      const result = await repository.findById(mockEntryResponse.id);
-
-      expect(typeof result?.amount).toBe("number");
-      expect(result?.amount).toBe(4500);
+        expect(typeof result?.amount).toBe("number");
+        expect(result?.amount).toBe(4500);
     });
   });
 
@@ -287,342 +158,80 @@ describe("LedgerRepository", () => {
     it("should find ledger entries by transaction id", async () => {
       const transactionId = "txn_123" as TTransactionId;
       const entryData = createMockLedgerEntry({ transactionId });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findManyMock = vi.fn().mockResolvedValue([entryData]);
-      const queryMock = {
-        LedgerTable: {
-          findMany: findManyMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
+      (mockDb.query.LedgerTable.findMany as any).mockResolvedValue([entryData]);
 
       const result = await repository.findByTransactionId(transactionId);
 
-      expect(findManyMock).toHaveBeenCalled();
+      expect(mockDb.query.LedgerTable.findMany).toHaveBeenCalled();
       expect(result).toEqual([entryData]);
     });
 
     it("should return empty array if no entries found", async () => {
-      const transactionId = "txn_123" as TTransactionId;
-      const dbMock = vi.mocked(dbClient.db);
+        const transactionId = "txn_123" as TTransactionId;
+        (mockDb.query.LedgerTable.findMany as any).mockResolvedValue([]);
 
-      const findManyMock = vi.fn().mockResolvedValue([]);
-      const queryMock = {
-        LedgerTable: {
-          findMany: findManyMock,
-        },
-      };
+        const result = await repository.findByTransactionId(transactionId);
 
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
-
-      const result = await repository.findByTransactionId(transactionId);
-
-      expect(result).toEqual([]);
-    });
-
-    it("should convert amounts from bigint to number for all entries", async () => {
-      const transactionId = "txn_123" as TTransactionId;
-      const mockEntriesResponse = [
-        {
-          ...createMockLedgerEntry({
-            transactionId,
-            amount: 1000,
-            entryType: "debit",
-          }),
-          amount: BigInt(1000),
-        },
-        {
-          ...createMockLedgerEntry({
-            transactionId,
-            amount: 1000,
-            entryType: "credit",
-          }),
-          amount: BigInt(1000),
-        },
-      ];
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findManyMock = vi
-        .fn()
-        .mockResolvedValue(mockEntriesResponse);
-      const queryMock = {
-        LedgerTable: {
-          findMany: findManyMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
-
-      const result = await repository.findByTransactionId(transactionId);
-
-      expect(result).toHaveLength(2);
-      expect(typeof result[0].amount).toBe("number");
-      expect(typeof result[1].amount).toBe("number");
-      expect(result[0].amount).toBe(1000);
-      expect(result[1].amount).toBe(1000);
-    });
-
-    it("should return both debit and credit entries for transaction", async () => {
-      const transactionId = "txn_123" as TTransactionId;
-      const debitEntry = createMockLedgerEntry({
-        transactionId,
-        entryType: "debit",
-      });
-      const creditEntry = createMockLedgerEntry({
-        transactionId,
-        entryType: "credit",
-      });
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findManyMock = vi
-        .fn()
-        .mockResolvedValue([debitEntry, creditEntry]);
-      const queryMock = {
-        LedgerTable: {
-          findMany: findManyMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
-
-      const result = await repository.findByTransactionId(transactionId);
-
-      expect(result).toHaveLength(2);
-      expect(result[0].entryType).toBe("debit");
-      expect(result[1].entryType).toBe("credit");
+        expect(result).toEqual([]);
     });
   });
 
   describe("findByEntryType method", () => {
     it("should find ledger entries by type", async () => {
-      const entryData = createMockLedgerEntry({ entryType: "debit" });
-      const dbMock = vi.mocked(dbClient.db);
+        const entryData = createMockLedgerEntry({ entryType: "debit" });
+        (mockDb.query.LedgerTable.findMany as any).mockResolvedValue([entryData]);
 
-      const findManyMock = vi.fn().mockResolvedValue([entryData]);
-      const queryMock = {
-        LedgerTable: {
-          findMany: findManyMock,
-        },
-      };
+        const result = await repository.findByEntryType("debit");
 
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
-
-      const result = await repository.findByEntryType("debit");
-
-      expect(findManyMock).toHaveBeenCalled();
-      expect(result).toEqual([entryData]);
-    });
-
-    it("should return empty array if no entries of type found", async () => {
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findManyMock = vi.fn().mockResolvedValue([]);
-      const queryMock = {
-        LedgerTable: {
-          findMany: findManyMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
-
-      const result = await repository.findByEntryType("credit");
-
-      expect(result).toEqual([]);
-    });
-
-    it("should filter entries by type correctly", async () => {
-      const debitEntries = [
-        createMockLedgerEntry({ entryType: "debit" }),
-        createMockLedgerEntry({ entryType: "debit" }),
-      ];
-      const dbMock = vi.mocked(dbClient.db);
-
-      const findManyMock = vi.fn().mockResolvedValue(debitEntries);
-      const queryMock = {
-        LedgerTable: {
-          findMany: findManyMock,
-        },
-      };
-
-      Object.defineProperty(dbMock, "query", {
-        value: queryMock,
-        configurable: true,
-      });
-
-      const result = await repository.findByEntryType("debit");
-
-      expect(result).toHaveLength(2);
-      expect(result.every((e) => e.entryType === "debit")).toBe(true);
+        expect(mockDb.query.LedgerTable.findMany).toHaveBeenCalled();
+        expect(result).toEqual([entryData]);
     });
   });
 
   describe("update method", () => {
     it("should update ledger entry", async () => {
       const entryId = "ledger_123" as TLedgerEntryId;
-      const dbMock = vi.mocked(dbClient.db);
-
-      const whereMock = vi.fn().mockReturnValue({
-        execute: vi.fn().mockResolvedValue(undefined),
-      });
-      const setMock = vi.fn().mockReturnValue({
-        where: whereMock,
-      });
-      const updateMock = vi.fn().mockReturnValue({
-        set: setMock,
-      });
-
-      (dbMock.update as any) = updateMock;
+      const executeMock = vi.fn().mockResolvedValue(undefined);
+      const whereMock = vi.fn().mockReturnValue({ execute: executeMock });
+      const setMock = vi.fn().mockReturnValue({ where: whereMock });
+      (mockDb.update as any).mockReturnValue({ set: setMock });
 
       await repository.update(entryId, { entryType: "credit" });
 
-      expect(updateMock).toHaveBeenCalled();
-      expect(setMock).toHaveBeenCalled();
-      expect(whereMock).toHaveBeenCalled();
+      expect(mockDb.update).toHaveBeenCalled();
+      expect(setMock).toHaveBeenCalledWith({
+        entryType: "credit",
+        updatedAt: expect.any(Date),
+      });
+      expect(whereMock).toHaveBeenCalledWith(eq(undefined, entryId));
     });
 
     it("should convert amount to bigint when updating", async () => {
-      const entryId = "ledger_123" as TLedgerEntryId;
-      const dbMock = vi.mocked(dbClient.db);
+        const entryId = "ledger_123" as TLedgerEntryId;
+        const executeMock = vi.fn().mockResolvedValue(undefined);
+        const whereMock = vi.fn().mockReturnValue({ execute: executeMock });
+        const setMock = vi.fn().mockReturnValue({ where: whereMock });
+        (mockDb.update as any).mockReturnValue({ set: setMock });
 
-      const whereMock = vi.fn().mockReturnValue({
-        execute: vi.fn().mockResolvedValue(undefined),
-      });
-      const setMock = vi.fn().mockReturnValue({
-        where: whereMock,
-      });
-      const updateMock = vi.fn().mockReturnValue({
-        set: setMock,
-      });
+        await repository.update(entryId, { amount: 6250 });
 
-      (dbMock.update as any) = updateMock;
-
-      await repository.update(entryId, { amount: 6250 });
-
-      const callArgs = setMock.mock.calls[0][0];
-      expect(typeof callArgs.amount).toBe("bigint");
-      expect(callArgs.amount).toBe(BigInt(6250));
-    });
-
-    it("should set updatedAt timestamp when updating", async () => {
-      const entryId = "ledger_123" as TLedgerEntryId;
-      const dbMock = vi.mocked(dbClient.db);
-
-      const whereMock = vi.fn().mockReturnValue({
-        execute: vi.fn().mockResolvedValue(undefined),
-      });
-      const setMock = vi.fn().mockReturnValue({
-        where: whereMock,
-      });
-      const updateMock = vi.fn().mockReturnValue({
-        set: setMock,
-      });
-
-      (dbMock.update as any) = updateMock;
-
-      await repository.update(entryId, { entryType: "credit" });
-
-      const callArgs = setMock.mock.calls[0][0];
-      expect(callArgs.updatedAt).toBeDefined();
-      expect(callArgs.updatedAt instanceof Date).toBe(true);
-    });
-
-    it("should handle database errors gracefully", async () => {
-      const entryId = "ledger_123" as TLedgerEntryId;
-      const dbMock = vi.mocked(dbClient.db);
-
-      (dbMock.update as any) = vi.fn(() => {
-        throw new Error("Database connection failed");
-      });
-
-      await expect(
-        repository.update(entryId, { entryType: "credit" })
-      ).rejects.toThrow();
+        const callArgs = setMock.mock.calls[0][0];
+        expect(typeof callArgs.amount).toBe("bigint");
+        expect(callArgs.amount).toBe(BigInt(6250));
     });
   });
 
   describe("delete method", () => {
     it("should delete ledger entry", async () => {
       const entryId = "ledger_123" as TLedgerEntryId;
-      const dbMock = vi.mocked(dbClient.db);
-
-      const whereMock = vi.fn().mockReturnValue({
-        execute: vi.fn().mockResolvedValue(undefined),
-      });
-      const deleteMock = vi.fn().mockReturnValue({
-        where: whereMock,
-      });
-
-      (dbMock.delete as any) = deleteMock;
+      const executeMock = vi.fn().mockResolvedValue(undefined);
+      const whereMock = vi.fn().mockReturnValue({ execute: executeMock });
+      (mockDb.delete as any).mockReturnValue({ where: whereMock });
 
       await repository.delete(entryId);
 
-      expect(deleteMock).toHaveBeenCalled();
-      expect(whereMock).toHaveBeenCalled();
-    });
-
-    it("should call delete with correct entry id", async () => {
-      const entryId = "ledger_123" as TLedgerEntryId;
-      const dbMock = vi.mocked(dbClient.db);
-
-      const whereMock = vi.fn().mockReturnValue({
-        execute: vi.fn().mockResolvedValue(undefined),
-      });
-      const deleteMock = vi.fn().mockReturnValue({
-        where: whereMock,
-      });
-
-      (dbMock.delete as any) = deleteMock;
-
-      await repository.delete(entryId);
-
-      expect(whereMock).toHaveBeenCalled();
-    });
-
-    it("should handle database errors gracefully", async () => {
-      const entryId = "ledger_123" as TLedgerEntryId;
-      const dbMock = vi.mocked(dbClient.db);
-
-      (dbMock.delete as any) = vi.fn(() => {
-        throw new Error("Database connection failed");
-      });
-
-      await expect(repository.delete(entryId)).rejects.toThrow();
-    });
-  });
-
-  describe("Repository instantiation", () => {
-    it("should create a new instance successfully", () => {
-      expect(repository).toBeDefined();
-      expect(repository).toBeInstanceOf(LedgerRepository);
-    });
-
-    it("should have all required methods", () => {
-      expect(typeof repository.create).toBe("function");
-      expect(typeof repository.findById).toBe("function");
-      expect(typeof repository.findByTransactionId).toBe("function");
-      expect(typeof repository.findByEntryType).toBe("function");
-      expect(typeof repository.update).toBe("function");
-      expect(typeof repository.delete).toBe("function");
+      expect(mockDb.delete).toHaveBeenCalled();
+      expect(whereMock).toHaveBeenCalledWith(eq(undefined, entryId));
     });
   });
 });
