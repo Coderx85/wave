@@ -3,7 +3,7 @@
   "checkpoint_id": "a562221f36b1",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 4,
+  "checkpoints_count": 6,
   "files_touched": [
     ".agents/skills/caveman/SKILL.md",
     ".agents/skills/design-an-interface/SKILL.md",
@@ -120,13 +120,19 @@
       "transcript": "/a5/62221f36b1/1/full.jsonl",
       "content_hash": "/a5/62221f36b1/1/content_hash.txt",
       "prompt": "/a5/62221f36b1/1/prompt.txt"
+    },
+    {
+      "metadata": "/a5/62221f36b1/2/metadata.json",
+      "transcript": "/a5/62221f36b1/2/full.jsonl",
+      "content_hash": "/a5/62221f36b1/2/content_hash.txt",
+      "prompt": "/a5/62221f36b1/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 762067,
+    "input_tokens": 1174943,
     "cache_creation_tokens": 0,
     "cache_read_tokens": 220544,
-    "output_tokens": 11117,
-    "api_call_count": 51
+    "output_tokens": 12057,
+    "api_call_count": 71
   }
 }
