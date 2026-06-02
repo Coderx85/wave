@@ -1,0 +1,37 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "90d0f23db37d",
+  "session_id": "ses_178f802e8ffeHCY7kpKyIgcetw",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-02T15:58:47.048124523Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".gitignore"
+  ],
+  "agent": "OpenCode",
+  "model": "nemotron-3-super-free",
+  "turn_id": "bd2b43e5ed0e",
+  "token_usage": {
+    "input_tokens": 421082,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 1472,
+    "api_call_count": 26
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-02T15:58:47.043187667Z",
+    "agent_lines": 3,
+    "agent_removed": 1,
+    "human_added": 697,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 700,
+    "total_lines_changed": 2670,
+    "agent_percentage": 0.149812734082397,
+    "metric_version": 2
+  }
+}
