@@ -1,0 +1,132 @@
+:root {
+  --bg-primary: #08080a;
+  --bg-secondary: #0d0d12;
+  --bg-card: rgba(18, 18, 26, 0.7);
+  --accent-cyan: #00f0ff;
+  --accent-magenta: #ff006e;
+  --accent-amber: #ffbe0b;
+  --text-primary: #e8e8f0;
+  --text-secondary: #8888a0;
+  --border-glow: rgba(0, 240, 255, 0.15);
+  --border-active: rgba(0, 240, 255, 0.4);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-glow-cyan: 0 0 20px rgba(0, 240, 255, 0.15);
+  --radius: 8px;
+  --radius-lg: 12px;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-display: "Orbitron", monospace;
+  --font-body: "Space Grotesk", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+::selection {
+  background: rgba(0, 240, 255, 0.25);
+  color: var(--text-primary);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: transparent;
+  border: 1px solid var(--border-glow);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: var(--transition);
+  border-radius: var(--radius);
+  white-space: nowrap;
+}
+
+.btn:hover {
+  border-color: var(--accent-cyan);
+  background: rgba(0, 240, 255, 0.06);
+  box-shadow: var(--shadow-glow-cyan);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-sm {
+  padding: 0.35rem 0.9rem;
+  font-size: 0.7rem;
+}
+
+.btn-xs {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.65rem;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}

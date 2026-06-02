@@ -1,0 +1,31 @@
+{
+  "name": "wave-frontend",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --hot index.ts",
+    "build": "bun build src/main.tsx --outdir dist --target browser --minify",
+    "start": "NODE_ENV=production bun index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/bun": "latest",
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
+    "jsdom": "^29.1.1",
+    "vitest": "^4.1.8"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "better-auth": "^1.6.13",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  }
+}
