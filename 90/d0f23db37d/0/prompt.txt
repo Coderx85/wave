@@ -1,0 +1,38 @@
+Implement the frontend application in @client with Bun and React, and connect it with our backend @server/ and make sure to use Better-auth client also.
+Called the Read tool with the following input: {"filePath":"/home/coderx85/Projects/Work/.GITHUB/wave/server/"}
+<path>/home/coderx85/Projects/Work/.GITHUB/wave/server/</path>
+<type>directory</type>
+<entries>
+.dockerignore
+.github/
+.gitignore
+.vscode/
+AGENTS.md
+biome.json
+bruno/
+coverage/
+DEVELOPMENT.md
+dist/
+docker-compose.dev.yaml
+docker-compose.yaml
+Dockerfile
+drizzle.config.ts
+integration-test.sh
+k8s/
+monitoring/
+nginx/
+node_modules/
+obs/
+OBSERVABILITY.md
+package.json
+pnpm-lock.yaml
+pnpm-workspace.yaml
+scripts/
+src/
+TESTING.md
+tsconfig.json
+vite.config.ts
+vitest.config.ts
+
+(30 entries)
+</entries>
