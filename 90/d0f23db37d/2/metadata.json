@@ -1,0 +1,115 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "90d0f23db37d",
+  "session_id": "ses_178faa0eeffedoTl6YC70ufVVE",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-02T15:58:47.288084393Z",
+  "branch": "main",
+  "checkpoints_count": 6,
+  "files_touched": [
+    ".gitignore",
+    "server/src/lib/repository/base-repository.ts",
+    "server/src/lib/repository/index.ts",
+    "server/src/modules/wallet/repository/account-repo/account-repo.ts",
+    "server/src/modules/wallet/repository/ledger-repo/ledger-repo.ts",
+    "server/src/modules/wallet/repository/outbox-repo/outbox-repo.ts",
+    "server/src/modules/wallet/repository/transaction-repo/transaction-repo.ts",
+    "server/src/modules/wallet/service/wallet-service.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "nemotron-3-super-free",
+  "turn_id": "0fd31066d614",
+  "checkpoint_transcript_start": 27,
+  "transcript_lines_at_start": 27,
+  "token_usage": {
+    "input_tokens": 2662602,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 19497,
+    "api_call_count": 40
+  },
+  "session_metrics": {
+    "turn_count": 20
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-02T15:58:47.267796009Z",
+    "agent_lines": 412,
+    "agent_removed": 441,
+    "human_added": 251,
+    "human_modified": 33,
+    "human_removed": 0,
+    "total_committed": 696,
+    "total_lines_changed": 2665,
+    "agent_percentage": 32.00750469043152,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 392,
+      "user_lines_removed": 1,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7,
+        ".gitignore": 3,
+        "client/.gitignore": 34,
+        "client/CLAUDE.md": 106,
+        "client/README.md": 15,
+        "client/bun.lock": 177,
+        "client/index.ts": 1,
+        "client/package.json": 19,
+        "client/tsconfig.json": 30
+      },
+      "user_removed_per_file": {
+        ".gitignore": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 7,
+      "user_lines_removed": 0,
+      "agent_lines_added": 426,
+      "agent_lines_removed": 1,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 21,
+      "user_lines_removed": 0,
+      "agent_lines_added": 447,
+      "agent_lines_removed": 441,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7,
+        "client/node_modules/nanoid/.claude/settings.local.json": 14
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 21,
+      "user_lines_removed": 0,
+      "agent_lines_added": 448,
+      "agent_lines_removed": 442,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7,
+        "client/node_modules/nanoid/.claude/settings.local.json": 14
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
