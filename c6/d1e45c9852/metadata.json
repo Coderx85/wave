@@ -3,21 +3,51 @@
   "checkpoint_id": "c6d1e45c9852",
   "strategy": "manual-commit",
   "branch": "setup/wave-fe",
-  "checkpoints_count": 1,
-  "files_touched": null,
+  "checkpoints_count": 9,
+  "files_touched": [
+    "client/.gitignore",
+    "client/CLAUDE.md",
+    "client/README.md",
+    "client/bun.lock",
+    "client/index.html",
+    "client/index.ts",
+    "client/package.json",
+    "client/src/App.css",
+    "client/src/App.tsx",
+    "client/src/__tests__/App.spec.tsx",
+    "client/src/__tests__/AuthPage.spec.tsx",
+    "client/src/__tests__/NotificationPage.spec.tsx",
+    "client/src/__tests__/auth-client.spec.ts",
+    "client/src/components/AuthPage.css",
+    "client/src/components/AuthPage.tsx",
+    "client/src/components/NotificationPage.css",
+    "client/src/components/NotificationPage.tsx",
+    "client/src/index.css",
+    "client/src/lib/auth-client.ts",
+    "client/src/main.tsx",
+    "client/src/test/setup.ts",
+    "client/tsconfig.json",
+    "client/vitest.config.ts"
+  ],
   "sessions": [
     {
       "metadata": "/c6/d1e45c9852/0/metadata.json",
       "transcript": "/c6/d1e45c9852/0/full.jsonl",
       "content_hash": "/c6/d1e45c9852/0/content_hash.txt",
       "prompt": "/c6/d1e45c9852/0/prompt.txt"
+    },
+    {
+      "metadata": "/c6/d1e45c9852/1/metadata.json",
+      "transcript": "/c6/d1e45c9852/1/full.jsonl",
+      "content_hash": "/c6/d1e45c9852/1/content_hash.txt",
+      "prompt": "/c6/d1e45c9852/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 48710,
+    "input_tokens": 774051,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 100352,
-    "output_tokens": 10276,
-    "api_call_count": 6
+    "cache_read_tokens": 11446528,
+    "output_tokens": 55855,
+    "api_call_count": 171
   }
 }
