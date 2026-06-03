@@ -13,5 +13,5 @@ export interface ILedger {
 
 export interface ILedgerService {
   createEntry(transactionId: TTransactionId, amount: number, entryType: TEntryType): Promise<ILedger>;
-  getEntries(transactionId: TTransactionId): Promise<ILedger[]>;
+  getEntries(transactionId: TTransactionId): Promise<ILedger[] | null>;
 };

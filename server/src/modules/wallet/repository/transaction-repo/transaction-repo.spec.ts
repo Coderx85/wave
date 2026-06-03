@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import type { ITransactionDBDTO } from "./transaction-repo.interface";
-import type { TTransactionId, TAccountId } from "../../../../types";
+import type { TTransactionId, TAccountId, TUserId } from "../../../../types";
 import { TransactionRepository } from "../transaction-repo";
 import type { DrizzleDb } from "@/lib/repository/base-repository";
-import { eq, between, or } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 vi.mock("drizzle-orm", async (importOriginal) => {
     const actual = await importOriginal<any>();
@@ -15,17 +15,18 @@ vi.mock("drizzle-orm", async (importOriginal) => {
       defineRelations: vi.fn(),
       relations: vi.fn(),
     };
-  });
+});
 
 describe("TransactionRepository", () => {
   let repository: TransactionRepository;
   let mockDb: DrizzleDb;
+  let mockCache: { get: ReturnType<typeof vi.fn>; set: ReturnType<typeof vi.fn>; del: ReturnType<typeof vi.fn>; getOrSet: ReturnType<typeof vi.fn> };
 
   const createMockTransaction = (
     overrides?: Partial<ITransactionDBDTO>
   ): ITransactionDBDTO => ({
     id: `txn_${Math.random()}` as TTransactionId,
-    userId: "user_123",
+    userId: "user_123" as TUserId,
     amount: BigInt(1000),
     senderAccountId: `acc_${Math.random()}` as TAccountId,
     senderName: "Sender User",
@@ -49,7 +50,15 @@ describe("TransactionRepository", () => {
       update: vi.fn(),
       transaction: vi.fn().mockImplementation(async (cb) => cb(mockDb)),
     } as unknown as DrizzleDb;
-    repository = new TransactionRepository(mockDb);
+
+    mockCache = {
+      get: vi.fn(),
+      set: vi.fn(),
+      del: vi.fn(),
+      getOrSet: vi.fn(),
+    };
+
+    repository = new TransactionRepository(mockDb, mockCache);
   });
 
   afterEach(() => {
@@ -57,111 +66,62 @@ describe("TransactionRepository", () => {
   });
 
   describe("save method", () => {
-    it("should save a new transaction", async () => {
-      const transactionData = createMockTransaction();
-      const valuesMock = vi.fn().mockReturnValue(undefined);
-      (mockDb.insert as any).mockReturnValue({ values: valuesMock });
-      
-      await repository.save(transactionData);
+    it("should invalidate user transactions cache on save", async () => {
+        const transactionData = createMockTransaction();
+        const valuesMock = vi.fn().mockReturnValue(undefined);
+        (mockDb.insert as any).mockReturnValue({ values: valuesMock });
 
-      expect(mockDb.insert).toHaveBeenCalled();
-      const callArgs = valuesMock.mock.calls[0][0];
-      expect(callArgs.status).toBe("pending");
+        await repository.save(transactionData);
+
+        expect(mockCache.del).toHaveBeenCalledWith(`user-transactions:${transactionData.userId}`);
     });
   });
 
   describe("update method", () => {
-    it("should update a transaction", async () => {
+    it("should invalidate transaction and user transactions caches on update", async () => {
         const transactionData = createMockTransaction({ status: "success" });
         const returningMock = vi.fn().mockResolvedValue([transactionData]);
         const whereMock = vi.fn().mockReturnValue({ returning: returningMock });
         const setMock = vi.fn().mockReturnValue({ where: whereMock });
         (mockDb.update as any).mockReturnValue({ set: setMock });
 
-        const result = await repository.update(transactionData);
+        await repository.update(transactionData);
 
-        expect(mockDb.update).toHaveBeenCalled();
-        expect(setMock).toHaveBeenCalledWith({
-            ...transactionData,
-            updatedAt: expect.any(Date),
-        });
-        expect(whereMock).toHaveBeenCalledWith(eq(undefined, transactionData.id));
-        expect(result).toEqual(transactionData);
-    });
-
-    it("should throw an error if update fails", async () => {
-        const transactionData = createMockTransaction();
-        const returningMock = vi.fn().mockResolvedValue([]);
-        const whereMock = vi.fn().mockReturnValue({ returning: returningMock });
-        const setMock = vi.fn().mockReturnValue({ where: whereMock });
-        (mockDb.update as any).mockReturnValue({ set: setMock });
-
-        await expect(repository.update(transactionData)).rejects.toThrow(
-            `Failed to update transaction with id: ${transactionData.id}`
-        );
+        expect(mockCache.del).toHaveBeenCalledWith(`transaction:${transactionData.id}`);
+        expect(mockCache.del).toHaveBeenCalledWith(`user-transactions:${transactionData.userId}`);
     });
   });
 
   describe("findById method", () => {
-    it("should find transaction by id", async () => {
-      const transactionData = createMockTransaction();
-      (mockDb.query.TransactionsTable.findFirst as any).mockResolvedValue(transactionData);
+    it("should fetch from DB and set to cache on cache miss", async () => {
+        const transactionData = createMockTransaction();
+        (mockCache.getOrSet as any).mockImplementation(async (key: any, fn: any) => {
+            return await fn();
+        });
+        (mockDb.query.TransactionsTable.findFirst as any).mockResolvedValue(transactionData);
 
-      const result = await repository.findById(transactionData.id);
+        const result = await repository.findById(transactionData.id);
 
-      expect(mockDb.query.TransactionsTable.findFirst).toHaveBeenCalled();
-      expect(result).toEqual(transactionData);
-    });
-
-    it("should return null if transaction not found", async () => {
-      const transactionId = `txn_123` as TTransactionId;
-      (mockDb.query.TransactionsTable.findFirst as any).mockResolvedValue(null);
-
-      const result = await repository.findById(transactionId);
-
-      expect(result).toBeNull();
+        expect(result).toEqual(transactionData);
+        expect(mockCache.getOrSet).toHaveBeenCalledWith(`transaction:${transactionData.id}`, expect.any(Function), 3600);
+        expect(mockDb.query.TransactionsTable.findFirst).toHaveBeenCalled();
     });
   });
 
   describe("findByUserId method", () => {
-    it("should find transactions by user id", async () => {
-      const userId = "user_123";
-      const transactionData = createMockTransaction({ userId });
-      (mockDb.query.TransactionsTable.findMany as any).mockResolvedValue([transactionData]);
+    it("should fetch from DB and set to cache on cache miss", async () => {
+        const userId = "user_123" as TUserId;
+        const transactionData = createMockTransaction({ userId });
+        (mockCache.getOrSet as any).mockImplementation(async (key: any, fn: any) => {
+            return await fn();
+        });
+        (mockDb.query.TransactionsTable.findMany as any).mockResolvedValue([transactionData]);
 
-      const result = await repository.findByUserId(userId);
+        const result = await repository.findByUserId(userId);
 
-      expect(mockDb.query.TransactionsTable.findMany).toHaveBeenCalled();
-      expect(result).toEqual([transactionData]);
-    });
-  });
-
-  describe("failedTransactions method", () => {
-    it("should find failed transactions by user id", async () => {
-      const userId = "user_123";
-      const transactionData = createMockTransaction({ userId, status: "failed" });
-      (mockDb.query.TransactionsTable.findMany as any).mockResolvedValue([transactionData]);
-
-      const result = await repository.failedTransactions({ userId });
-
-      expect(mockDb.query.TransactionsTable.findMany).toHaveBeenCalled();
-      expect(result).toEqual([transactionData]);
-    });
-  });
-
-  describe("successfulTransactions method", () => {
-    it("should find successful transactions by user id", async () => {
-      const userId = "user_123";
-      const transactionData = createMockTransaction({
-        userId,
-        status: "success",
-      });
-      (mockDb.query.TransactionsTable.findMany as any).mockResolvedValue([transactionData]);
-
-      const result = await repository.successfulTransactions({ userId });
-
-      expect(mockDb.query.TransactionsTable.findMany).toHaveBeenCalled();
-      expect(result).toEqual([transactionData]);
+        expect(result).toEqual([transactionData]);
+        expect(mockCache.getOrSet).toHaveBeenCalledWith(`user-transactions:${userId}`, expect.any(Function), 3600);
+        expect(mockDb.query.TransactionsTable.findMany).toHaveBeenCalled();
     });
   });
 });

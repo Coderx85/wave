@@ -1,12 +1,12 @@
 import { desc, eq } from "drizzle-orm";
-import { BaseRepository, type DrizzleDb } from "@/lib/repository/base-repository";
+import { DrizzleRepository, type DrizzleDb } from "@/lib/repository/base-repository";
 import { db } from "@/modules/database/client";
 import { TransactionOutboxTable } from "@/modules/database/schema/transaction-outbox.repository";
 import { ID } from "@/lib/ID";
 import type { TTransactionId } from "@/types";
 import type { IOutboxEntry, IOutboxRepository } from "./outbox-repo.interface";
 
-export class OutboxRepository extends BaseRepository implements IOutboxRepository {
+export class OutboxRepository extends DrizzleRepository implements IOutboxRepository {
   constructor(dbInstance?: DrizzleDb) {
     super(dbInstance || db);
   }
