@@ -1,0 +1,14 @@
+Explore the client codebase at /home/coderx85/Projects/Work/.GITHUB/wave-fe/client very thoroughly. I need to understand:
+
+1. Read package.json - tech stack, dependencies, scripts
+2. Read tsconfig.json - TypeScript config
+3. Read index.html - HTML entry point
+4. Read src/ directory - all files recursively
+5. Read all CSS files in src/
+6. Read all component files in src/
+7. Read the vitest.config.ts
+8. Check if there's a README.md
+9. Check the ../server directory for package.json to understand backend
+10. Look for any brand assets, favicons, or design tokens
+
+Return the FULL content of every file you read, organized by file path. Be very thorough - read everything.
