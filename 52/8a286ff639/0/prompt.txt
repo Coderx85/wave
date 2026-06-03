@@ -1,0 +1,18 @@
+Explore the wave project to understand:
+1. Read `/home/coderx85/Projects/Work/.GITHUB/wave/PRODUCT.md` to understand the product vision and user personas
+2. Read `/home/coderx85/Projects/Work/.GITHUB/wave/client/CLAUDE.md` for frontend conventions
+3. Check `/home/coderx85/Projects/Work/.GITHUB/wave/client/package.json` for dependencies
+4. Check `/home/coderx85/Projects/Work/.GITHUB/wave/server/src/routes/` for any account/user-related API endpoints
+5. Find the server schema for users (look in `src/modules/database/schema/user.repository.ts` or similar)
+6. Check if there's a Better Auth schema that has user fields defined
+7. Look at the auth client library (`better-auth/react`) to see what user session data is available
+8. Check `/home/coderx85/Projects/Work/.GITHUB/wave/client/tailwind.config.ts` or similar for styling
+
+Return:
+- Full content of PRODUCT.md (or key sections)
+- The package.json dependencies for the client
+- Any account/profile/user API endpoints found in the server
+- The user table schema from the database
+- The Better Auth session data shape (what fields are available on the user)
+- The tailwind/css setup for the client
+- The existing frontend conventions from CLAUDE.md
