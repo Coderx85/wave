@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "f785d95e1590",
+  "strategy": "manual-commit",
+  "branch": "setup/wave-fe",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "client/src/App.tsx",
+    "client/src/__tests__/App.spec.tsx",
+    "client/src/__tests__/NotificationPage.spec.tsx",
+    "client/src/index.css",
+    "client/src/lib/auth-client.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/f7/85d95e1590/0/metadata.json",
+      "transcript": "/f7/85d95e1590/0/full.jsonl",
+      "content_hash": "/f7/85d95e1590/0/content_hash.txt",
+      "prompt": "/f7/85d95e1590/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 40190,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 1259392,
+    "output_tokens": 15428,
+    "api_call_count": 38
+  }
+}
