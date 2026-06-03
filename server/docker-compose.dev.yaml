@@ -93,6 +93,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    profiles: [devops]
 
   wallet-service:
     build: .
@@ -113,6 +114,20 @@ services:
         condition: service_healthy
       mailhog:
         condition: service_healthy
+      dragonfly:
+        condition: service_healthy
+    profiles: [devops]
+
+  dragonfly:
+    image: dragonflydb/dragonfly:latest
+    container_name: dragonfly
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-h", "localhost", "-p", "6379", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     profiles: [devops]
 
   notification-service:

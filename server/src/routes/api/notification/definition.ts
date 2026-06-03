@@ -16,7 +16,7 @@ export interface INotificationController {
   listNotificationsHandler(
     request: FastifyRequest<{ Params: INotificationParams; Querystring: INotificationQuery }>,
     reply: FastifyReply
-  ): Promise<StandardResponse<INotificationDTO[]>>;
+  ): Promise<void>;
 
   streamNotificationsHandler(
     request: FastifyRequest<{ Params: INotificationParams; Querystring: INotificationQuery }>,

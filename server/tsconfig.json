@@ -33,5 +33,5 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
   },
-  "exclude": ["node_modules", "bun.lockb", "dist/api", "**/*.spec.ts", "**/*.test.ts", "**/test/**"]
+  "exclude": ["node_modules", "bun.lockb", "dist", "**/*.spec.ts", "**/*.test.ts", "**/test/**"]
 }

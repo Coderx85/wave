@@ -8,7 +8,7 @@ export default async function notificationRoute(fastify: FastifyInstance) {
   // Register GET Notifications endpoint
   fastify.withTypeProvider<ZodTypeProvider>().get(notificationApiRoutes.listNotifications, {
     schema: schema.listNotificationsResponseSchema,
-    handler: notificationController.listNotificationsHandler,
+    handler: notificationController.listNotificationsHandler.bind(notificationController),
   });
 
   // Register SSE Notifications endpoint
@@ -18,6 +18,6 @@ export default async function notificationRoute(fastify: FastifyInstance) {
       params: schema.userIdParamsSchema,
       querystring: schema.notificationListQuerySchema,
     },
-    handler: notificationController.streamNotificationsHandler,
+    handler: notificationController.streamNotificationsHandler.bind(notificationController),
   });
 }

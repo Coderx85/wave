@@ -1,11 +1,10 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { sendError, sendSuccess, type StandardResponse } from "@/lib/response";
+import { sendError, sendSuccess } from "@/lib/response";
 import { NotificationRepository } from "@/modules/notification/repository";
 import type { INotificationRepository } from "@/modules/notification/repository";
 import { notificationStream } from "@/modules/notification/stream";
-import type { INotificationStream, INotificationStreamEvent } from "@/modules/notification/stream";
+import type { INotificationStream } from "@/modules/notification/stream";
 import type { INotificationController, INotificationParams, INotificationQuery, INotificationDTO } from "./definition";
-import { tryCatch } from "@/lib/try-catch-wrapper";
 
 export class NotificationController implements INotificationController {
   constructor(
@@ -16,22 +15,19 @@ export class NotificationController implements INotificationController {
   async listNotificationsHandler(
     request: FastifyRequest<{ Params: INotificationParams; Querystring: INotificationQuery }>,
     reply: FastifyReply
-  ): Promise<StandardResponse<INotificationDTO[]>> {
+  ): Promise<void> {
     const { userId } = request.params;
     const limit = request.query.limit ?? 50;
-    let res: INotificationDTO[] = [];
     try {
-
-      res = await this.notificationRepository.findByUserId(userId, limit);
-        
-      return sendSuccess({
+      const res = await this.notificationRepository.findByUserId(userId, limit);
+      sendSuccess({
         reply,
         statusCode: 200,
         message: "SUCCESSFULLY FETCHED NOTIFICATIONS",
         data: res,
       });
-    }catch (error) {
-      return sendError({
+    } catch (error) {
+      sendError({
         reply,
         statusCode: 500,
         message: "FAILED TO FETCH NOTIFICATIONS",
