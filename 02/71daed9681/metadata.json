@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "0271daed9681",
+  "strategy": "manual-commit",
+  "branch": "setup/wave-fe",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "client/.gitignore",
+    "client/bun.lock",
+    "client/index.html",
+    "client/index.ts",
+    "client/package.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/02/71daed9681/0/metadata.json",
+      "transcript": "/02/71daed9681/0/full.jsonl",
+      "content_hash": "/02/71daed9681/0/content_hash.txt",
+      "prompt": "/02/71daed9681/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 40190,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 1259392,
+    "output_tokens": 15428,
+    "api_call_count": 38
+  }
+}

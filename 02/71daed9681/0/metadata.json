@@ -1,0 +1,104 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "0271daed9681",
+  "session_id": "ses_1737867f6ffe4hg3PjVukwq2H2",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-03T08:37:33.802522049Z",
+  "branch": "setup/wave-fe",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "client/.gitignore",
+    "client/bun.lock",
+    "client/index.html",
+    "client/index.ts",
+    "client/package.json"
+  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "abded7cf2baa",
+  "token_usage": {
+    "input_tokens": 40190,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 1259392,
+    "output_tokens": 15428,
+    "api_call_count": 38
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-03T08:37:33.793406768Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 16,
+    "total_committed": 0,
+    "total_lines_changed": 16,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 2503,
+      "user_lines_removed": 953,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".antigravitycli/23273ee6-f474-43f4-9296-384c3f738de7.json": 14,
+        "PRODUCT.md": 44,
+        "client/.gitignore": 3,
+        "client/bun.lock": 207,
+        "client/index.html": 3,
+        "client/index.ts": 3,
+        "client/package.json": 14,
+        "client/postcss.config.js": 6,
+        "client/src/App.tsx": 35,
+        "client/src/__tests__/App.spec.tsx": 1,
+        "client/src/__tests__/NotificationPage.spec.tsx": 4,
+        "client/src/components/AuthPage.tsx": 76,
+        "client/src/components/NotificationPage.tsx": 98,
+        "client/src/components/ui/badge.tsx": 35,
+        "client/src/components/ui/button.tsx": 56,
+        "client/src/components/ui/card.tsx": 78,
+        "client/src/components/ui/input.tsx": 21,
+        "client/src/components/ui/label.tsx": 23,
+        "client/src/components/ui/skeleton.tsx": 15,
+        "client/src/index.css": 1340,
+        "client/src/lib/auth-client.ts": 1,
+        "client/src/lib/utils.ts": 6,
+        "client/src/styles.css": 110,
+        "client/tailwind.config.ts": 83,
+        "server/package.json": 1,
+        "server/pnpm-lock.yaml": 207,
+        "server/src/lib/auth.ts": 1,
+        "server/src/server.ts": 18
+      },
+      "user_removed_per_file": {
+        "client/index.html": 2,
+        "client/index.ts": 11,
+        "client/package.json": 3,
+        "client/src/App.css": 46,
+        "client/src/App.tsx": 8,
+        "client/src/__tests__/App.spec.tsx": 1,
+        "client/src/__tests__/NotificationPage.spec.tsx": 4,
+        "client/src/components/AuthPage.css": 209,
+        "client/src/components/AuthPage.tsx": 65,
+        "client/src/components/NotificationPage.css": 409,
+        "client/src/components/NotificationPage.tsx": 58,
+        "client/src/index.css": 71,
+        "client/src/lib/auth-client.ts": 1,
+        "server/pnpm-lock.yaml": 64,
+        "server/src/server.ts": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 2503,
+      "agent_lines_removed": 953
+    }
+  ]
+}
