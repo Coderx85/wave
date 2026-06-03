@@ -3,13 +3,15 @@
   "checkpoint_id": "f785d95e1590",
   "strategy": "manual-commit",
   "branch": "setup/wave-fe",
-  "checkpoints_count": 1,
+  "checkpoints_count": 2,
   "files_touched": [
     "client/src/App.tsx",
     "client/src/__tests__/App.spec.tsx",
     "client/src/__tests__/NotificationPage.spec.tsx",
     "client/src/index.css",
-    "client/src/lib/auth-client.ts"
+    "client/src/lib/auth-client.ts",
+    "client/src/lib/utils.ts",
+    "client/src/styles.css"
   ],
   "sessions": [
     {
@@ -23,13 +25,19 @@
       "transcript": "/f7/85d95e1590/1/full.jsonl",
       "content_hash": "/f7/85d95e1590/1/content_hash.txt",
       "prompt": "/f7/85d95e1590/1/prompt.txt"
+    },
+    {
+      "metadata": "/f7/85d95e1590/2/metadata.json",
+      "transcript": "/f7/85d95e1590/2/full.jsonl",
+      "content_hash": "/f7/85d95e1590/2/content_hash.txt",
+      "prompt": "/f7/85d95e1590/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 40190,
+    "input_tokens": 1482351,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 1259392,
-    "output_tokens": 15428,
-    "api_call_count": 38
+    "cache_read_tokens": 41612544,
+    "output_tokens": 137339,
+    "api_call_count": 545
   }
 }

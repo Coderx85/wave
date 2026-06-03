@@ -1,0 +1,43 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "f785d95e1590",
+  "session_id": "ses_178885d42ffe8daG4lOcU4Vm8r",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-03T08:39:28.073654339Z",
+  "branch": "setup/wave-fe",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "client/src/App.tsx",
+    "client/src/__tests__/App.spec.tsx",
+    "client/src/__tests__/NotificationPage.spec.tsx",
+    "client/src/index.css",
+    "client/src/lib/auth-client.ts",
+    "client/src/lib/utils.ts",
+    "client/src/styles.css"
+  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "e4709d9d49fd",
+  "token_usage": {
+    "input_tokens": 1442161,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 40353152,
+    "output_tokens": 121911,
+    "api_call_count": 507
+  },
+  "session_metrics": {
+    "turn_count": 61
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-03T08:39:28.000190036Z",
+    "agent_lines": 86,
+    "agent_removed": 14,
+    "human_added": 1269,
+    "human_modified": 71,
+    "human_removed": 0,
+    "total_committed": 1426,
+    "total_lines_changed": 1486,
+    "agent_percentage": 6.7294751009421265,
+    "metric_version": 2
+  }
+}
