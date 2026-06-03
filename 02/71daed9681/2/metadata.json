@@ -1,0 +1,439 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "0271daed9681",
+  "session_id": "ses_178885d42ffe8daG4lOcU4Vm8r",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-03T08:37:37.232086231Z",
+  "branch": "setup/wave-fe",
+  "checkpoints_count": 31,
+  "files_touched": [
+    "client/.gitignore",
+    "client/bun.lock",
+    "client/index.html",
+    "client/index.ts",
+    "client/package.json",
+    "client/postcss.config.js",
+    "client/tailwind.config.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "e4709d9d49fd",
+  "checkpoint_transcript_start": 175,
+  "transcript_lines_at_start": 175,
+  "token_usage": {
+    "input_tokens": 716820,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 29006976,
+    "output_tokens": 76332,
+    "api_call_count": 342
+  },
+  "session_metrics": {
+    "turn_count": 61
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-03T08:37:37.15804001Z",
+    "agent_lines": 0,
+    "agent_removed": 2,
+    "human_added": 296,
+    "human_modified": 14,
+    "human_removed": 0,
+    "total_committed": 305,
+    "total_lines_changed": 312,
+    "agent_percentage": 0.641025641025641,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 271,
+      "user_lines_removed": 65,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "PRODUCT.md": 44,
+        "server/package.json": 1,
+        "server/pnpm-lock.yaml": 207,
+        "server/src/lib/auth.ts": 1,
+        "server/src/server.ts": 18
+      },
+      "user_removed_per_file": {
+        "server/pnpm-lock.yaml": 64,
+        "server/src/server.ts": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 271,
+      "agent_lines_removed": 65
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 2148,
+      "user_lines_removed": 767,
+      "agent_lines_added": 491,
+      "agent_lines_removed": 353,
+      "user_added_per_file": {
+        "client/bun.lock": 207,
+        "client/package.json": 10,
+        "client/postcss.config.js": 6,
+        "client/src/App.tsx": 4,
+        "client/src/components/AuthPage.tsx": 76,
+        "client/src/components/NotificationPage.tsx": 96,
+        "client/src/components/ui/badge.tsx": 35,
+        "client/src/components/ui/button.tsx": 56,
+        "client/src/components/ui/card.tsx": 78,
+        "client/src/components/ui/input.tsx": 21,
+        "client/src/components/ui/label.tsx": 23,
+        "client/src/components/ui/skeleton.tsx": 15,
+        "client/src/index.css": 1297,
+        "client/src/lib/utils.ts": 6,
+        "client/src/styles.css": 136,
+        "client/tailwind.config.ts": 82
+      },
+      "user_removed_per_file": {
+        "client/package.json": 1,
+        "client/src/App.css": 26,
+        "client/src/App.tsx": 7,
+        "client/src/components/AuthPage.css": 180,
+        "client/src/components/AuthPage.tsx": 65,
+        "client/src/components/NotificationPage.css": 342,
+        "client/src/components/NotificationPage.tsx": 58,
+        "client/src/index.css": 88
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 1433,
+      "user_lines_removed": 88,
+      "agent_lines_added": 1093,
+      "agent_lines_removed": 912,
+      "user_added_per_file": {
+        "client/src/index.css": 1297,
+        "client/src/styles.css": 136
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 88
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 1433,
+      "user_lines_removed": 88,
+      "agent_lines_added": 1093,
+      "agent_lines_removed": 912,
+      "user_added_per_file": {
+        "client/src/index.css": 1297,
+        "client/src/styles.css": 136
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 88
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 1433,
+      "user_lines_removed": 88,
+      "agent_lines_added": 1093,
+      "agent_lines_removed": 912,
+      "user_added_per_file": {
+        "client/src/index.css": 1297,
+        "client/src/styles.css": 136
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 88
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 1433,
+      "user_lines_removed": 88,
+      "agent_lines_added": 1093,
+      "agent_lines_removed": 912,
+      "user_added_per_file": {
+        "client/src/index.css": 1297,
+        "client/src/styles.css": 136
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 88
+      }
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 1319,
+      "user_lines_removed": 98,
+      "agent_lines_added": 1215,
+      "agent_lines_removed": 911,
+      "user_added_per_file": {
+        "client/package.json": 2,
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/package.json": 2,
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 1320,
+      "user_lines_removed": 107,
+      "agent_lines_added": 1215,
+      "agent_lines_removed": 911,
+      "user_added_per_file": {
+        "client/index.ts": 3,
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/index.ts": 11,
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 10,
+      "user_lines_added": 1317,
+      "user_lines_removed": 96,
+      "agent_lines_added": 1218,
+      "agent_lines_removed": 922,
+      "user_added_per_file": {
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 11,
+      "user_lines_added": 1317,
+      "user_lines_removed": 96,
+      "agent_lines_added": 1241,
+      "agent_lines_removed": 926,
+      "user_added_per_file": {
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 12,
+      "user_lines_added": 1317,
+      "user_lines_removed": 96,
+      "agent_lines_added": 1241,
+      "agent_lines_removed": 926,
+      "user_added_per_file": {
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 13,
+      "user_lines_added": 1317,
+      "user_lines_removed": 96,
+      "agent_lines_added": 1241,
+      "agent_lines_removed": 926,
+      "user_added_per_file": {
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 14,
+      "user_lines_added": 1331,
+      "user_lines_removed": 96,
+      "agent_lines_added": 1241,
+      "agent_lines_removed": 926,
+      "user_added_per_file": {
+        ".antigravitycli/23273ee6-f474-43f4-9296-384c3f738de7.json": 14,
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 15,
+      "user_lines_added": 1331,
+      "user_lines_removed": 96,
+      "agent_lines_added": 1241,
+      "agent_lines_removed": 926,
+      "user_added_per_file": {
+        ".antigravitycli/23273ee6-f474-43f4-9296-384c3f738de7.json": 14,
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 16,
+      "user_lines_added": 1331,
+      "user_lines_removed": 96,
+      "agent_lines_added": 1241,
+      "agent_lines_removed": 926,
+      "user_added_per_file": {
+        ".antigravitycli/23273ee6-f474-43f4-9296-384c3f738de7.json": 14,
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 17,
+      "user_lines_added": 1331,
+      "user_lines_removed": 96,
+      "agent_lines_added": 1241,
+      "agent_lines_removed": 926,
+      "user_added_per_file": {
+        ".antigravitycli/23273ee6-f474-43f4-9296-384c3f738de7.json": 14,
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 18,
+      "user_lines_added": 1331,
+      "user_lines_removed": 96,
+      "agent_lines_added": 1241,
+      "agent_lines_removed": 926,
+      "user_added_per_file": {
+        ".antigravitycli/23273ee6-f474-43f4-9296-384c3f738de7.json": 14,
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 19,
+      "user_lines_added": 1331,
+      "user_lines_removed": 96,
+      "agent_lines_added": 1241,
+      "agent_lines_removed": 926,
+      "user_added_per_file": {
+        ".antigravitycli/23273ee6-f474-43f4-9296-384c3f738de7.json": 14,
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 20,
+      "user_lines_added": 1331,
+      "user_lines_removed": 96,
+      "agent_lines_added": 1241,
+      "agent_lines_removed": 926,
+      "user_added_per_file": {
+        ".antigravitycli/23273ee6-f474-43f4-9296-384c3f738de7.json": 14,
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 21,
+      "user_lines_added": 1331,
+      "user_lines_removed": 96,
+      "agent_lines_added": 1241,
+      "agent_lines_removed": 926,
+      "user_added_per_file": {
+        ".antigravitycli/23273ee6-f474-43f4-9296-384c3f738de7.json": 14,
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 22,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 23,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 24,
+      "user_lines_added": 1317,
+      "user_lines_removed": 96,
+      "agent_lines_added": 1255,
+      "agent_lines_removed": 926,
+      "user_added_per_file": {
+        "client/src/index.css": 1317
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 96
+      }
+    },
+    {
+      "checkpoint_number": 25,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 2503,
+      "agent_lines_removed": 953
+    },
+    {
+      "checkpoint_number": 26,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 27,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 2503,
+      "agent_lines_removed": 953
+    },
+    {
+      "checkpoint_number": 28,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 2503,
+      "agent_lines_removed": 953
+    },
+    {
+      "checkpoint_number": 29,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 30,
+      "user_lines_added": 8,
+      "user_lines_removed": 2,
+      "agent_lines_added": 2503,
+      "agent_lines_removed": 953,
+      "user_added_per_file": {
+        "server/src/lib/response.ts": 8
+      },
+      "user_removed_per_file": {
+        "server/src/lib/response.ts": 2
+      }
+    },
+    {
+      "checkpoint_number": 31,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
