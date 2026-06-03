@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react"
 import { signOut } from "../lib/auth-client"
-import type { Session } from "../lib/auth-client"
+import { useUser } from "../lib/user-context"
 import { Card, CardContent } from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
@@ -35,7 +35,8 @@ function statusLabel(status: string): string {
   return "Connecting"
 }
 
-export default function NotificationPage({ user }: { user: Session["user"] }) {
+export default function NotificationPage() {
+  const user = useUser()
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -125,24 +126,21 @@ export default function NotificationPage({ user }: { user: Session["user"] }) {
   return (
     <>
       <header className="flex items-center justify-between flex-wrap gap-3 px-8 py-5 border-b border-border">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Notifications</h1>
-        <div className="flex items-center gap-2">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">Notifications</h1>
+        <div className="flex items-center gap-3">
           <Badge variant={statusVariant(connectionStatus)}>
-            <span className={`mr-1.5 h-1.5 w-1.5 rounded-full ${
-              connectionStatus === "connected" ? "bg-current animate-pulse-glow" :
+            <span className={`mr-1.5 h-1.5 w-1.5 rounded-full inline-block ${
+              connectionStatus === "connected" ? "bg-current" :
               connectionStatus === "disconnected" ? "bg-current" :
-              "bg-current animate-pulse-glow-fast"
+              "bg-current animate-a-spin"
             }`} />
             {statusLabel(connectionStatus)}
           </Badge>
-          <div className="flex flex-col items-end leading-tight px-3 border-r border-border">
-            <span className="text-sm font-semibold text-foreground">{user.name}</span>
-            <span className="text-xs text-muted-foreground">{user.email}</span>
-          </div>
+          <span className="text-sm text-muted-foreground">{user.email}</span>
           <Button variant="outline" size="sm" onClick={fetchInitial}>
             Refresh
           </Button>
-          <Button variant="destructive" size="sm" onClick={handleSignOut}>
+          <Button variant="ghost" size="sm" onClick={handleSignOut}>
             Sign Out
           </Button>
         </div>
@@ -179,20 +177,19 @@ export default function NotificationPage({ user }: { user: Session["user"] }) {
         )}
 
         {!loading && !error && notifications.length > 0 && (
-          <div className="flex flex-col gap-1.5">
-            {notifications.map((n, idx) => (
-              <Card
+          <div className="flex flex-col gap-2">
+            {notifications.map((n) => (
+              <div
                 key={n.id}
                 data-testid="notification-card"
                 data-read={n.read}
-                className={`group transition-colors animate-fade-slide-in ${
+                className={`group rounded-xl px-4 py-3.5 transition-colors ${
                   n.read
-                    ? "opacity-70 hover:opacity-100"
-                    : "bg-accent-subtle border-primary/30"
+                    ? "bg-surface opacity-70 hover:opacity-100"
+                    : "bg-accent-subtle"
                 }`}
-                style={{ animationDelay: `${idx * 0.03}s` }}
               >
-                <CardContent className="flex gap-4 p-4">
+                <div className="flex gap-3">
                   <span
                     className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${
                       n.type === "info" ? "bg-primary" :
@@ -226,8 +223,8 @@ export default function NotificationPage({ user }: { user: Session["user"] }) {
                       </Button>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         )}

@@ -39,16 +39,18 @@ export default function AuthPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-8">
-      <Card className="w-full max-w-sm animate-fade-slide-in">
-        <CardHeader className="text-center">
-          <CardTitle>{mode === "sign-in" ? "Sign In" : "Create Account"}</CardTitle>
-          <CardDescription>Wave Notification Center</CardDescription>
+      <Card className="w-full max-w-sm">
+        <CardHeader className="text-center space-y-2">
+          <CardTitle className="text-xl">Wave</CardTitle>
+          <CardDescription>
+            {mode === "sign-in" ? "Sign in to your account" : "Create a new account"}
+          </CardDescription>
         </CardHeader>
 
         <CardContent>
           <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
             {error && (
-              <div className="rounded-md bg-destructive/10 border border-destructive/25 px-4 py-3 text-sm font-medium text-destructive text-center">
+              <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive text-center">
                 {error}
               </div>
             )}
@@ -104,12 +106,12 @@ export default function AuthPage() {
           </form>
         </CardContent>
 
-        <CardFooter className="justify-center border-t pt-6">
+        <CardFooter className="justify-center pt-6">
           {mode === "sign-in" ? (
             <p className="text-sm text-muted-foreground">
               Don't have an account?{" "}
               <button
-                className="font-semibold text-primary hover:text-primary/80 transition-colors bg-transparent border-none p-0 cursor-pointer"
+                className="font-semibold text-primary hover:text-accent-hover transition-colors bg-transparent border-none p-0 cursor-pointer"
                 onClick={() => { setMode("sign-up"); setError(null) }}
               >
                 Sign up
@@ -119,7 +121,7 @@ export default function AuthPage() {
             <p className="text-sm text-muted-foreground">
               Already have an account?{" "}
               <button
-                className="font-semibold text-primary hover:text-primary/80 transition-colors bg-transparent border-none p-0 cursor-pointer"
+                className="font-semibold text-primary hover:text-accent-hover transition-colors bg-transparent border-none p-0 cursor-pointer"
                 onClick={() => { setMode("sign-in"); setError(null) }}
               >
                 Sign in
