@@ -4,22 +4,27 @@ import { tryCatch } from "@/lib/try-catch-wrapper";
 import { ID } from "@/lib/ID";
 import { AccountRepository, type IAccountRepository } from "../../../repository";
 import { IdempotencyManager } from "../../../utils";
+import { CacheFactory, type ICacheStore } from "@/lib/cache";
 
 export class AccountService implements IAccountService {
   private accountRepository: IAccountRepository;
+  private cacheManager: ICacheStore;
 
-  constructor(accountRepository: IAccountRepository = new AccountRepository()) {
+  constructor(
+    accountRepository: IAccountRepository = new AccountRepository(),
+    cacheStore?: ICacheStore,
+  ) {
     this.accountRepository = accountRepository;
+    this.cacheManager = cacheStore ?? CacheFactory.create();
   }
 
-  create(account: Omit<IAccount, "id" | "createdAt" | "updatedAt">): Promise<IAccount> {
-    // Generate idempotency key to prevent duplicate account creation
+  async create(account: Omit<IAccount, "id" | "createdAt" | "updatedAt">): Promise<IAccount> {
     const idempotencyKey = IdempotencyManager.generateAccountCreationKey(
       account.userId.toString(),
       account.name
     );
 
-    return tryCatch({
+    const data = await tryCatch({
       ctx: async () => {
         const newAccount = await this.accountRepository.create({
           id: ID.BankAccountId(),
@@ -29,57 +34,81 @@ export class AccountService implements IAccountService {
       },
       errorMessage: "FAILED_TO_CREATE_ACCOUNT",
     });
-  }
 
-  getAccountById(accountId: TBankAccountId): Promise<IAccount | null> {
-    return tryCatch({
+    await this.cacheManager.set(data.id, data, 5 * 60);
+
+    return data;
+  };
+  
+  async getAccountById(accountId: TBankAccountId): Promise<IAccount | null> {
+    const data = await tryCatch({
       ctx: async () => {
         const account = await this.accountRepository.findById(accountId);
         return account;
       },
       errorMessage: "FAILED_TO_GET_ACCOUNT",
     });
-  }
 
-  getUserAccounts(userId: TUserId): Promise<IAccount[]> {
-    return tryCatch({
+    if (!data) {
+      return null;
+    };
+
+    await this.cacheManager.set(accountId, data, 5 * 60);
+
+    return data;
+  };
+
+  async getUserAccounts(userId: TUserId): Promise<IAccount[]> {
+    const data = await tryCatch({
       ctx: async () => {
         const accounts = await this.accountRepository.findByUserId(userId);
         return accounts;
       },
       errorMessage: "FAILED_TO_GET_USER_ACCOUNTS",
     });
-  }
+    return data;
+  };
 
-  getBalance(accountId: TBankAccountId): Promise<number> {
-    return tryCatch({
+  async getBalance(accountId: TBankAccountId): Promise<number> {
+    const data = await tryCatch({
       ctx: async () => {
         const account = await this.accountRepository.checkBalance(accountId);
         return account.balance;
       },
       errorMessage: "FAILED_TO_GET_BALANCE",
     });
-  }
+    return data;
+  };
 
-  updateAccountBalance(accountId: TBankAccountId, amount: number): Promise<IAccount> {
-    // Generate idempotency key for balance update
+  async updateAccountBalance(accountId: TBankAccountId, amount: number): Promise<IAccount> {
     const idempotencyKey = IdempotencyManager.generateBalanceUpdateKey(
       accountId.toString(),
       amount,
       "update"
     );
 
-    return tryCatch({
-      ctx: async () => {
-        await this.accountRepository.adjustBalance(accountId, amount);
-        const updatedAccount = await this.accountRepository.findById(accountId);
-        if (!updatedAccount) {
-          throw new Error("Failed to retrieve updated account");
-        }
-        
-        return updatedAccount;
-      },
-      errorMessage: "FAILED_TO_UPDATE_ACCOUNT_BALANCE",
-    });
-  }
+    
+    const cachedData = await this.cacheManager.getOrSet(accountId, async () => {
+        const data = await tryCatch({
+        ctx: async () => {
+          await this.accountRepository.adjustBalance(accountId, amount);
+          const updatedAccount = await this.accountRepository.findById(accountId);
+          if (!updatedAccount) {
+            throw new Error("Failed to retrieve updated account");
+          }
+          
+          return updatedAccount;
+        },
+        errorMessage: "FAILED_TO_UPDATE_ACCOUNT_BALANCE",
+      });
+
+        return data;
+      }, 5 * 60);
+
+      if (!cachedData) {
+        throw new Error("Failed to update account balance");
+      };
+
+    return cachedData;
+  };
 }
