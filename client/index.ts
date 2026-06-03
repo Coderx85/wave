@@ -1,4 +1,4 @@
-import { file } from "bun";
+import index from "./index.html"
 
 const BACKEND_PORT = 3000;
 const FRONTEND_PORT = 5173;
@@ -21,19 +21,11 @@ Bun.serve({
       HEAD: proxyApi,
       OPTIONS: proxyApi,
     },
+    "/*": index,
   },
   development: {
     hmr: true,
     console: true,
-  },
-  async fetch(req) {
-    const url = new URL(req.url);
-    const pathname = url.pathname === "/" ? "/index.html" : url.pathname;
-    const f = file(`.${pathname}`);
-    if (await f.exists()) {
-      return new Response(f);
-    }
-    return new Response(file("./index.html"));
   },
 });
 
