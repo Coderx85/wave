@@ -1,0 +1,33 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "7e73d1febc3b",
+  "strategy": "manual-commit",
+  "branch": "setup/redis",
+  "checkpoints_count": 6,
+  "files_touched": [
+    "server/src/lib/auth.ts",
+    "server/src/lib/cache/cache-factory.ts",
+    "server/src/lib/cache/icache-store.ts",
+    "server/src/lib/cache/index.ts",
+    "server/src/lib/cache/memory-cache-store.ts",
+    "server/src/lib/cache/redis-cache-store.ts",
+    "server/src/lib/config.ts",
+    "server/src/lib/repository/base-repository.ts",
+    "server/src/lib/repository/base-store.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/7e/73d1febc3b/0/metadata.json",
+      "transcript": "/7e/73d1febc3b/0/full.jsonl",
+      "content_hash": "/7e/73d1febc3b/0/content_hash.txt",
+      "prompt": "/7e/73d1febc3b/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 437448,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 9286144,
+    "output_tokens": 33892,
+    "api_call_count": 104
+  }
+}

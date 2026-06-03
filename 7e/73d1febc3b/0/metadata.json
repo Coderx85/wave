@@ -1,0 +1,177 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "7e73d1febc3b",
+  "session_id": "ses_178faa0eeffedoTl6YC70ufVVE",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-03T07:58:39.371749037Z",
+  "branch": "setup/redis",
+  "checkpoints_count": 6,
+  "files_touched": [
+    "server/src/lib/auth.ts",
+    "server/src/lib/cache/cache-factory.ts",
+    "server/src/lib/cache/icache-store.ts",
+    "server/src/lib/cache/index.ts",
+    "server/src/lib/cache/memory-cache-store.ts",
+    "server/src/lib/cache/redis-cache-store.ts",
+    "server/src/lib/config.ts",
+    "server/src/lib/repository/base-repository.ts",
+    "server/src/lib/repository/base-store.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "be20617d4e89",
+  "checkpoint_transcript_start": 71,
+  "transcript_lines_at_start": 71,
+  "token_usage": {
+    "input_tokens": 437448,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 9286144,
+    "output_tokens": 33892,
+    "api_call_count": 104
+  },
+  "session_metrics": {
+    "turn_count": 31
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-03T07:58:39.3294173Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 208,
+    "human_removed": 51,
+    "total_committed": 0,
+    "total_lines_changed": 259,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 1046,
+      "user_lines_removed": 1421,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7,
+        "client/node_modules/nanoid/.claude/settings.local.json": 14,
+        "server/docker-compose.dev.yaml": 14,
+        "server/package.json": 2,
+        "server/pnpm-lock.yaml": 132,
+        "server/src/.env.example": 5,
+        "server/src/lib/cache/index.ts": 118,
+        "server/src/lib/config.ts": 3,
+        "server/src/lib/repository/base-repository.ts": 22,
+        "server/src/lib/repository/base-store.ts": 134,
+        "server/src/modules/user/repository/user.repo.spec.ts": 71,
+        "server/src/modules/user/repository/user.repo.ts": 64,
+        "server/src/modules/wallet/repository/account-repo/account-repo.spec.ts": 56,
+        "server/src/modules/wallet/repository/account-repo/account-repo.ts": 75,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.spec.ts": 44,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.ts": 39,
+        "server/src/modules/wallet/repository/outbox-repo/outbox-repo.ts": 2,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.spec.ts": 51,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.ts": 88,
+        "server/src/modules/wallet/service/internal/account-service/account-service.ts": 65,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.interface.ts": 1,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.ts": 39
+      },
+      "user_removed_per_file": {
+        "server/pnpm-lock.yaml": 64,
+        "server/src/lib/repository/base-repository.ts": 4,
+        "server/src/modules/user/repository/user.repo.spec.ts": 450,
+        "server/src/modules/user/repository/user.repo.ts": 52,
+        "server/src/modules/wallet/repository/account-repo/account-repo.spec.ts": 307,
+        "server/src/modules/wallet/repository/account-repo/account-repo.ts": 90,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.spec.ts": 151,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.ts": 58,
+        "server/src/modules/wallet/repository/outbox-repo/outbox-repo.ts": 2,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.spec.ts": 85,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.ts": 124,
+        "server/src/modules/wallet/service/internal/account-service/account-service.ts": 28,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.interface.ts": 1,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.ts": 5
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 21,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1025,
+      "agent_lines_removed": 1421,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7,
+        "client/node_modules/nanoid/.claude/settings.local.json": 14
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 314,
+      "user_lines_removed": 307,
+      "agent_lines_added": 1025,
+      "agent_lines_removed": 1421,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7,
+        "client/node_modules/nanoid/.claude/settings.local.json": 14,
+        "server/src/lib/cache/cache-factory.ts": 38,
+        "server/src/lib/cache/icache-store.ts": 6,
+        "server/src/lib/cache/index.ts": 8,
+        "server/src/lib/cache/memory-cache-store.ts": 56,
+        "server/src/lib/cache/redis-cache-store.ts": 82,
+        "server/src/lib/repository/base-repository.ts": 17,
+        "server/src/lib/repository/base-store.ts": 1,
+        "server/src/modules/wallet/repository/account-repo/account-repo.ts": 56,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.ts": 10,
+        "server/src/modules/wallet/service/internal/account-service/account-service.ts": 11,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.ts": 7,
+        "server/tsconfig.json": 1
+      },
+      "user_removed_per_file": {
+        "server/src/lib/cache/index.ts": 116,
+        "server/src/lib/repository/base-repository.ts": 5,
+        "server/src/lib/repository/base-store.ts": 134,
+        "server/src/modules/wallet/repository/account-repo/account-repo.ts": 35,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.ts": 2,
+        "server/src/modules/wallet/service/internal/account-service/account-service.ts": 10,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.ts": 4,
+        "server/tsconfig.json": 1
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 105,
+      "user_lines_removed": 78,
+      "agent_lines_added": 1012,
+      "agent_lines_removed": 1422,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7,
+        "client/node_modules/nanoid/.claude/settings.local.json": 14,
+        "server/src/modules/user/repository/user.repo.spec.ts": 12,
+        "server/src/modules/wallet/repository/account-repo/account-repo.spec.ts": 18,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.spec.ts": 10,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.ts": 34,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.spec.ts": 10
+      },
+      "user_removed_per_file": {
+        "server/src/modules/user/repository/user.repo.spec.ts": 21,
+        "server/src/modules/wallet/repository/account-repo/account-repo.spec.ts": 8,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.spec.ts": 16,
+        "server/src/modules/wallet/repository/ledger-repo/ledger-repo.ts": 17,
+        "server/src/modules/wallet/repository/transaction-repo/transaction-repo.spec.ts": 16
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
