@@ -1,4 +1,5 @@
 import { type FastifyReply } from "fastify";
+import { z } from "zod";
 
 export interface StandardResponse<T = any> {
   ok: boolean;
@@ -44,8 +45,13 @@ export function sendError(options: SendErrorOptions): StandardResponse {
   return response;
 }
 
-export function successResponseSchema<T = any>(schema: any) {
-  return schema;
+export function successResponseSchema<T extends z.ZodTypeAny>(schema: T) {
+  return z.object({
+    ok: z.literal(true),
+    status: z.number(),
+    message: z.string(),
+    data: schema,
+  });
 }
 
 export function errorResponseSchema() {

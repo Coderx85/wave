@@ -9,6 +9,8 @@ import {
 } from "fastify-type-provider-zod";
 import fp from "fastify-plugin";
 import fastifyCors from "@fastify/cors";
+import ssePlugin from "@fastify/sse";
+import type { SSEPluginOptions } from "@fastify/sse";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,7 +18,7 @@ const __dirname = dirname(__filename);
 // CORS configuration for frontend integration, allowing credentials and specific headers
 // Adjust the origin as needed for production
 const corsOptions = {
-  origin: ["http://localhost:3000"], // Replace with your frontend URL
+  origin: ["http://localhost:3000", "http://localhost:5173"], // Replace with your frontend URL
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   credentials: true,
@@ -36,6 +38,12 @@ async function fastifyServerPlugin(fastify: FastifyInstance) {
     credentials: corsOptions.credentials,
     maxAge: corsOptions.maxAge,
   });
+
+  // Register SSE plugin before routes so `sse: true` route config works
+  const sseOptions: SSEPluginOptions = {
+    heartbeatInterval: 30000,
+  };
+  await fastify.register(ssePlugin, sseOptions);
 
   // Auto-register API routes
   await fastify.register(autoLoad, {
