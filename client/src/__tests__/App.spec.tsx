@@ -28,7 +28,7 @@ describe("App", () => {
   it("shows loading spinner while session is pending", () => {
     mockUseSession.mockReturnValue({ data: null, isPending: true })
     render(<App />)
-    expect(document.querySelector(".app-spinner")).toBeInTheDocument()
+    expect(screen.getByTestId("loading-skeleton")).toBeInTheDocument()
     expect(screen.queryByTestId("auth-page")).not.toBeInTheDocument()
     expect(screen.queryByTestId("notification-page")).not.toBeInTheDocument()
   })

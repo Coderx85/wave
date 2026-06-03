@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event"
 import NotificationPage from "../components/NotificationPage"
 
 const mockSignOut = vi.fn()
-const fakeUser = { id: "user_1", name: "Test User", email: "test@example.com" }
+const fakeUser = { id: "user_1", name: "Test User", email: "test@example.com", emailVerified: true, createdAt: new Date(), updatedAt: new Date() }
 
 vi.mock("../lib/auth-client", () => ({
   signIn: { email: vi.fn() },
@@ -76,7 +76,7 @@ describe("NotificationPage", () => {
     render(<NotificationPage user={fakeUser} />)
 
     expect(screen.getByRole("heading", { name: /notifications/i })).toBeInTheDocument()
-    expect(document.querySelectorAll(".skeleton-card").length).toBe(4)
+    expect(document.querySelectorAll("[data-testid='skeleton-card']").length).toBe(4)
   })
 
   it("fetches notifications on mount", async () => {
@@ -190,8 +190,8 @@ describe("NotificationPage", () => {
 
     await user.click(screen.getByRole("button", { name: /mark read/i }))
 
-    const card = screen.getByText("Read Me").closest("article")
-    expect(card?.className).toContain("is-read")
+    const card = screen.getByText("Read Me").closest("[data-testid='notification-card']")
+    expect(card?.getAttribute("data-read")).toBe("true")
     expect(screen.queryByRole("button", { name: /mark read/i })).not.toBeInTheDocument()
   })
 
