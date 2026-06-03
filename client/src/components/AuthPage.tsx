@@ -1,6 +1,9 @@
 import { useState } from "react"
 import { signIn, signUp } from "../lib/auth-client"
-import "./AuthPage.css"
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../components/ui/card"
+import { Input } from "../components/ui/input"
+import { Label } from "../components/ui/label"
+import { Button } from "../components/ui/button"
 
 export default function AuthPage() {
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in")
@@ -35,88 +38,96 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <div className="auth-header">
-          <h1 className="auth-title">
-            {mode === "sign-in" ? "Sign In" : "Create Account"}
-          </h1>
-          <p className="auth-subtitle">Wave Notification Center</p>
-        </div>
+    <div className="flex min-h-screen items-center justify-center p-8">
+      <Card className="w-full max-w-sm animate-fade-slide-in">
+        <CardHeader className="text-center">
+          <CardTitle>{mode === "sign-in" ? "Sign In" : "Create Account"}</CardTitle>
+          <CardDescription>Wave Notification Center</CardDescription>
+        </CardHeader>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
-          {error && (
-            <div className="auth-error">
-              {error}
-            </div>
-          )}
+        <CardContent>
+          <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+            {error && (
+              <div className="rounded-md bg-destructive/10 border border-destructive/25 px-4 py-3 text-sm font-medium text-destructive text-center">
+                {error}
+              </div>
+            )}
 
-          {mode === "sign-up" && (
-            <div className="auth-field">
-              <label htmlFor="name">Name</label>
-              <input
-                id="name"
-                type="text"
-                placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+            {mode === "sign-up" && (
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  autoComplete="name"
+                />
+              </div>
+            )}
+
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
-                autoComplete="name"
+                autoComplete="email"
               />
             </div>
-          )}
 
-          <div className="auth-field">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-            />
-          </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Min 8 characters"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={8}
+                autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
+              />
+            </div>
 
-          <div className="auth-field">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Min 8 characters"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={8}
-              autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
-            />
-          </div>
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading && (
+                <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-a-spin" />
+              )}
+              {mode === "sign-in" ? "Sign In" : "Create Account"}
+            </Button>
+          </form>
+        </CardContent>
 
-          <button className="auth-submit" type="submit" disabled={loading}>
-            {loading && <span className="auth-spinner" />}
-            {mode === "sign-in" ? "Sign In" : "Create Account"}
-          </button>
-        </form>
-
-        <div className="auth-footer">
+        <CardFooter className="justify-center border-t pt-6">
           {mode === "sign-in" ? (
-            <p>
+            <p className="text-sm text-muted-foreground">
               Don't have an account?{" "}
-              <button className="auth-link" onClick={() => { setMode("sign-up"); setError(null) }}>
+              <button
+                className="font-semibold text-primary hover:text-primary/80 transition-colors bg-transparent border-none p-0 cursor-pointer"
+                onClick={() => { setMode("sign-up"); setError(null) }}
+              >
                 Sign up
               </button>
             </p>
           ) : (
-            <p>
+            <p className="text-sm text-muted-foreground">
               Already have an account?{" "}
-              <button className="auth-link" onClick={() => { setMode("sign-in"); setError(null) }}>
+              <button
+                className="font-semibold text-primary hover:text-primary/80 transition-colors bg-transparent border-none p-0 cursor-pointer"
+                onClick={() => { setMode("sign-in"); setError(null) }}
+              >
                 Sign in
               </button>
             </p>
           )}
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   )
 }

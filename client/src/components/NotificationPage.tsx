@@ -1,7 +1,10 @@
 import { useEffect, useState, useRef, useCallback } from "react"
 import { signOut } from "../lib/auth-client"
 import type { Session } from "../lib/auth-client"
-import "./NotificationPage.css"
+import { Card, CardContent } from "../components/ui/card"
+import { Button } from "../components/ui/button"
+import { Badge } from "../components/ui/badge"
+import { Skeleton } from "../components/ui/skeleton"
 
 interface Notification {
   id: string
@@ -18,6 +21,18 @@ interface StandardResponse<T> {
   message: string
   data?: T
   error?: string
+}
+
+function statusVariant(status: string): "default" | "secondary" | "destructive" {
+  if (status === "connected") return "default"
+  if (status === "disconnected") return "destructive"
+  return "secondary"
+}
+
+function statusLabel(status: string): string {
+  if (status === "connected") return "Live"
+  if (status === "disconnected") return "Disconnected"
+  return "Connecting"
 }
 
 export default function NotificationPage({ user }: { user: Session["user"] }) {
@@ -109,93 +124,118 @@ export default function NotificationPage({ user }: { user: Session["user"] }) {
 
   return (
     <>
-      <header className="page-header">
-        <div className="header-left">
-          <h1 className="page-title">Notifications</h1>
-        </div>
-        <div className="header-right">
-          <span className={`status-badge status-${connectionStatus}`}>
-            {connectionStatus === "connected" ? "Live" :
-             connectionStatus === "disconnected" ? "Disconnected" : "Connecting"}
-          </span>
-          <div className="user-menu">
-            <span className="user-name">{user.name}</span>
-            <span className="user-email">{user.email}</span>
+      <header className="flex items-center justify-between flex-wrap gap-3 px-8 py-5 border-b border-border">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Notifications</h1>
+        <div className="flex items-center gap-2">
+          <Badge variant={statusVariant(connectionStatus)}>
+            <span className={`mr-1.5 h-1.5 w-1.5 rounded-full ${
+              connectionStatus === "connected" ? "bg-current animate-pulse-glow" :
+              connectionStatus === "disconnected" ? "bg-current" :
+              "bg-current animate-pulse-glow-fast"
+            }`} />
+            {statusLabel(connectionStatus)}
+          </Badge>
+          <div className="flex flex-col items-end leading-tight px-3 border-r border-border">
+            <span className="text-sm font-semibold text-foreground">{user.name}</span>
+            <span className="text-xs text-muted-foreground">{user.email}</span>
           </div>
-          <button className="btn btn-sm" onClick={fetchInitial}>
+          <Button variant="outline" size="sm" onClick={fetchInitial}>
             Refresh
-          </button>
-          <button className="btn btn-sm btn-signout" onClick={handleSignOut}>
+          </Button>
+          <Button variant="destructive" size="sm" onClick={handleSignOut}>
             Sign Out
-          </button>
+          </Button>
         </div>
       </header>
 
-      <main className="notification-main">
+      <main className="flex-1 mx-auto w-full max-w-2xl px-8 py-6">
         {loading && (
-          <div className="loading-state">
+          <div className="flex flex-col gap-2">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="skeleton-card" />
+              <Skeleton key={i} data-testid="skeleton-card" className="h-20 w-full rounded-lg" />
             ))}
           </div>
         )}
 
         {error && !loading && (
-          <div className="error-state">
-            <div className="error-icon" />
-            <p>{error}</p>
-            <button className="btn" onClick={fetchInitial}>
+          <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10 border-2 border-destructive/30 text-destructive text-lg font-bold">
+              !
+            </div>
+            <p className="text-muted-foreground">{error}</p>
+            <Button variant="outline" onClick={fetchInitial}>
               Retry
-            </button>
+            </Button>
           </div>
         )}
 
         {!loading && !error && notifications.length === 0 && (
-          <div className="empty-state">
-            <h2>No notifications</h2>
-            <p>New notifications will appear here in real time.</p>
+          <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
+            <h2 className="text-base font-semibold text-muted-foreground">No notifications</h2>
+            <p className="text-sm text-muted-foreground/60">
+              New notifications will appear here in real time.
+            </p>
           </div>
         )}
 
         {!loading && !error && notifications.length > 0 && (
-          <div className="notification-list">
-            {notifications.map((n) => (
-              <article
+          <div className="flex flex-col gap-1.5">
+            {notifications.map((n, idx) => (
+              <Card
                 key={n.id}
-                className={`notification-card ${n.read ? "is-read" : "is-unread"}`}
+                data-testid="notification-card"
+                data-read={n.read}
+                className={`group transition-colors animate-fade-slide-in ${
+                  n.read
+                    ? "opacity-70 hover:opacity-100"
+                    : "bg-accent-subtle border-primary/30"
+                }`}
+                style={{ animationDelay: `${idx * 0.03}s` }}
               >
-                <div className={`card-icon card-icon--${n.type}`} />
-                <div className="card-body">
-                  <div className="card-header">
-                    <h3 className="card-title">{n.title}</h3>
-                    <time className="card-time">
-                      {new Date(n.timestamp).toLocaleTimeString(undefined, {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </time>
+                <CardContent className="flex gap-4 p-4">
+                  <span
+                    className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${
+                      n.type === "info" ? "bg-primary" :
+                      n.type === "warning" ? "bg-warning" :
+                      "bg-error"
+                    }`}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-start gap-4 mb-0.5">
+                      <h3 className={`text-sm ${n.read ? "font-medium" : "font-semibold"} text-foreground`}>
+                        {n.title}
+                      </h3>
+                      <time className="shrink-0 text-xs text-muted-foreground/70 font-mono">
+                        {new Date(n.timestamp).toLocaleTimeString(undefined, {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </time>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                      {n.message}
+                    </p>
+                    <div className="flex gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {!n.read && (
+                        <Button variant="ghost" size="xs" onClick={() => markRead(n.id)}>
+                          Mark read
+                        </Button>
+                      )}
+                      <Button variant="ghost" size="xs" onClick={() => dismissNotification(n.id)}>
+                        Dismiss
+                      </Button>
+                    </div>
                   </div>
-                  <p className="card-message">{n.message}</p>
-                  <div className="card-actions">
-                    {!n.read && (
-                      <button className="btn btn-ghost btn-xs" onClick={() => markRead(n.id)}>
-                        Mark read
-                      </button>
-                    )}
-                    <button className="btn btn-ghost btn-xs" onClick={() => dismissNotification(n.id)}>
-                      Dismiss
-                    </button>
-                  </div>
-                </div>
-              </article>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}
       </main>
 
-      <footer className="page-footer">
+      <footer className="flex justify-between items-center px-8 py-4 text-sm text-muted-foreground/70 border-t border-border">
         <span>Wave Notification Center</span>
-        <span className="footer-count">{notifications.length} notifications</span>
+        <span>{notifications.length} notifications</span>
       </footer>
     </>
   )
