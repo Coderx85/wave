@@ -1,0 +1,140 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "a280135cbc30",
+  "session_id": "ses_178885d42ffe8daG4lOcU4Vm8r",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-04T01:47:02.081801921Z",
+  "branch": "setup/wave-fe",
+  "checkpoints_count": 5,
+  "files_touched": [
+    "client/src/App.tsx",
+    "client/src/__tests__/App.spec.tsx",
+    "client/src/__tests__/NotificationPage.spec.tsx",
+    "client/src/actions/account.actions.ts",
+    "client/src/actions/transaction.actions.ts",
+    "client/src/index.css",
+    "client/src/lib/brand.ts",
+    "client/src/lib/user-context.tsx",
+    "client/src/main.tsx",
+    "client/src/pages/AccountPage.tsx",
+    "client/src/pages/HomePage.tsx",
+    "client/src/pages/TransactionsPage.tsx",
+    "client/src/router.tsx",
+    "client/src/styles.css",
+    "client/src/types/account.types.ts",
+    "client/src/types/id.types.ts",
+    "client/src/types/index.ts",
+    "client/src/types/response.types.ts",
+    "client/src/types/transaction.types.ts",
+    "client/tailwind.config.ts",
+    "server/src/modules/database/schema/transaction.repository.ts",
+    "server/src/modules/wallet/controller/wallet.controller.interface.ts",
+    "server/src/modules/wallet/controller/wallet.controller.ts",
+    "server/src/modules/wallet/repository/account-repo/account-repo.interface.ts",
+    "server/src/modules/wallet/repository/account-repo/account-repo.ts",
+    "server/src/modules/wallet/service/wallet-service.interface.ts",
+    "server/src/modules/wallet/service/wallet-service.spec.ts",
+    "server/src/modules/wallet/service/wallet-service.ts",
+    "server/src/routes/api/wallet/definition.ts",
+    "server/src/routes/api/wallet/index.ts",
+    "server/src/schemas/wallet.schema.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "0d9c31087ca8",
+  "token_usage": {
+    "input_tokens": 2509740,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 78571264,
+    "output_tokens": 262281,
+    "api_call_count": 995
+  },
+  "session_metrics": {
+    "turn_count": 71
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-04T01:47:01.920129121Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 2136,
+    "human_modified": 410,
+    "human_removed": 0,
+    "total_committed": 2136,
+    "total_lines_changed": 2546,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 679,
+      "user_lines_removed": 115,
+      "agent_lines_added": 1419,
+      "agent_lines_removed": 124,
+      "user_added_per_file": {
+        "client/src/actions/account.actions.ts": 21,
+        "client/src/index.css": 588,
+        "client/src/lib/brand.ts": 1,
+        "client/src/pages/AccountPage.tsx": 17,
+        "client/src/types/account.types.ts": 11,
+        "client/src/types/id.types.ts": 17,
+        "client/src/types/index.ts": 7,
+        "client/src/types/response.types.ts": 17
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 85,
+        "client/src/pages/AccountPage.tsx": 30
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 691,
+      "user_lines_removed": 125,
+      "agent_lines_added": 1451,
+      "agent_lines_removed": 124,
+      "user_added_per_file": {
+        "client/src/actions/account.actions.ts": 21,
+        "client/src/index.css": 588,
+        "client/src/lib/brand.ts": 1,
+        "client/src/pages/AccountPage.tsx": 17,
+        "client/src/types/account.types.ts": 11,
+        "client/src/types/id.types.ts": 17,
+        "client/src/types/index.ts": 7,
+        "client/src/types/response.types.ts": 17,
+        "server/src/modules/wallet/service/wallet-service.ts": 12
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 85,
+        "client/src/pages/AccountPage.tsx": 30,
+        "server/src/modules/wallet/service/wallet-service.ts": 10
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 588,
+      "user_lines_removed": 85,
+      "agent_lines_added": 1534,
+      "agent_lines_removed": 144,
+      "user_added_per_file": {
+        "client/src/index.css": 588
+      },
+      "user_removed_per_file": {
+        "client/src/index.css": 85
+      }
+    }
+  ]
+}

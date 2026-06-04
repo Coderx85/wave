@@ -3,21 +3,59 @@
   "checkpoint_id": "a280135cbc30",
   "strategy": "manual-commit",
   "branch": "setup/wave-fe",
-  "checkpoints_count": 1,
-  "files_touched": null,
+  "checkpoints_count": 6,
+  "files_touched": [
+    "client/src/App.tsx",
+    "client/src/__tests__/App.spec.tsx",
+    "client/src/__tests__/NotificationPage.spec.tsx",
+    "client/src/actions/account.actions.ts",
+    "client/src/actions/transaction.actions.ts",
+    "client/src/index.css",
+    "client/src/lib/brand.ts",
+    "client/src/lib/user-context.tsx",
+    "client/src/main.tsx",
+    "client/src/pages/AccountPage.tsx",
+    "client/src/pages/HomePage.tsx",
+    "client/src/pages/TransactionsPage.tsx",
+    "client/src/router.tsx",
+    "client/src/styles.css",
+    "client/src/types/account.types.ts",
+    "client/src/types/id.types.ts",
+    "client/src/types/index.ts",
+    "client/src/types/response.types.ts",
+    "client/src/types/transaction.types.ts",
+    "client/tailwind.config.ts",
+    "server/src/modules/database/schema/transaction.repository.ts",
+    "server/src/modules/wallet/controller/wallet.controller.interface.ts",
+    "server/src/modules/wallet/controller/wallet.controller.ts",
+    "server/src/modules/wallet/repository/account-repo/account-repo.interface.ts",
+    "server/src/modules/wallet/repository/account-repo/account-repo.ts",
+    "server/src/modules/wallet/service/wallet-service.interface.ts",
+    "server/src/modules/wallet/service/wallet-service.spec.ts",
+    "server/src/modules/wallet/service/wallet-service.ts",
+    "server/src/routes/api/wallet/definition.ts",
+    "server/src/routes/api/wallet/index.ts",
+    "server/src/schemas/wallet.schema.ts"
+  ],
   "sessions": [
     {
       "metadata": "/a2/80135cbc30/0/metadata.json",
       "transcript": "/a2/80135cbc30/0/full.jsonl",
       "content_hash": "/a2/80135cbc30/0/content_hash.txt",
       "prompt": "/a2/80135cbc30/0/prompt.txt"
+    },
+    {
+      "metadata": "/a2/80135cbc30/1/metadata.json",
+      "transcript": "/a2/80135cbc30/1/full.jsonl",
+      "content_hash": "/a2/80135cbc30/1/content_hash.txt",
+      "prompt": "/a2/80135cbc30/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 40190,
+    "input_tokens": 2549930,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 1259392,
-    "output_tokens": 15428,
-    "api_call_count": 38
+    "cache_read_tokens": 79830656,
+    "output_tokens": 277709,
+    "api_call_count": 1033
   }
 }
