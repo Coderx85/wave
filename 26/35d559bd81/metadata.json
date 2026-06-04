@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "2635d559bd81",
+  "strategy": "manual-commit",
+  "branch": "setup/wave-fe",
+  "checkpoints_count": 8,
+  "files_touched": [
+    "client/src/components/ChartAreaInteractive.tsx",
+    "client/src/components/DataTable.tsx",
+    "client/src/components/SectionCards.tsx",
+    "client/src/components/WalletCard.tsx",
+    "client/src/components/WalletCardCarousel.tsx",
+    "client/src/components/ui/dropdown-menu.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/26/35d559bd81/0/metadata.json",
+      "transcript": "/26/35d559bd81/0/full.jsonl",
+      "content_hash": "/26/35d559bd81/0/content_hash.txt",
+      "prompt": "/26/35d559bd81/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 185263,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 5041024,
+    "output_tokens": 27836,
+    "api_call_count": 82
+  }
+}
