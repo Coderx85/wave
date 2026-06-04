@@ -9,7 +9,13 @@ interface WalletCardAccount {
   balance: number
 }
 
-export default function WalletCardCarousel({ accounts }: { accounts: WalletCardAccount[] }) {
+export default function WalletCardCarousel({
+  accounts,
+  onUnlink,
+}: {
+  accounts: WalletCardAccount[]
+  onUnlink: (id: string) => void
+}) {
   const [current, setCurrent] = useState(0)
 
   if (accounts.length === 0) return null
@@ -26,7 +32,7 @@ export default function WalletCardCarousel({ accounts }: { accounts: WalletCardA
         >
           {accounts.map((acc) => (
             <div key={acc.id} className="flex-[0_0_100%] min-w-0">
-              <WalletCard account={acc} />
+              <WalletCard account={acc} onUnlink={onUnlink} />
             </div>
           ))}
         </div>

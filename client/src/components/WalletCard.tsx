@@ -1,6 +1,13 @@
 import { useState } from "react"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, MoreVertical } from "lucide-react"
 import { cn } from "../lib/utils"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "./ui/dropdown-menu"
 
 interface WalletCardAccount {
   id: string
@@ -26,7 +33,13 @@ function maskNumber(num: string) {
   return `${num.slice(0, -4).replace(/./g, "\u25CF")} ${vis}`
 }
 
-export default function WalletCard({ account }: { account: WalletCardAccount }) {
+export default function WalletCard({
+  account,
+  onUnlink,
+}: {
+  account: WalletCardAccount
+  onUnlink: (id: string) => void
+}) {
   const [showBalance, setShowBalance] = useState(true)
 
   return (
@@ -41,14 +54,36 @@ export default function WalletCard({ account }: { account: WalletCardAccount }) 
               <div className="w-2 h-2 rounded-full border border-[oklch(0.6_0.1_85_/_0.4)]" />
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => setShowBalance((v) => !v)}
-            className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white/70 hover:text-white"
-            aria-label={showBalance ? "Hide balance" : "Show balance"}
-          >
-            {showBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setShowBalance((v) => !v)}
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white/70 hover:text-white"
+              aria-label={showBalance ? "Hide balance" : "Show balance"}
+            >
+              {showBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+            <div className="relative z-10">
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex z-10 items-center justify-center w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white/70 hover:text-white">
+                  <MoreVertical className="w-4 h-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => onUnlink(account.id)} className="text-destructive">
+                    Unlink Account
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => window.location.href = "/account/settings"}>
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => window.location.href = "/account/transactions"}>
+                    Transactions
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
         </div>
 
         <div>
