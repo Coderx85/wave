@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react"
 import { useSearch } from "@tanstack/react-router"
+import { MoreVertical } from "lucide-react"
 import { signOut } from "../lib/auth-client"
 import { useUser } from "../lib/user-context"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
@@ -7,6 +8,13 @@ import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { Skeleton } from "../components/ui/skeleton"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "../components/ui/dropdown-menu"
 import ProfileSection from "../components/ProfileSection"
 import WalletCardCarousel from "../components/WalletCardCarousel"
 import type { TBankAccount, WaveResponse } from "@/types"
@@ -207,6 +215,34 @@ export default function AccountPage() {
     }
   }
 
+  const handleUnlinkAccount = async () => {
+    const confirmed = window.confirm("Are you sure you want to unlink your account? This action cannot be undone.")
+    if (!confirmed) return
+    try {
+      const res = await fetch("/api/wallet/users/" + user.id + "/account", {
+        method: "DELETE",
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      await signOut()
+    } catch {
+      alert("Failed to unlink account. Please try again.")
+    }
+  }
+
+  const handleUnlinkWalletAccount = async (accountId: string) => {
+    const confirmed = window.confirm("Are you sure you want to unlink this wallet account?")
+    if (!confirmed) return
+    try {
+      const res = await fetch(`/api/wallet/accounts/${accountId}`, {
+        method: "DELETE",
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      fetchAccounts()
+    } catch {
+      alert("Failed to unlink account. Please try again.")
+    }
+  }
+
   const handleSignOut = async () => {
     await signOut()
   }
@@ -223,9 +259,30 @@ export default function AccountPage() {
           <Button variant="outline" size="sm" onClick={fetchAccounts} disabled={loading}>
             Refresh
           </Button>
-          <Button variant="ghost" size="sm" onClick={handleSignOut}>
-            Sign Out
-          </Button>
+          <div className="relative">
+            <DropdownMenu>
+              <DropdownMenuTrigger className="h-9 w-9 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground">
+                <MoreVertical className="size-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={handleUnlinkAccount} className="text-destructive">
+                  Unlink Account
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => window.location.href = "/account/settings"}>
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => window.location.href = "/account/transactions"}>
+                  Transactions
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </header>
 
@@ -262,7 +319,7 @@ export default function AccountPage() {
             )}
 
             {!loading && !error && accounts.length > 0 && (
-              <WalletCardCarousel accounts={accounts} />
+              <WalletCardCarousel accounts={accounts} onUnlink={handleUnlinkWalletAccount} />
             )}
 
             <form onSubmit={handleCreateAccount} className="space-y-3 pt-4 border-t border-border">

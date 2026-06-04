@@ -1,21 +1,14 @@
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useMemo } from "react"
 import { Link } from "@tanstack/react-router"
+import { Plus, ArrowUpRight } from "lucide-react"
 import { signOut } from "../lib/auth-client"
 import { useUser } from "../lib/user-context"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button"
-import { Badge } from "../components/ui/badge"
-import { Skeleton } from "../components/ui/skeleton"
-
-interface WalletAccount {
-  id: string
-  name: string
-  userId: string
-  accountNumber: string
-  balance: number
-  createdAt: string
-  updatedAt: string | null
-}
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
+import SectionCards from "../components/SectionCards"
+import ChartAreaInteractive from "../components/ChartAreaInteractive"
+import DataTable from "../components/DataTable"
+import type { TBankAccount, WaveResponse } from "@/types"
 
 interface WalletTransaction {
   id: string
@@ -30,29 +23,27 @@ interface WalletTransaction {
   updatedAt?: string | null
 }
 
-interface StandardResponse<T = unknown> {
-  ok: boolean
-  status: number
-  message: string
-  data?: T
-  error?: string
-}
+type ApiResponse<T> = WaveResponse<T>
+
+const formatBalance = (b: number) =>
+  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(b)
 
 export default function HomePage() {
   const user = useUser()
-  const [accounts, setAccounts] = useState<WalletAccount[]>([])
+  const [accounts, setAccounts] = useState<TBankAccount[]>([])
   const [transactions, setTransactions] = useState<WalletTransaction[]>([])
   const [loadingAccounts, setLoadingAccounts] = useState(true)
   const [loadingTransactions, setLoadingTransactions] = useState(true)
+
+  const userAccountIds = useMemo(() => new Set(accounts.map((a) => a.id)), [accounts])
 
   const fetchAccounts = useCallback(async () => {
     setLoadingAccounts(true)
     try {
       const res = await fetch(`/api/wallet/users/${user.id}/accounts`)
-      if (res.ok) {
-        const json: StandardResponse<WalletAccount[]> = await res.json()
-        setAccounts(json.data ?? [])
-      }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const json: ApiResponse<TBankAccount[]> = await res.json()
+      setAccounts(json.ok ? json.data : [])
     } catch {
       setAccounts([])
     } finally {
@@ -64,12 +55,13 @@ export default function HomePage() {
     setLoadingTransactions(true)
     try {
       const res = await fetch(`/api/wallet/users/${user.id}/transactions`)
-      if (res.ok) {
-        const json: StandardResponse<WalletTransaction[]> = await res.json()
-        const sorted = (json.data ?? []).sort(
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const json: ApiResponse<WalletTransaction[]> = await res.json()
+      if (json.ok) {
+        const sorted = json.data.sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )
-        setTransactions(sorted.slice(0, 5))
+        setTransactions(sorted)
       }
     } catch {
       setTransactions([])
@@ -85,11 +77,49 @@ export default function HomePage() {
 
   const totalBalance = accounts.reduce((sum, a) => sum + a.balance, 0)
 
-  const formatBalance = (balance: number) =>
-    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(balance)
+  const dailyVolumes = useMemo(() => {
+    const map = new Map<string, number>()
+    for (const tx of transactions) {
+      const day = tx.createdAt.slice(0, 10)
+      map.set(day, (map.get(day) ?? 0) + Number(tx.amount))
+    }
+    return Array.from(map.entries())
+      .map(([date, volume]) => ({ date, volume }))
+      .sort((a, b) => a.date.localeCompare(b.date))
+  }, [transactions])
 
-  const formatDate = (iso: string) =>
-    new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(iso))
+  const recentTransactions = useMemo(() => transactions.slice(0, 10), [transactions])
+
+  const successCount = transactions.filter((tx) => tx.status === "success").length
+  const pendingCount = transactions.filter((tx) => tx.status === "pending").length
+  const totalVolume = transactions.reduce((sum, tx) => sum + Number(tx.amount), 0)
+
+  const cardData = loadingAccounts
+    ? []
+    : [
+        {
+          title: "Total Balance",
+          value: formatBalance(totalBalance),
+          subtitle: `${accounts.length} account${accounts.length !== 1 ? "s" : ""}`,
+          trend: { value: `${accounts.length > 0 ? "+" : ""}${accounts.length}`, positive: accounts.length > 0 },
+        },
+        {
+          title: "Transaction Volume",
+          value: formatBalance(totalVolume),
+          subtitle: `${transactions.length} transaction${transactions.length !== 1 ? "s" : ""}`,
+        },
+        {
+          title: "Success Rate",
+          value: transactions.length > 0 ? `${Math.round((successCount / transactions.length) * 100)}%` : "\u2014",
+          subtitle: `${successCount} of ${transactions.length} succeeded`,
+          trend: successCount > 0 ? { value: `${successCount}`, positive: true } : undefined,
+        },
+        {
+          title: "Pending",
+          value: String(pendingCount),
+          subtitle: pendingCount === 1 ? "1 awaiting confirmation" : `${pendingCount} awaiting confirmation`,
+        },
+      ]
 
   const handleSignOut = async () => {
     await signOut()
@@ -107,136 +137,59 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="flex-1 mx-auto w-full max-w-3xl px-8 py-8 space-y-8">
-        <section className="space-y-1">
-          <p className="text-sm text-muted-foreground">Welcome back</p>
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">{user.name}</h2>
-        </section>
+      <main className="flex-1 mx-auto w-full max-w-6xl px-8 py-8 space-y-6">
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm font-medium text-muted-foreground">
+            {new Date().getHours() < 12
+              ? "Good morning"
+              : new Date().getHours() < 18
+                ? "Good afternoon"
+                : "Good evening"
+            }, {user.name}
+          </h2>
+        </div>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Balance
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loadingAccounts ? (
-              <Skeleton className="h-10 w-48 rounded-md" />
-            ) : (
-              <p className="text-3xl font-bold font-mono text-foreground tracking-tight">
-                {formatBalance(totalBalance)}
-              </p>
-            )}
-            <p className="text-xs text-muted-foreground mt-1">
-              Across {accounts.length} account{accounts.length !== 1 ? "s" : ""}
-            </p>
-          </CardContent>
-        </Card>
+        <SectionCards data={cardData} />
 
         <div className="grid grid-cols-2 gap-4">
           <Link
             to="/account"
             search={{ section: "deposit" }}
-            className="inline-flex items-center justify-center rounded-xl bg-surface text-foreground h-20 text-sm font-semibold flex-col gap-1.5 transition-colors hover:bg-surface-hover"
+            className="inline-flex items-center justify-center gap-3 rounded-xl bg-primary text-primary-foreground h-14 text-sm font-semibold transition-colors hover:opacity-90"
           >
-            <span className="text-lg leading-none">+</span>
-            <span>Add Money</span>
+            <Plus className="size-4" />
+            Add Money
           </Link>
           <Link
             to="/account"
-            className="inline-flex items-center justify-center rounded-xl bg-surface text-foreground h-20 text-sm font-semibold flex-col gap-1.5 transition-colors hover:bg-surface-hover"
+            className="inline-flex items-center justify-center gap-3 rounded-xl bg-surface text-foreground h-14 text-sm font-semibold transition-colors hover:bg-surface-hover border border-border"
           >
-            <span className="text-lg leading-none">&uarr;</span>
-            <span>Send Money</span>
+            <ArrowUpRight className="size-4" />
+            Send Money
           </Link>
         </div>
 
+        <ChartAreaInteractive data={dailyVolumes} />
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-4">
-            <CardTitle className="text-sm font-medium">Recent Activity</CardTitle>
+            <CardTitle className="text-sm font-medium">Recent Transactions</CardTitle>
             <Link
-              to="/transactions"
+              to="/account/transactions"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               View all
             </Link>
           </CardHeader>
-          <CardContent>
-            {loadingTransactions && (
-              <div className="space-y-3">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <Skeleton key={i} className="h-12 w-full rounded-md" />
-                ))}
-              </div>
-            )}
-
-            {!loadingTransactions && transactions.length === 0 && (
-              <div className="py-6 text-center">
-                <p className="text-sm text-muted-foreground">No transactions yet.</p>
-                <Link
-                  to="/transactions"
-                  className="text-sm font-medium text-primary hover:text-accent-hover transition-colors mt-1 inline-block"
-                >
-                  View all activity
-                </Link>
-              </div>
-            )}
-
-            {!loadingTransactions && transactions.length > 0 && (
-              <div className="divide-y divide-border/50">
-                {transactions.map((tx) => (
-                  <div
-                    key={tx.id}
-                    className="flex items-center justify-between py-3 first:pt-0 last:pb-0"
-                  >
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium text-foreground">
-                        {tx.senderName === tx.receiverName
-                          ? "Deposit"
-                          : `To ${tx.receiverName}`}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {formatDate(tx.createdAt)}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-mono font-semibold text-foreground">
-                        {formatBalance(Number(tx.amount))}
-                      </span>
-                      <Badge
-                        variant={tx.status === "success" ? "default" : tx.status === "failed" ? "destructive" : "secondary"}
-                        className="text-[10px] px-1.5 py-0"
-                      >
-                        {tx.status}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+          <CardContent className="p-0">
+            <DataTable
+              data={recentTransactions}
+              userAccountIds={userAccountIds}
+              loading={loadingTransactions}
+              emptyMessage="No transactions yet. Deposit funds to get started."
+            />
           </CardContent>
         </Card>
-
-        <div className="grid grid-cols-3 gap-4">
-          <Link
-            to="/notifications"
-            className="inline-flex items-center justify-center rounded-xl bg-surface text-foreground h-14 text-sm font-medium transition-colors hover:bg-surface-hover"
-          >
-            Notifications
-          </Link>
-          <Link
-            to="/transactions"
-            className="inline-flex items-center justify-center rounded-xl bg-surface text-foreground h-14 text-sm font-medium transition-colors hover:bg-surface-hover"
-          >
-            Transactions
-          </Link>
-          <Link
-            to="/account"
-            className="inline-flex items-center justify-center rounded-xl bg-surface text-foreground h-14 text-sm font-medium transition-colors hover:bg-surface-hover"
-          >
-            Account
-          </Link>
-        </div>
       </main>
 
       <footer className="flex justify-between items-center px-8 py-4 text-sm text-muted-foreground/70 border-t border-border">

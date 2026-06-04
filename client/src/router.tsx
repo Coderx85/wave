@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage"
 import NotificationPage from "./components/NotificationPage"
 import TransactionsPage from "./pages/TransactionsPage"
 import AccountPage from "./pages/AccountPage"
+import AccountTransactionsPage from "./pages/AccountTransactionsPage"
 
 const rootRoute = createRootRoute({
   component: App,
@@ -33,7 +34,13 @@ const accountRoute = createRoute({
   component: AccountPage,
 })
 
-const routeTree = rootRoute.addChildren([indexRoute, notificationsRoute, transactionsRoute, accountRoute])
+const accountTransactionsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/account/transactions",
+  component: AccountTransactionsPage,
+})
+
+const routeTree = rootRoute.addChildren([indexRoute, notificationsRoute, transactionsRoute, accountRoute, accountTransactionsRoute])
 
 const router = createRouter({ routeTree })
 
