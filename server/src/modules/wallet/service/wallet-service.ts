@@ -1,7 +1,8 @@
 import type {
   IWalletService,
   CreateAccountInput,
-  TransferInput
+  TransferInput,
+  DepositInput
 } from "./wallet-service.interface";
 import type { 
   IAccount, 
@@ -55,6 +56,15 @@ export class WalletService implements IWalletService {
     });
   }
 
+  getAccountByAccountNumber(accountNumber: string): Promise<IAccount | null> {
+    return tryCatch({
+      ctx: async () => {
+        return await this.accountRepo.findByAccountNumber(accountNumber);
+      },
+      errorMessage: "FAILED_TO_GET_ACCOUNT_BY_NUMBER",
+    });
+  }
+
   getAccountById(accountId: TBankAccountId): Promise<IAccount | null> {
     return tryCatch({
       ctx: async () => {
@@ -83,27 +93,73 @@ export class WalletService implements IWalletService {
     });
   }
 
+  async deposit(input: DepositInput): Promise<IAccount> {
+    return tryCatch({
+      ctx: async () => {
+        const existingAccount = await this.accountRepo.findById(input.accountId);
+        if (!existingAccount) throw new Error("Account not found");
+
+        await this.accountRepo.adjustBalance(input.accountId, input.amount);
+
+        const account = await this.accountRepo.findById(input.accountId);
+        if (!account) throw new Error("Account not found after deposit");
+
+        const amountInCents = Math.round(input.amount * 100);
+
+        const transaction: ITransaction = {
+          id: ID.TransactionId(),
+          userId: input.userId,
+          senderAccountId: input.accountId,
+          senderName: existingAccount.name,
+          receiverAccountId: input.accountId,
+          receiverName: existingAccount.name,
+          amount: BigInt(amountInCents),
+          status: "success",
+          createdAt: new Date(),
+        };
+
+        await this.transactionRepo.save(transaction);
+
+        await Promise.all([
+          this.ledgerRepo.create({
+            transactionId: transaction.id,
+            amount: amountInCents,
+            entryType: "debit",
+          }),
+          this.ledgerRepo.create({
+            transactionId: transaction.id,
+            amount: amountInCents,
+            entryType: "credit",
+          }),
+        ]);
+
+        return account;
+      },
+      errorMessage: "FAILED_TO_DEPOSIT",
+    });
+  }
+
   async transfer(input: TransferInput): Promise<ITransaction> {
-    const totalAmount = input.amount;
+    const amountInCents = Math.round(input.amount * 100);
 
     // Idempotency guard — prevent duplicate transactions
     const _idempotencyKey = IdempotencyManager.generateTransactionKey(
       input.senderAccountId.toString(),
       input.receiverAccountId.toString(),
-      totalAmount,
+      amountInCents,
     );
 
     return tryCatch({
       ctx: async () => {
         // Step 1 — Debit sender and credit receiver atomically per account
-        await this.accountRepo.adjustBalance(input.senderAccountId, -totalAmount);
-        await this.accountRepo.adjustBalance(input.receiverAccountId, totalAmount);
+        await this.accountRepo.adjustBalance(input.senderAccountId, -input.amount);
+        await this.accountRepo.adjustBalance(input.receiverAccountId, input.amount);
 
         // Step 2 — Create transaction record
         const transaction: ITransaction = {
           id: ID.TransactionId(),
           ...input,
-          amount: BigInt(input.amount),
+          amount: BigInt(amountInCents),
           status: "pending",
         };
 
@@ -115,12 +171,12 @@ export class WalletService implements IWalletService {
         await Promise.all([
           this.ledgerRepo.create({
             transactionId: transaction.id,
-            amount: totalAmount,
+            amount: amountInCents,
             entryType: "debit",
           }),
           this.ledgerRepo.create({
             transactionId: transaction.id,
-            amount: totalAmount,
+            amount: amountInCents,
             entryType: "credit",
           }),
         ]);

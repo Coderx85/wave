@@ -12,12 +12,13 @@ vi.mock("../lib/auth-client", () => ({
   $Infer: { Session: {} },
 }))
 
-vi.mock("../components/NotificationPage", () => ({
-  default: ({ user }: any) => <div data-testid="notification-page">Notifications for {user.name}</div>,
-}))
-
-vi.mock("../components/AuthPage", () => ({
-  default: () => <div data-testid="auth-page">Auth Page</div>,
+vi.mock("@tanstack/react-router", () => ({
+  Outlet: () => <div data-testid="outlet" />,
+  Link: ({ children, to, activeProps, inactiveProps, ...props }: any) => (
+    <a href={to} {...props}>
+      {children}
+    </a>
+  ),
 }))
 
 describe("App", () => {
@@ -29,8 +30,7 @@ describe("App", () => {
     mockUseSession.mockReturnValue({ data: null, isPending: true })
     render(<App />)
     expect(screen.getByTestId("loading-skeleton")).toBeInTheDocument()
-    expect(screen.queryByTestId("auth-page")).not.toBeInTheDocument()
-    expect(screen.queryByTestId("notification-page")).not.toBeInTheDocument()
+    expect(screen.queryByTestId("outlet")).not.toBeInTheDocument()
   })
 
   it("shows AuthPage when not authenticated", () => {
@@ -40,27 +40,17 @@ describe("App", () => {
       error: { message: "No session", status: 401, statusText: "Unauthorized" },
     })
     render(<App />)
-    expect(screen.getByTestId("auth-page")).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: /sign in/i })).toBeInTheDocument()
   })
 
-  it("shows NotificationPage when authenticated", () => {
+  it("renders layout and outlet when authenticated", () => {
     const fakeSession = {
       user: { id: "user_1", name: "Test User", email: "test@example.com" },
       session: { id: "sess_1", expiresAt: new Date() },
     }
     mockUseSession.mockReturnValue({ data: fakeSession, isPending: false })
     render(<App />)
-    expect(screen.getByTestId("notification-page")).toBeInTheDocument()
-    expect(screen.getByText(/notifications for test user/i)).toBeInTheDocument()
-  })
-
-  it("passes user prop to NotificationPage", () => {
-    const fakeSession = {
-      user: { id: "user_42", name: "Alice", email: "alice@test.com" },
-      session: { id: "sess_1", expiresAt: new Date() },
-    }
-    mockUseSession.mockReturnValue({ data: fakeSession, isPending: false })
-    render(<App />)
-    expect(screen.getByText(/notifications for alice/i)).toBeInTheDocument()
+    expect(screen.getByTestId("outlet")).toBeInTheDocument()
+    expect(screen.getByText("Account")).toBeInTheDocument()
   })
 })

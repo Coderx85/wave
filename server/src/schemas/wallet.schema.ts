@@ -40,6 +40,20 @@ export const createAccountBodySchema = z.object({
   balance: z.number(),
 });
 
+export const depositBodySchema = z.object({
+  userId: z.string(),
+  accountId: z.string(),
+  amount: z.number().positive(),
+});
+
+export const depositResponseSchema = {
+  body: depositBodySchema,
+  response: {
+    200: successResponseSchema(walletAccountDTO),
+    400: errorResponseSchema,
+  },
+};
+
 export const transferBodySchema = z.object({
   userId: z.string(),
   senderAccountId: z.string(),
@@ -47,6 +61,10 @@ export const transferBodySchema = z.object({
   receiverAccountId: z.string(),
   receiverName: z.string(),
   amount: z.number(),
+});
+
+export const accountNumberParamsSchema = z.object({
+  accountNumber: z.string(),
 });
 
 export const accountIdParamsSchema = z.object({
@@ -72,6 +90,15 @@ export const createAccountResponseSchema = {
   response: {
     201: successResponseSchema(walletAccountDTO),
     400: errorResponseSchema,
+  },
+};
+
+export const getAccountByNumberResponseSchema = {
+  params: accountNumberParamsSchema,
+  response: {
+    200: successResponseSchema(walletAccountDTO),
+    400: errorResponseSchema,
+    404: errorResponseSchema,
   },
 };
 

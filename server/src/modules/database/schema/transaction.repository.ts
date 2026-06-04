@@ -17,7 +17,7 @@ export const AccountsTable = pgTable("accounts", {
   ...timeStamps,
 }, 
 (table) => [
-  check("balance_non_negative", sql`${table.balance} > 0`),
+  check("balance_non_negative", sql`${table.balance} >= 0`),
   check("name_not_empty", sql`${table.name} != ''`),
   index("accounts_user_id_idx").on(table.userId)
 ]);

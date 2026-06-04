@@ -64,6 +64,24 @@ export class AccountRepository extends CachedRepository implements IAccountRepos
     }, 3600);
   };
 
+  findByAccountNumber(accountNumber: string): Promise<IAccountDBDTO | null> {
+    const cacheKey = this.getCacheKey("account-number", accountNumber);
+    return this.cache.getOrSet(cacheKey, async () => {
+      return this.run(async () => {
+        const account = await this.db.query.AccountsTable.findFirst({
+          where: {
+            accountNumber: {
+              eq: accountNumber,
+            },
+          },
+        });
+
+        if (!account) return null;
+        return { ...account, balance: this.numberFromDb(account.balance) };
+      }, "FAILED_TO_FIND_ACCOUNT_BY_NUMBER");
+    }, 3600);
+  };
+
   findByUserId(userId: TUserId): Promise<IAccountDBDTO[]> {
     return this.run(async () => {
       const accounts = await this.db.query.AccountsTable.findMany({

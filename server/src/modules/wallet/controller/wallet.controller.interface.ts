@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import type { StandardResponse } from "@/lib/response";
 import type { IAccount, ILedger, ITransaction, TTransactionQuery } from "../service/internal";
-import type { CreateAccountInput, TransferInput } from "../service";
+import type { CreateAccountInput, TransferInput, DepositInput } from "../service";
 import type { TBankAccountId, TTransactionId, TUserId } from "@/types";
 
 export interface TWalletAccountDTO extends Omit<IAccount, "createdAt" | "updatedAt"> {
@@ -25,6 +25,7 @@ export type TCreateAccountResponse = StandardResponse<TWalletAccountDTO>;
 export type TGetAccountResponse = StandardResponse<TWalletAccountDTO>;
 export type TGetUserAccountsResponse = StandardResponse<TWalletAccountDTO[]>;
 export type TGetBalanceResponse = StandardResponse<{ accountId: TBankAccountId; balance: number }>;
+export type TDepositResponse = StandardResponse<TWalletAccountDTO>;
 export type TTransferResponse = StandardResponse<TWalletTransactionDTO>;
 export type TListTransactionsResponse = StandardResponse<TWalletTransactionDTO[]>;
 export type TQueryTransactionsResponse = StandardResponse<TWalletTransactionDTO[]>;
@@ -35,6 +36,10 @@ export interface IWalletController {
     request: FastifyRequest<{ Body: CreateAccountInput }>,
     reply: FastifyReply,
   ): Promise<TCreateAccountResponse | void>;
+  getAccountByNumberHandler(
+    request: FastifyRequest<{ Params: { accountNumber: string } }>,
+    reply: FastifyReply,
+  ): Promise<TGetAccountResponse | void>;
   getAccountByIdHandler(
     request: FastifyRequest<{ Params: { accountId: TBankAccountId } }>,
     reply: FastifyReply,
@@ -47,6 +52,10 @@ export interface IWalletController {
     request: FastifyRequest<{ Params: { accountId: TBankAccountId } }>,
     reply: FastifyReply,
   ): Promise<TGetBalanceResponse | void>;
+  depositHandler(
+    request: FastifyRequest<{ Body: DepositInput }>,
+    reply: FastifyReply,
+  ): Promise<TDepositResponse | void>;
   transferHandler(
     request: FastifyRequest<{ Body: TransferInput }>,
     reply: FastifyReply,

@@ -14,6 +14,11 @@ vi.mock("../lib/auth-client", () => ({
   $Infer: { Session: {} },
 }))
 
+vi.mock("../lib/user-context", () => ({
+  useUser: () => fakeUser,
+  UserProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}))
+
 let sseUrlUsed = ""
 
 function createMockEventSource() {
@@ -73,7 +78,7 @@ describe("NotificationPage", () => {
 
   it("renders loading skeletons initially", () => {
     mockFetch.mockReturnValue(new Promise(() => {}))
-    render(<NotificationPage user={fakeUser} />)
+    render(<NotificationPage />)
 
     expect(screen.getByRole("heading", { name: /notifications/i })).toBeInTheDocument()
     expect(document.querySelectorAll("[data-testid='skeleton-card']").length).toBe(4)
@@ -92,7 +97,7 @@ describe("NotificationPage", () => {
       }),
     })
 
-    render(<NotificationPage user={fakeUser} />)
+    render(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText("Test Notification")).toBeInTheDocument()
@@ -106,7 +111,7 @@ describe("NotificationPage", () => {
   it("displays error state when fetch fails", async () => {
     mockFetch.mockRejectedValue(new Error("Network error"))
 
-    render(<NotificationPage user={fakeUser} />)
+    render(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText(/network error/i)).toBeInTheDocument()
@@ -120,7 +125,7 @@ describe("NotificationPage", () => {
       json: () => Promise.resolve({ ok: true, status: 200, message: "EMPTY", data: [] }),
     })
 
-    render(<NotificationPage user={fakeUser} />)
+    render(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText(/no notifications/i)).toBeInTheDocument()
@@ -133,7 +138,7 @@ describe("NotificationPage", () => {
       json: () => Promise.resolve({ ok: true, status: 200, message: "EMPTY", data: [] }),
     })
 
-    render(<NotificationPage user={fakeUser} />)
+    render(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText(/no notifications/i)).toBeInTheDocument()
@@ -160,7 +165,7 @@ describe("NotificationPage", () => {
     })
 
     const user = userEvent.setup()
-    render(<NotificationPage user={fakeUser} />)
+    render(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText("To Dismiss")).toBeInTheDocument()
@@ -182,7 +187,7 @@ describe("NotificationPage", () => {
     })
 
     const user = userEvent.setup()
-    render(<NotificationPage user={fakeUser} />)
+    render(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText("Read Me")).toBeInTheDocument()
@@ -202,7 +207,7 @@ describe("NotificationPage", () => {
     })
 
     const user = userEvent.setup()
-    render(<NotificationPage user={fakeUser} />)
+    render(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText(/no notifications/i)).toBeInTheDocument()
@@ -219,7 +224,7 @@ describe("NotificationPage", () => {
       json: () => Promise.resolve({ ok: true, status: 200, message: "EMPTY", data: [] }),
     })
 
-    render(<NotificationPage user={fakeUser} />)
+    render(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText("Test User")).toBeInTheDocument()
@@ -229,7 +234,7 @@ describe("NotificationPage", () => {
 
   it("uses user.id in SSE URL", () => {
     mockFetch.mockReturnValue(new Promise(() => {}))
-    render(<NotificationPage user={fakeUser} />)
+    render(<NotificationPage />)
 
     expect(sseUrlUsed).toBe(`/api/notification/users/${fakeUser.id}/notifications/stream`)
   })

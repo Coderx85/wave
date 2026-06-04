@@ -40,6 +40,7 @@ const config: Config = {
         error: "var(--error)",
         surface: "var(--surface)",
         "surface-hover": "var(--surface-hover)",
+        "surface-elevated": "var(--surface-elevated)",
         "ink-muted": "var(--ink-muted)",
         "accent-hover": "var(--accent-hover)",
         "accent-subtle": "var(--accent-subtle)",
@@ -52,28 +53,27 @@ const config: Config = {
         DEFAULT: "0.5rem",
       },
       keyframes: {
-        "fade-slide-in": {
-          from: { opacity: "0", transform: "translateY(8px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
-        },
-        "pulse-glow": {
-          "0%, 100%": { opacity: "0.6" },
-          "50%": { opacity: "1" },
-        },
-        shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
         "a-spin": {
           to: { transform: "rotate(360deg)" },
         },
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        "slide-in-right": {
+          from: { opacity: "0", transform: "translateX(16px)" },
+          to: { opacity: "1", transform: "translateX(0)" },
+        },
+        "slide-in-left": {
+          from: { opacity: "0", transform: "translateX(-16px)" },
+          to: { opacity: "1", transform: "translateX(0)" },
+        },
       },
       animation: {
-        "fade-slide-in": "fade-slide-in 0.35s ease-out forwards",
-        "pulse-glow": "pulse-glow 1.5s ease-in-out infinite",
-        shimmer: "shimmer 1.5s ease-in-out infinite",
         "a-spin": "a-spin 0.6s linear infinite",
-        "pulse-glow-fast": "pulse-glow 0.6s ease-in-out infinite",
+        "fade-in": "fade-in 0.2s ease-out forwards",
+        "slide-in-right": "slide-in-right 0.25s ease-out",
+        "slide-in-left": "slide-in-left 0.25s ease-out",
       },
     },
   },

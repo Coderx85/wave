@@ -1,7 +1,7 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
-import './index.css';
+import { createRoot } from "react-dom/client"
+import { RouterProvider } from "@tanstack/react-router"
+import { router } from "./router"
+import "./index.css"
 
-const root = createRoot(document.getElementById('root')!);
-root.render(<App />);
+const root = createRoot(document.getElementById("root")!)
+root.render(<RouterProvider router={router} />)

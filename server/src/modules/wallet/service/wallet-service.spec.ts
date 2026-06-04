@@ -190,7 +190,7 @@ describe("WalletService (Deep Module)", () => {
       transactionRepo.save.mockResolvedValue(undefined);
       transactionRepo.update.mockResolvedValue({
         id: "tx_123" as any,
-        amount: BigInt(1000),
+        amount: BigInt(100000),
         userId: "user_123" as any,
         senderAccountId: "account_sender" as any,
         senderName: "Alice",
@@ -206,7 +206,7 @@ describe("WalletService (Deep Module)", () => {
       const result = await service.transfer(transferInput);
 
       expect(result.status).toBe("success");
-      expect(result.amount).toBe(BigInt(1000));
+      expect(result.amount).toBe(BigInt(100000));
       expect(result.senderName).toBe("Alice");
       expect(result.receiverName).toBe("Bob");
     });
@@ -229,7 +229,7 @@ describe("WalletService (Deep Module)", () => {
 
       expect(transactionRepo.save).toHaveBeenCalledTimes(1);
       const savedTx = transactionRepo.save.mock.calls[0][0];
-      expect(savedTx.amount).toBe(BigInt(1000));
+      expect(savedTx.amount).toBe(BigInt(100000));
       expect(savedTx.status).toBe("pending");
     });
 
@@ -244,8 +244,8 @@ describe("WalletService (Deep Module)", () => {
 
       expect(debitCall).toBeDefined();
       expect(creditCall).toBeDefined();
-      expect(debitCall![0].amount).toBe(1000);
-      expect(creditCall![0].amount).toBe(1000);
+      expect(debitCall![0].amount).toBe(100000);
+      expect(creditCall![0].amount).toBe(100000);
     });
 
     it("should throw when sender has insufficient funds", async () => {
@@ -270,7 +270,7 @@ describe("WalletService (Deep Module)", () => {
       transactionRepo.findByUserId.mockResolvedValue([
         {
           id: "tx_1" as any,
-          amount: BigInt(5000),
+          amount: BigInt(500000),
           userId: "user_123" as any,
           senderAccountId: "a1" as any,
           senderName: "Alice",
@@ -284,7 +284,7 @@ describe("WalletService (Deep Module)", () => {
       const result = await service.listTransactions("user_123" as any);
 
       expect(result).toHaveLength(1);
-      expect(result[0].amount).toBe(BigInt(5000));
+      expect(result[0].amount).toBe(BigInt(500000));
       expect(typeof result[0].amount).toBe("bigint");
     });
 
@@ -302,7 +302,7 @@ describe("WalletService (Deep Module)", () => {
       transactionRepo.successfulTransactions.mockResolvedValue([
         {
           id: "tx_1" as any,
-          amount: BigInt(2000),
+          amount: BigInt(200000),
           userId,
           senderAccountId: "a1" as any,
           senderName: "Alice",
@@ -316,14 +316,14 @@ describe("WalletService (Deep Module)", () => {
       const result = await service.queryTransactions({ status: "success" }, userId);
 
       expect(result).toHaveLength(1);
-      expect(result[0].amount).toBe(BigInt(2000));
+      expect(result[0].amount).toBe(BigInt(200000));
     });
 
     it("should query failed transactions", async () => {
       transactionRepo.failedTransactions.mockResolvedValue([
         {
           id: "tx_2" as any,
-          amount: BigInt(500),
+          amount: BigInt(50000),
           userId,
           senderAccountId: "a1" as any,
           senderName: "Alice",
@@ -371,7 +371,7 @@ describe("WalletService (Deep Module)", () => {
         {
           id: "entry_1" as any,
           transactionId: "tx_123" as any,
-          amount: 1000,
+          amount: 100000,
           entryType: "debit",
           createdAt: new Date("2024-01-01"),
           updatedAt: null,
@@ -379,7 +379,7 @@ describe("WalletService (Deep Module)", () => {
         {
           id: "entry_2" as any,
           transactionId: "tx_123" as any,
-          amount: 1000,
+          amount: 100000,
           entryType: "credit",
           createdAt: new Date("2024-01-01"),
           updatedAt: null,

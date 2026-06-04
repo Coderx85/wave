@@ -12,6 +12,11 @@ export default async function walletRoute(fastify: FastifyInstance) {
     handler: walletController.createAccountHandler,
   });
 
+  api.get(walletApiRoutes.getAccountByNumber, {
+    schema: schema.getAccountByNumberResponseSchema,
+    handler: walletController.getAccountByNumberHandler,
+  });
+
   api.get(walletApiRoutes.getAccountById, {
     schema: schema.getAccountResponseSchema,
     handler: walletController.getAccountByIdHandler,
@@ -25,6 +30,11 @@ export default async function walletRoute(fastify: FastifyInstance) {
   api.get(walletApiRoutes.getBalance, {
     schema: schema.getBalanceResponseSchema,
     handler: walletController.getBalanceHandler,
+  });
+
+  api.post(walletApiRoutes.deposit, {
+    schema: schema.depositResponseSchema,
+    handler: walletController.depositHandler,
   });
 
   api.post(walletApiRoutes.transfer, {
