@@ -1,0 +1,58 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "c1253f14b9bd",
+  "strategy": "manual-commit",
+  "branch": "setup/wave-fe",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "server/src/lib/repository/composite.repository.ts",
+    "server/src/lib/repository/index.ts",
+    "server/src/lib/repository/stores/cache-store.interface.ts",
+    "server/src/lib/repository/stores/index.ts",
+    "server/src/lib/repository/stores/pg-store.interface.ts",
+    "server/src/lib/repository/stores/pg-store.ts",
+    "server/src/modules/notification/repository/contracts.ts",
+    "server/src/modules/notification/repository/index.ts",
+    "server/src/modules/notification/repository/notification-repo.interface.ts",
+    "server/src/modules/notification/repository/notification-repo.test.ts",
+    "server/src/modules/notification/repository/notification-repo.ts",
+    "server/src/modules/notification/repository/notification.repository.ts",
+    "server/src/modules/wallet/repository/account-repo/account-repo.interface.ts",
+    "server/src/modules/wallet/repository/account-repo/account-repo.spec.ts",
+    "server/src/modules/wallet/repository/account-repo/account-repo.ts",
+    "server/src/modules/wallet/repository/account-repo/index.ts",
+    "server/src/modules/wallet/repository/account.repository.ts",
+    "server/src/modules/wallet/repository/contracts.ts",
+    "server/src/modules/wallet/repository/index.ts",
+    "server/src/modules/wallet/repository/ledger-repo/index.ts",
+    "server/src/modules/wallet/repository/ledger-repo/ledger-repo.interface.ts",
+    "server/src/modules/wallet/repository/ledger-repo/ledger-repo.spec.ts",
+    "server/src/modules/wallet/repository/ledger-repo/ledger-repo.ts",
+    "server/src/modules/wallet/repository/ledger.repository.ts",
+    "server/src/modules/wallet/repository/outbox-repo/index.ts",
+    "server/src/modules/wallet/repository/outbox-repo/outbox-repo.interface.ts",
+    "server/src/modules/wallet/repository/outbox-repo/outbox-repo.ts",
+    "server/src/modules/wallet/repository/outbox.repository.ts",
+    "server/src/modules/wallet/repository/transaction-repo/index.ts",
+    "server/src/modules/wallet/repository/transaction-repo/transaction-repo.interface.ts",
+    "server/src/modules/wallet/repository/transaction-repo/transaction-repo.spec.ts",
+    "server/src/modules/wallet/repository/transaction-repo/transaction-repo.ts",
+    "server/src/modules/wallet/repository/transaction.repository.ts",
+    "server/src/modules/wallet/service/wallet-service.spec.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/c1/253f14b9bd/0/metadata.json",
+      "transcript": "/c1/253f14b9bd/0/full.jsonl",
+      "content_hash": "/c1/253f14b9bd/0/content_hash.txt",
+      "prompt": "/c1/253f14b9bd/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 219772,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 8007296,
+    "output_tokens": 45376,
+    "api_call_count": 113
+  }
+}
