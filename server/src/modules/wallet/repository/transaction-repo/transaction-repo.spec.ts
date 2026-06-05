@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import type { ITransactionDBDTO } from "./transaction-repo.interface";
-import type { TTransactionId, TAccountId, TUserId } from "../../../../types";
+import type { TTransactionId, TBankAccountNumber, TUserId } from "../../../../types";
 import { TransactionRepository } from "../transaction-repo";
 import type { DrizzleDb } from "@/lib/repository/base-repository";
 import { eq } from "drizzle-orm";
@@ -28,12 +28,13 @@ describe("TransactionRepository", () => {
     id: `txn_${Math.random()}` as TTransactionId,
     userId: "user_123" as TUserId,
     amount: BigInt(1000),
-    senderAccountId: `acc_${Math.random()}` as TAccountId,
+    senderAccountNumber: `1111111111` as TBankAccountNumber,
     senderName: "Sender User",
-    receiverAccountId: `acc_${Math.random()}` as TAccountId,
+    receiverAccountNumber: `2222222222` as TBankAccountNumber,
     receiverName: "Receiver User",
     status: "pending",
     createdAt: new Date(),
+    updatedAt: null,
     ...overrides,
   });
 

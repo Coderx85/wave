@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import type { IAccountDBDTO } from "./account-repo.interface";
-import type { TBankAccountId, TUserId } from "../../../../types";
+import type { TUserId } from "../../../../types";
 import { AccountRepository } from "./account-repo";
 import type { DrizzleDb } from "@/lib/repository/base-repository";
 import { eq } from "drizzle-orm";
@@ -23,8 +23,8 @@ describe("AccountRepository", () => {
 
   const createMockAccount = (
     overrides?: Partial<IAccountDBDTO>
-  ): IAccountDBDTO => ({
-    id: `acc_${Math.random()}` as TBankAccountId,
+  ) => ({
+    id: `acc_${Math.random()}`,
     name: "Checking Account",
     userId: "user_123" as TUserId,
     accountNumber: "1234567890",
