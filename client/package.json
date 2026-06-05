@@ -6,6 +6,7 @@
   "scripts": {
     "tw": "tailwindcss -i src/styles.css -o src/index.css",
     "tw:watch": "tailwindcss -i src/styles.css -o src/index.css --watch",
+    "typecheck": "tsc --noEmit",
     "dev": "bun --hot index.ts",
     "build": "bun run tw && bun build src/main.tsx --outdir dist --target browser --minify",
     "start": "NODE_ENV=production bun index.ts",
