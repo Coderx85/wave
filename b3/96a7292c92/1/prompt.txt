@@ -1,0 +1,109 @@
+Update the test files in @server/src/modules/wallet/controller/, @server/src/modules/wallet/repository/, @server/src/modules/wallet/service/ because of new @server/src/modules/wallet/service/internal/account-service/account-service.interface.ts and @server/src/modules/wallet/service/internal/transaction-service/transaction-service.interface.ts 
+Called the Read tool with the following input: {"filePath":"/home/coderx85/Projects/Work/.GITHUB/wave-fe/server/src/modules/wallet/controller/"}
+<path>/home/coderx85/Projects/Work/.GITHUB/wave-fe/server/src/modules/wallet/controller/</path>
+<type>directory</type>
+<entries>
+index.ts
+wallet.controller.interface.ts
+wallet.controller.ts
+
+(3 entries)
+</entries>
+Called the Read tool with the following input: {"filePath":"/home/coderx85/Projects/Work/.GITHUB/wave-fe/server/src/modules/wallet/repository/"}
+<path>/home/coderx85/Projects/Work/.GITHUB/wave-fe/server/src/modules/wallet/repository/</path>
+<type>directory</type>
+<entries>
+account-repo/
+index.ts
+ledger-repo/
+outbox-repo/
+transaction-repo/
+
+(5 entries)
+</entries>
+Called the Read tool with the following input: {"filePath":"/home/coderx85/Projects/Work/.GITHUB/wave-fe/server/src/modules/wallet/service/"}
+<path>/home/coderx85/Projects/Work/.GITHUB/wave-fe/server/src/modules/wallet/service/</path>
+<type>directory</type>
+<entries>
+index.ts
+internal/
+wallet-service.interface.ts
+wallet-service.spec.ts
+wallet-service.ts
+
+(5 entries)
+</entries>
+Called the Read tool with the following input: {"filePath":"/home/coderx85/Projects/Work/.GITHUB/wave-fe/server/src/modules/wallet/service/internal/account-service/account-service.interface.ts"}
+<path>/home/coderx85/Projects/Work/.GITHUB/wave-fe/server/src/modules/wallet/service/internal/account-service/account-service.interface.ts</path>
+<type>file</type>
+<content>
+1: import type { TBankAccountNumber, TUserId } from "@/types";
+2: 
+3: export interface IAccount {
+4:   name: string;
+5:   userId: TUserId;
+6:   accountNumber: TBankAccountNumber;
+7:   balance: number;
+8:   createdAt: Date;
+9:   updatedAt: Date | null;
+10: }
+11: 
+12: export interface IAccountService {
+13:   create(account: Omit<IAccount, "id" | "createdAt" | "updatedAt">): Promise<IAccount>;
+14:   getAccountByNumber(accountNumber: TBankAccountNumber): Promise<IAccount | null>;
+15:   getUserAccounts(userId: TUserId): Promise<IAccount[]>;
+16:   getBalance(accountNumber: TBankAccountNumber): Promise<number>;
+17:   updateAccountBalance(accountNumber: TBankAccountNumber, amount: number): Promise<IAccount>;
+18: }
+
+(End of file - total 18 lines)
+</content>
+Called the Read tool with the following input: {"filePath":"/home/coderx85/Projects/Work/.GITHUB/wave-fe/server/src/modules/wallet/service/internal/transaction-service/transaction-service.interface.ts"}
+<path>/home/coderx85/Projects/Work/.GITHUB/wave-fe/server/src/modules/wallet/service/internal/transaction-service/transaction-service.interface.ts</path>
+<type>file</type>
+<content>
+1: import type { TBankAccountNumber, TAccountId, TTransactionId, TUserId } from "@/types";
+2: 
+3: export type TransactionStatus = "pending" | "success" | "failed";
+4: 
+5: export interface ITransaction {
+6:   id: TTransactionId;
+7:   amount: bigint; 
+8:   userId: TUserId;
+9:   senderAccountNumber: TBankAccountNumber;
+10:   senderName: string;
+11:   receiverAccountNumber: TBankAccountNumber;
+12:   receiverName: string;
+13:   status: TransactionStatus;
+14:   createdAt: Date;
+15:   updatedAt: Date | null;
+16: };
+17: 
+18: export type TransactionInput = Omit<ITransaction, "id" | "status" | "amount" | "createdAt" | "updatedAt"> & {
+19:   amount: number;
+20: };
+21: 
+22: export type TTransactionQuery = 
+23:   | {
+24:       status?: "success";
+25:       dateRange?: {
+26:         from: Date;
+27:         to: Date;
+28:       };
+29:     }
+30:   | {
+31:       status?: "failed";
+32:       dateRange?: {
+33:         from: Date;
+34:         to: Date;
+35:       };
+36:     };
+37: 
+38: export interface ITransactionModule {
+39:   create(transaction: TransactionInput): Promise<ITransaction>;
+40:   list(userId: TUserId): Promise<ITransaction[]>;
+41:   query(query: TTransactionQuery, userId: TUserId): Promise<ITransaction[]>;
+42: };
+
+(End of file - total 42 lines)
+</content>
