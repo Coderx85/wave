@@ -1,4 +1,4 @@
-import type { TBankAccountId, TUserId } from "@/types";
+import type { TBankAccountNumber, TUserId } from "@/types";
 import type { IAccountDBDTO, IAccountRepository} from "./account-repo.interface";
 import { CachedRepository, type DrizzleDb } from "@/lib/repository/base-repository";
 import { AccountsTable } from "@/modules/database/schema/transaction.repository";
@@ -10,8 +10,8 @@ export class AccountRepository extends CachedRepository implements IAccountRepos
     super(dbInstance, cacheStore);
   }
 
-  private getAccountCacheKey(accountId: TBankAccountId): string {
-    return this.getCacheKey("account", accountId);
+  private getAccountCacheKey(accountNumber: TBankAccountNumber): string {
+    return this.getCacheKey("account", accountNumber.toString());
   }
 
   private getUserAccountsCacheKey(userId: TUserId): string {
@@ -45,14 +45,14 @@ export class AccountRepository extends CachedRepository implements IAccountRepos
     return newAccount;
   }
 
-  findById(accountId: TBankAccountId): Promise<IAccountDBDTO | null> {
-    const cacheKey = this.getAccountCacheKey(accountId);
+  findById(accountNumber: TBankAccountNumber): Promise<IAccountDBDTO | null> {
+    const cacheKey = this.getAccountCacheKey(accountNumber);
     return this.cache.getOrSet(cacheKey, async () => {
       return this.run(async () => {
         const account = await this.db.query.AccountsTable.findFirst({
           where: {
-            id: {
-              eq: accountId
+            accountNumber: {
+              eq: accountNumber
             }
           }
         });
@@ -64,8 +64,8 @@ export class AccountRepository extends CachedRepository implements IAccountRepos
     }, 3600);
   };
 
-  findByAccountNumber(accountNumber: string): Promise<IAccountDBDTO | null> {
-    const cacheKey = this.getCacheKey("account-number", accountNumber);
+  findByAccountNumber(accountNumber: TBankAccountNumber): Promise<IAccountDBDTO | null> {
+    const cacheKey = this.getCacheKey("account-number", accountNumber.toString());
     return this.cache.getOrSet(cacheKey, async () => {
       return this.run(async () => {
         const account = await this.db.query.AccountsTable.findFirst({
@@ -99,13 +99,13 @@ export class AccountRepository extends CachedRepository implements IAccountRepos
     }, "FAILED_TO_FIND_ACCOUNTS_BY_USER_ID")
   };
 
-  calculateNewBalance(accountId: TBankAccountId, amount: number): Promise<number> {
+  calculateNewBalance(accountNumber: TBankAccountNumber, amount: number): Promise<number> {
     return this.run(async () => {
       const [account] = await this.db
         .select()
         .from(AccountsTable)
         .where(
-          eq(AccountsTable.id, accountId))
+          eq(AccountsTable.accountNumber, accountNumber))
         .for("update")
         .execute();
       if (!account) throw new Error("Account not found");
@@ -117,7 +117,7 @@ export class AccountRepository extends CachedRepository implements IAccountRepos
     }, "FAILED_TO_CALCULATE_NEW_BALANCE");
   }
 
-  async adjustBalance(accountId: TBankAccountId, amount: number): Promise<number> {
+  async adjustBalance(accountNumber: TBankAccountNumber, amount: number): Promise<number> {
     const newBalance = await this.run(async () => {
       return await this.db.transaction(
         async (tx) => {
@@ -125,7 +125,7 @@ export class AccountRepository extends CachedRepository implements IAccountRepos
             .select()
             .from(AccountsTable)
             .where(
-              eq(AccountsTable.id, accountId))
+              eq(AccountsTable.accountNumber, accountNumber))
             .for("update")
             .execute();
 
@@ -140,40 +140,46 @@ export class AccountRepository extends CachedRepository implements IAccountRepos
               balance: this.numberToDb(newBalance),
               updatedAt: new Date()
             })
-            .where(eq(AccountsTable.id, accountId))
+            .where(eq(AccountsTable.accountNumber, accountNumber))
             .execute();
 
           return newBalance;
         });
       }, "FAILED_TO_ADJUST_BALANCE");
 
-    await this.cache.del(this.getAccountCacheKey(accountId));
-    const account = await this.findById(accountId);
+    await this.cache.del(this.getAccountCacheKey(accountNumber));
+    const account = await this.findByAccountNumber(accountNumber);
+    if (!account) {
+      throw new Error("Account not found"); 
+    }
     await this.cache.del(this.getUserAccountsCacheKey(account.userId));
 
     return newBalance;
   }
 
-  checkBalance(accountId: TBankAccountId): Promise<IAccountDBDTO> {
+  checkBalance(accountNumber: TBankAccountNumber): Promise<IAccountDBDTO> {
     return this.run(async () => {
-      const account = await this.findById(accountId);
+      const account = await this.findByAccountNumber(accountNumber);
       if (!account) throw new Error("Account not found");
       return account;
     }, "FAILED_TO_CHECK_BALANCE");
   }
 
-  async updateBalance(accountId: TBankAccountId, newBalance: number): Promise<void> {
+  async updateBalance(accountNumber: TBankAccountNumber, newBalance: number): Promise<void> {
     await this.run(async () => {
       await this.db.update(AccountsTable).set({
         balance: this.numberToDb(newBalance),
         updatedAt: new Date()
       })
-      .where(eq(AccountsTable.id, accountId))
+      .where(eq(AccountsTable.accountNumber, accountNumber))
       .execute();
     }, "FAILED_TO_UPDATE_BALANCE");
 
-    await this.cache.del(this.getAccountCacheKey(accountId));
-    const account = await this.findById(accountId);
+    await this.cache.del(this.getAccountCacheKey(accountNumber));
+    const account = await this.findByAccountNumber(accountNumber);
+    if (!account) {
+      throw new Error("Account not found");
+    }
     await this.cache.del(this.getUserAccountsCacheKey(account.userId));
   }
 }

@@ -1,4 +1,4 @@
-import type { TUserId, TSessionId, TAccountId, TTokenId, TBankAccountId, TTransactionId, TLedgerEntryId } from "@/types";
+import type { TUserId, TSessionId, TAccountId, TTokenId, TTransactionId, TLedgerEntryId } from "@/types";
 
 class IDService {
   public UserId(): TUserId {
@@ -19,10 +19,6 @@ class IDService {
 
   public TransactionId(): TTransactionId {
     return `transaction_${crypto.randomUUID()}` as TTransactionId;
-  };
-
-  public BankAccountId(): TBankAccountId {
-    return `bank_account_${crypto.randomUUID()}` as TBankAccountId;
   };
 
   public LedgerEntryId(): TLedgerEntryId {

@@ -2,7 +2,7 @@ import type { ITransactionDBDTO, ITransactionRepository } from "./transaction-re
 import { CachedRepository, type DrizzleDb } from "@/lib/repository/base-repository";
 import { TransactionsTable } from "@/modules/database/schema/transaction.repository";
 import { eq, sql } from "drizzle-orm";
-import type { TTransactionId, TUserId } from "@/types";
+import type { TBankAccountNumber, TTransactionId, TUserId } from "@/types";
 import type { ICacheStore } from "@/lib/cache";
 
 export class TransactionRepository extends CachedRepository implements ITransactionRepository {
@@ -25,11 +25,11 @@ export class TransactionRepository extends CachedRepository implements ITransact
           async (tx) => {
             await tx.insert(TransactionsTable)
               .values({
-                ...transaction,
-                status: "pending",
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                });
+              ...transaction,
+              status: "pending",
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
           }
         )
     }, "FAILED_TO_SAVE_TRANSACTION");
@@ -63,14 +63,14 @@ export class TransactionRepository extends CachedRepository implements ITransact
   findById(transactionId: TTransactionId): Promise<ITransactionDBDTO | null> {
     const cacheKey = this.getTransactionCacheKey(transactionId);
     return this.cache.getOrSet(cacheKey, () => {
-        return this.run(async () => {
-            const transaction = await this.db.query.TransactionsTable.findFirst({
-              where: {
-                id: { eq: transactionId },
-              },
-            });
-            return transaction || null;
-          }, "FAILED_TO_FIND_TRANSACTION_BY_ID");
+      return this.run(async () => {
+        const transaction = await this.db.query.TransactionsTable.findFirst({
+          where: {
+            id: { eq: transactionId },
+          },
+        });
+        return transaction || null;
+      }, "FAILED_TO_FIND_TRANSACTION_BY_ID");
     }, 3600);
   }
 
@@ -88,17 +88,17 @@ export class TransactionRepository extends CachedRepository implements ITransact
     }, 3600);
   }
 
-  async failedTransactions(query: { userId: TUserId; accountId?: string; dateRange?: { from: Date; to: Date; }; }): Promise<ITransactionDBDTO[]> {
+  async failedTransactions(query: { userId: TUserId; accountNumber?: TBankAccountNumber; dateRange?: { from: Date; to: Date; }; }): Promise<ITransactionDBDTO[]> {
     return this.run(async () => {
-        const { userId, accountId, dateRange } = query;
+        const { userId, accountNumber, dateRange } = query;
         const whereClauses: any[] = [];
   
         if (dateRange) {
           whereClauses.push({ RAW: (table: any) => sql`${table.createdAt} BETWEEN ${dateRange.from} AND ${dateRange.to}` });
         }
   
-        if (accountId) {
-          whereClauses.push({ RAW: (table: any) => sql`${table.senderAccountId} = ${accountId} OR ${table.receiverAccountId} = ${accountId}` });
+        if (accountNumber) {
+          whereClauses.push({ RAW: (table: any) => sql`${table.senderAccountNumber} = ${accountNumber} OR ${table.receiverAccountNumber} = ${accountNumber}` });
         }
   
         const transactions = await this.db.query.TransactionsTable.findMany({
@@ -116,17 +116,24 @@ export class TransactionRepository extends CachedRepository implements ITransact
       }, "FAILED_TO_GET_FAILED_TRANSACTIONS");
   }
 
-  async successfulTransactions(query: { userId: TUserId; accountId?: string; dateRange?: { from: Date; to: Date; }; }): Promise<ITransactionDBDTO[]> {
+  async successfulTransactions(query: { 
+    userId: TUserId; 
+    accountNumber?: TBankAccountNumber; 
+    dateRange?: { 
+      from: Date; 
+      to: Date; 
+    }; 
+  }): Promise<ITransactionDBDTO[]> {
     return this.run(async () => {
-        const { userId, accountId, dateRange } = query;
+        const { userId, accountNumber, dateRange } = query;
         const whereClauses: any[] = [];
   
         if (dateRange) {
           whereClauses.push({ RAW: (table: any) => sql`${table.createdAt} BETWEEN ${dateRange.from} AND ${dateRange.to}` });
         }
   
-        if (accountId) {
-          whereClauses.push({ RAW: (table: any) => sql`${table.senderAccountId} = ${accountId} OR ${table.receiverAccountId} = ${accountId}` });
+        if (accountNumber) {
+          whereClauses.push({ RAW: (table: any) => sql`${table.senderAccountNumber} = ${accountNumber} OR ${table.receiverAccountNumber} = ${accountNumber}` });
         }
   
         const transactions = await this.db.query.TransactionsTable.findMany({

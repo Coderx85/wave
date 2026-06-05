@@ -10,7 +10,7 @@ import type {
   TTransactionQuery, 
   ILedger
 } from "./internal";
-import type { TBankAccountId, TUserId, TTransactionId } from "@/types";
+import type { TBankAccountNumber, TUserId, TTransactionId } from "@/types";
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { ID } from "@/lib/ID";
 import {
@@ -47,7 +47,6 @@ export class WalletService implements IWalletService {
     return tryCatch({
       ctx: async () => {
         const newAccount = await this.accountRepo.create({
-          id: ID.BankAccountId(),
           ...account,
         });
         return newAccount;
@@ -56,7 +55,7 @@ export class WalletService implements IWalletService {
     });
   }
 
-  getAccountByAccountNumber(accountNumber: string): Promise<IAccount | null> {
+  getAccountByAccountNumber(accountNumber: TBankAccountNumber): Promise<IAccount | null> {
     return tryCatch({
       ctx: async () => {
         return await this.accountRepo.findByAccountNumber(accountNumber);
@@ -65,10 +64,10 @@ export class WalletService implements IWalletService {
     });
   }
 
-  getAccountById(accountId: TBankAccountId): Promise<IAccount | null> {
+  getAccountById(accountId: TBankAccountNumber): Promise<IAccount | null> {
     return tryCatch({
       ctx: async () => {
-        return await this.accountRepo.findById(accountId);
+        return await this.accountRepo.findByAccountNumber(accountId);
       },
       errorMessage: "FAILED_TO_GET_ACCOUNT",
     });
@@ -83,10 +82,10 @@ export class WalletService implements IWalletService {
     });
   }
 
-  getBalance(accountId: TBankAccountId): Promise<number> {
+  getBalance(accountNumber: TBankAccountNumber): Promise<number> {
     return tryCatch({
       ctx: async () => {
-        const account = await this.accountRepo.checkBalance(accountId);
+        const account = await this.accountRepo.checkBalance(accountNumber);
         return account.balance;
       },
       errorMessage: "FAILED_TO_GET_BALANCE",
@@ -96,12 +95,12 @@ export class WalletService implements IWalletService {
   async deposit(input: DepositInput): Promise<IAccount> {
     return tryCatch({
       ctx: async () => {
-        const existingAccount = await this.accountRepo.findById(input.accountId);
+        const existingAccount = await this.accountRepo.findByAccountNumber(input.accountNumber);
         if (!existingAccount) throw new Error("Account not found");
 
-        await this.accountRepo.adjustBalance(input.accountId, input.amount);
+        await this.accountRepo.adjustBalance(input.accountNumber, input.amount);
 
-        const account = await this.accountRepo.findById(input.accountId);
+        const account = await this.accountRepo.findByAccountNumber(input.accountNumber);
         if (!account) throw new Error("Account not found after deposit");
 
         const amountInCents = Math.round(input.amount * 100);
@@ -109,13 +108,14 @@ export class WalletService implements IWalletService {
         const transaction: ITransaction = {
           id: ID.TransactionId(),
           userId: input.userId,
-          senderAccountId: input.accountId,
+          senderAccountNumber: input.accountNumber,
           senderName: existingAccount.name,
-          receiverAccountId: input.accountId,
+          receiverAccountNumber: input.accountNumber,
           receiverName: existingAccount.name,
           amount: BigInt(amountInCents),
           status: "success",
           createdAt: new Date(),
+          updatedAt: null,
         };
 
         await this.transactionRepo.save(transaction);
@@ -144,16 +144,16 @@ export class WalletService implements IWalletService {
 
     // Idempotency guard — prevent duplicate transactions
     const _idempotencyKey = IdempotencyManager.generateTransactionKey(
-      input.senderAccountId.toString(),
-      input.receiverAccountId.toString(),
+      input.senderAccountNumber.toString(),
+      input.receiverAccountNumber.toString(),
       amountInCents,
     );
 
     return tryCatch({
       ctx: async () => {
         // Step 1 — Debit sender and credit receiver atomically per account
-        await this.accountRepo.adjustBalance(input.senderAccountId, -input.amount);
-        await this.accountRepo.adjustBalance(input.receiverAccountId, input.amount);
+        await this.accountRepo.adjustBalance(input.senderAccountNumber, -input.amount);
+        await this.accountRepo.adjustBalance(input.receiverAccountNumber, input.amount);
 
         // Step 2 — Create transaction record
         const transaction: ITransaction = {
@@ -161,6 +161,7 @@ export class WalletService implements IWalletService {
           ...input,
           amount: BigInt(amountInCents),
           status: "pending",
+          updatedAt: null,
         };
 
         await this.transactionRepo.save({
@@ -185,6 +186,7 @@ export class WalletService implements IWalletService {
         const updatedTransaction = await this.transactionRepo.update({
           ...transaction,
           status: "success",
+          updatedAt: new Date(),
         });
         
         

@@ -1,13 +1,11 @@
 import type { WalletInternalService } from "../../service/";
 
-export interface ITransactionDBDTO extends Omit<WalletInternalService.ITransaction, "amount"> {
-  amount: bigint;
-}
+export interface ITransactionDBDTO extends WalletInternalService.ITransaction {}
 
 export interface TransactionQuery {
   userId: ITransactionDBDTO["userId"];
   dateRange?: { from: Date; to: Date };
-  accountId?: ITransactionDBDTO["senderAccountId"] | ITransactionDBDTO["receiverAccountId"];
+  accountNumber?: ITransactionDBDTO["senderAccountNumber"] | ITransactionDBDTO["receiverAccountNumber"];
 }
 
 export interface ITransactionRepository {

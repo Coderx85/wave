@@ -1,10 +1,9 @@
-import type { TUserId, TBankAccountId } from "@/types";
+import type { TUserId, TBankAccountNumber } from "@/types";
 
 export interface IAccountDBDTO {
-  id: TBankAccountId;
   name: string;
   userId: TUserId;
-  accountNumber: string;
+  accountNumber: TBankAccountNumber;
   balance: number;
   createdAt: Date;
   updatedAt: Date | null;
@@ -12,11 +11,11 @@ export interface IAccountDBDTO {
 
 export interface IAccountRepository {
   create(account: Omit<IAccountDBDTO, "createdAt" | "updatedAt">): Promise<IAccountDBDTO>;
-  findById(accountId: TBankAccountId): Promise<IAccountDBDTO | null>;
-  findByAccountNumber(accountNumber: string): Promise<IAccountDBDTO | null>;
+  findById(accountNumber: TBankAccountNumber): Promise<IAccountDBDTO | null>;
+  findByAccountNumber(accountNumber: TBankAccountNumber): Promise<IAccountDBDTO | null>;
   findByUserId(userId: TUserId): Promise<IAccountDBDTO[]>;
-  calculateNewBalance(accountId: TBankAccountId, amount: number): Promise<number>;
-  adjustBalance(accountId: TBankAccountId, amount: number): Promise<number>;
-  checkBalance(accountId: TBankAccountId): Promise<IAccountDBDTO>;
-  updateBalance(accountId: TBankAccountId, newBalance: number): Promise<void>;
+  calculateNewBalance(accountNumber: TBankAccountNumber, amount: number): Promise<number>;
+  adjustBalance(accountNumber: TBankAccountNumber, amount: number): Promise<number>;
+  checkBalance(accountNumber: TBankAccountNumber): Promise<IAccountDBDTO>;
+  updateBalance(accountNumber: TBankAccountNumber, newBalance: number): Promise<void>;
 };

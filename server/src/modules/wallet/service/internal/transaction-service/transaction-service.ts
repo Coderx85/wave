@@ -41,21 +41,23 @@ export class TransactionModule implements ITransactionModule {
 
     // Generate idempotency key for this transaction to prevent duplicates
     const idempotencyKey = IdempotencyManager.generateTransactionKey(
-      transaction.senderAccountId.toString(),
-      transaction.receiverAccountId.toString(),
+      transaction.receiverName.toString(),
+      transaction.receiverAccountNumber.toString(),
       totalAmount
     );
 
     return tryCatch({
       ctx: async () => {
-        await this.accountRepository.adjustBalance(transaction.senderAccountId, -totalAmount);
-        await this.accountRepository.adjustBalance(transaction.receiverAccountId, totalAmount);
+        await this.accountRepository.adjustBalance(transaction.senderAccountNumber, -totalAmount);
+        await this.accountRepository.adjustBalance(transaction.receiverAccountNumber, totalAmount);
 
         const newTransaction: ITransaction = {
           id: ID.TransactionId(),
           ...transaction,
           amount: BigInt(transaction.amount),
-          status: "pending"
+          status: "pending",
+          createdAt: new Date(),
+          updatedAt: null,
         };
 
         await this.transactionRepository.save({
@@ -67,8 +69,8 @@ export class TransactionModule implements ITransactionModule {
           eventType: "transaction.created" as const,
           transactionId: newTransaction.id,
           userId: newTransaction.userId,
-          senderAccountId: newTransaction.senderAccountId,
-          receiverAccountId: newTransaction.receiverAccountId,
+          senderAccountNumber: newTransaction.senderAccountNumber,
+          receiverAccountNumber: newTransaction.receiverAccountNumber,
           amount: totalAmount.toString(),
           senderName: newTransaction.senderName,
           receiverName: newTransaction.receiverName,

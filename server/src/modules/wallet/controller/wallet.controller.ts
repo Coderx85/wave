@@ -6,7 +6,7 @@ import {
   type TWalletLedgerDTO,
   type TWalletTransactionDTO,
 } from "./wallet.controller.interface";
-import type { TBankAccountId } from "@/types";
+import type { TBankAccountNumber } from "@/types";
 import type { IWalletService } from "../service";
 import { WalletService } from "../service";
 
@@ -51,13 +51,13 @@ export class WalletController implements IWalletController {
     sendSuccess<TWalletAccountDTO>({
       reply,
       statusCode: 201,
-      message: "Successfully created account",
+      message: "SUCCESSFULLY_CREATED_ACCOUNT",
       data: toAccountDTO(account),
     });
   };
 
   getAccountByNumberHandler = async (
-    request: FastifyRequest<{ Params: { accountNumber: string } }>,
+    request: FastifyRequest<{ Params: { accountNumber: TBankAccountNumber } }>,
     reply: FastifyReply,
   ) => {
     const account = await this.walletService.getAccountByAccountNumber(request.params.accountNumber);
@@ -66,7 +66,7 @@ export class WalletController implements IWalletController {
       sendError({
         reply,
         statusCode: 404,
-        message: "Account not found",
+        message: "ACCOUNT_NOT_FOUND",
         error: "ACCOUNT_NOT_FOUND",
       });
       return;
@@ -81,16 +81,16 @@ export class WalletController implements IWalletController {
   };
 
   getAccountByIdHandler = async (
-    request: FastifyRequest<{ Params: { accountId: Parameters<IWalletService["getAccountById"]>[0] } }>,
+    request: FastifyRequest<{ Params: { accountNumber: TBankAccountNumber } }>,
     reply: FastifyReply,
   ) => {
-    const account = await this.walletService.getAccountById(request.params.accountId);
+    const account = await this.walletService.getAccountById(request.params.accountNumber);
 
     if (!account) {
       sendError({
         reply,
         statusCode: 404,
-        message: "Account not found",
+        message: "ACCOUNT_NOT_FOUND",
         error: "ACCOUNT_NOT_FOUND",
       });
       return;
@@ -118,16 +118,16 @@ export class WalletController implements IWalletController {
   };
 
   getBalanceHandler = async (
-    request: FastifyRequest<{ Params: { accountId: Parameters<IWalletService["getBalance"]>[0] } }>,
+    request: FastifyRequest<{ Params: { accountNumber: TBankAccountNumber } }>,
     reply: FastifyReply,
   ) => {
-    const balance = await this.walletService.getBalance(request.params.accountId);
-    sendSuccess<{ accountId: TBankAccountId; balance: number }>({
+    const balance = await this.walletService.getBalance(request.params.accountNumber);
+    sendSuccess<{ accountNumber: TBankAccountNumber; balance: number }>({
       reply,
       statusCode: 200,
-      message: "Successfully fetched balance",
+      message: "SUCCESSFULLY_FETCHED_BALANCE",
       data: {
-        accountId: request.params.accountId,
+        accountNumber: request.params.accountNumber,
         balance,
       },
     });
