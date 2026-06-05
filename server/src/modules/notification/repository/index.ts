@@ -1,2 +1,2 @@
-export * from "./notification-repo.interface";
-export * from "./notification-repo";
+export type { INotification, INotificationRepository } from "./contracts";
+export { NotificationRepository } from "./notification.repository";

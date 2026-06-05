@@ -2,22 +2,23 @@ import { pgTable, text, pgEnum, check, numeric, index, bigint } from "drizzle-or
 import { timeStamps } from "./_column.helper";
 import { users } from "./user.repository";
 import { sql } from "drizzle-orm";
-import type { TBankAccountId, TTransactionId, TUserId } from "@/types";
+import type { TBankAccountNumber, TTransactionId, TUserId } from "@/types";
   
 export const AccountsTable = pgTable("accounts", {
-  id: text("id").primaryKey().$type<TBankAccountId>(),
   name: text("name").notNull(),
   userId: text("userId")
   .notNull()
   .references(  
     () => users.id, { onDelete: "cascade" }
   ).$type<TUserId>(),
-  accountNumber: text("accountNumber").notNull().unique(),
+  accountNumber: bigint("accountNumber", { 
+    mode: "bigint"
+  }).notNull().unique().$type<TBankAccountNumber>(),
   balance: numeric("balance", { precision: 10, scale: 2 }).notNull(),
   ...timeStamps,
 }, 
 (table) => [
-  check("balance_non_negative", sql`${table.balance} > 0`),
+  check("balance_non_negative", sql`${table.balance} >= 0`),
   check("name_not_empty", sql`${table.name} != ''`),
   index("accounts_user_id_idx").on(table.userId)
 ]);
@@ -35,20 +36,24 @@ export const TransactionsTable = pgTable("transactions", {
     .$type<TUserId>(),
   receiverName: text("receiverName").notNull(),
   amount: bigint("amount", { 
-      mode: "bigint"
-    }).notNull(),
+    mode: "bigint"
+  }).notNull(),
   status: transactionStatusEnum("status").default("pending").notNull(),
-  senderAccountId: text("senderAccountId")
+  senderAccountNumber: bigint("senderAccountNumber", { 
+      mode: "bigint"
+    })
     .notNull()
-    .references(() => AccountsTable.id, { onDelete: "cascade" })
-    .$type<TBankAccountId>(),
-  receiverAccountId: text("receiverAccountId")
+    .references(() => AccountsTable.accountNumber, { onDelete: "cascade" })
+    .$type<TBankAccountNumber>(),
+  receiverAccountNumber: bigint("receiverAccountNumber", { 
+      mode: "bigint"
+    })
     .notNull()
-    .references(() => AccountsTable.id, { onDelete: "cascade" })
-    .$type<TBankAccountId>(),
+    .references(() => AccountsTable.accountNumber, { onDelete: "cascade" })
+    .$type<TBankAccountNumber>(),
   ...timeStamps
 }, (table) => [
   check("amount_positive", sql`${table.amount} > 0`),
-  index("transactions_sender_account_id_idx").on(table.senderAccountId),
-  index("transactions_receiver_account_id_idx").on(table.receiverAccountId),
+  index("transactions_sender_account_number_idx").on(table.senderAccountNumber),
+  index("transactions_receiver_account_number_idx").on(table.receiverAccountNumber),
 ]);

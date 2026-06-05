@@ -1,5 +1,5 @@
 import type { IAccountService, IAccount } from "./account-service.interface";
-import type { TBankAccountId, TUserId } from "@/types";
+import type { TBankAccountNumber, TUserId } from "@/types";
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { ID } from "@/lib/ID";
 import { AccountRepository, type IAccountRepository } from "../../../repository";
@@ -27,7 +27,6 @@ export class AccountService implements IAccountService {
     const data = await tryCatch({
       ctx: async () => {
         const newAccount = await this.accountRepository.create({
-          id: ID.BankAccountId(),
           ...account,
         });
         return newAccount;
@@ -35,15 +34,15 @@ export class AccountService implements IAccountService {
       errorMessage: "FAILED_TO_CREATE_ACCOUNT",
     });
 
-    await this.cacheManager.set(data.id, data, 5 * 60);
+    await this.cacheManager.set(data.accountNumber.toString(), data, 5 * 60);
 
     return data;
   };
-  
-  async getAccountById(accountId: TBankAccountId): Promise<IAccount | null> {
+
+  async getAccountByNumber(accountNumber: TBankAccountNumber): Promise<IAccount | null> {
     const data = await tryCatch({
       ctx: async () => {
-        const account = await this.accountRepository.findById(accountId);
+        const account = await this.accountRepository.findByAccountNumber(accountNumber);
         return account;
       },
       errorMessage: "FAILED_TO_GET_ACCOUNT",
@@ -53,7 +52,7 @@ export class AccountService implements IAccountService {
       return null;
     };
 
-    await this.cacheManager.set(accountId, data, 5 * 60);
+    await this.cacheManager.set(accountNumber.toString(), data, 5 * 60);
 
     return data;
   };
@@ -69,10 +68,10 @@ export class AccountService implements IAccountService {
     return data;
   };
 
-  async getBalance(accountId: TBankAccountId): Promise<number> {
+  async getBalance(accountNumber: TBankAccountNumber): Promise<number> {
     const data = await tryCatch({
       ctx: async () => {
-        const account = await this.accountRepository.checkBalance(accountId);
+        const account = await this.accountRepository.checkBalance(accountNumber);
         return account.balance;
       },
       errorMessage: "FAILED_TO_GET_BALANCE",
@@ -80,19 +79,19 @@ export class AccountService implements IAccountService {
     return data;
   };
 
-  async updateAccountBalance(accountId: TBankAccountId, amount: number): Promise<IAccount> {
+  async updateAccountBalance(accountNumber: TBankAccountNumber, amount: number): Promise<IAccount> {
     const idempotencyKey = IdempotencyManager.generateBalanceUpdateKey(
-      accountId.toString(),
+      accountNumber.toString(),
       amount,
       "update"
     );
 
     
-    const cachedData = await this.cacheManager.getOrSet(accountId, async () => {
+    const cachedData = await this.cacheManager.getOrSet(accountNumber.toString(), async () => {
         const data = await tryCatch({
         ctx: async () => {
-          await this.accountRepository.adjustBalance(accountId, amount);
-          const updatedAccount = await this.accountRepository.findById(accountId);
+          await this.accountRepository.adjustBalance(accountNumber, amount);
+          const updatedAccount = await this.accountRepository.findByAccountNumber(accountNumber);
           if (!updatedAccount) {
             throw new Error("Failed to retrieve updated account");
           }

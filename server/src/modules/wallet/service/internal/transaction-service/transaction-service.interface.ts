@@ -1,4 +1,4 @@
-import type { TAccountId, TTransactionId, TUserId } from "@/types";
+import type { TBankAccountNumber, TAccountId, TTransactionId, TUserId } from "@/types";
 
 export type TransactionStatus = "pending" | "success" | "failed";
 
@@ -6,15 +6,16 @@ export interface ITransaction {
   id: TTransactionId;
   amount: bigint; 
   userId: TUserId;
-  senderAccountId: TAccountId;
+  senderAccountNumber: TBankAccountNumber;
   senderName: string;
-  receiverAccountId: TAccountId;
+  receiverAccountNumber: TBankAccountNumber;
   receiverName: string;
   status: TransactionStatus;
   createdAt: Date;
+  updatedAt: Date | null;
 };
 
-export type TransactionInput = Omit<ITransaction, "id" | "status" | "amount"> & {
+export type TransactionInput = Omit<ITransaction, "id" | "status" | "amount" | "createdAt" | "updatedAt"> & {
   amount: number;
 };
 
@@ -36,6 +37,6 @@ export type TTransactionQuery =
 
 export interface ITransactionModule {
   create(transaction: TransactionInput): Promise<ITransaction>;
-  list(userId: string): Promise<ITransaction[]>;
-  query(query: TTransactionQuery, userId: string): Promise<ITransaction[]>;
+  list(userId: TUserId): Promise<ITransaction[]>;
+  query(query: TTransactionQuery, userId: TUserId): Promise<ITransaction[]>;
 };

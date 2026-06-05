@@ -1,0 +1,46 @@
+{
+  "name": "wave-frontend",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "tw": "tailwindcss -i src/styles.css -o src/index.css",
+    "tw:watch": "tailwindcss -i src/styles.css -o src/index.css --watch",
+    "typecheck": "tsc --noEmit",
+    "dev": "bun --hot index.ts",
+    "build": "bun run tw && bun build src/main.tsx --outdir dist --target browser --minify",
+    "start": "NODE_ENV=production bun index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/bun": "latest",
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "concurrently": "^10.0.3",
+    "jsdom": "^29.1.1",
+    "lucide-react": "^1.17.0",
+    "postcss": "^8.5.15",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "3",
+    "vitest": "^4.1.8"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "^1.170.11",
+    "@tanstack/react-router-devtools": "^1.167.0",
+    "@tanstack/react-table": "^8.21.3",
+    "better-auth": "^1.6.13",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "tailwindcss-animate": "1"
+  }
+}

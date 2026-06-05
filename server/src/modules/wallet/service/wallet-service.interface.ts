@@ -1,5 +1,5 @@
 import type {
-  TBankAccountId,
+  TBankAccountNumber,
   TUserId,
   TTransactionId,
 } from "@/types";
@@ -13,16 +13,23 @@ import type {
 
 export type CreateAccountInput = Omit<IAccount, "id" | "createdAt" | "updatedAt">;
 
-
 export type TransferInput = Omit<ITransaction, "id" | "status" | "amount"> & {
   amount: number;
 };
 
+export type DepositInput = {
+  userId: TUserId;
+  accountNumber: TBankAccountNumber;
+  amount: number;
+};
+
 export interface IWalletService {
-   createAccount(account: CreateAccountInput): Promise<IAccount>;
-  getAccountById(accountId: TBankAccountId): Promise<IAccount | null>;
+  createAccount(account: CreateAccountInput): Promise<IAccount>;
+  getAccountById(accountNumber: TBankAccountNumber): Promise<IAccount | null>;
+  getAccountByAccountNumber(accountNumber: TBankAccountNumber): Promise<IAccount | null>;
   getUserAccounts(userId: TUserId): Promise<IAccount[]>;
-  getBalance(accountId: TBankAccountId): Promise<number>;
+  getBalance(accountNumber: TBankAccountNumber): Promise<number>;
+  deposit(input: DepositInput): Promise<IAccount>;
   transfer(input: TransferInput): Promise<ITransaction>;
   listTransactions(userId: TUserId): Promise<ITransaction[]>;
   queryTransactions(query: TTransactionQuery, userId: TUserId): Promise<ITransaction[]>;

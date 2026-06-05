@@ -71,9 +71,9 @@ describe("TransactionModule", () => {
   const mockTransaction: TransactionInput = {
     amount: 5000,
     userId: "user_123" as ITransaction["userId"],
-    senderAccountId: "account_sender" as ITransaction["senderAccountId"],
+    senderAccountNumber: "1111111111" as ITransaction["senderAccountNumber"],
     senderName: "Sender User",
-    receiverAccountId: "account_receiver" as ITransaction["receiverAccountId"],
+    receiverAccountNumber: "2222222222" as ITransaction["receiverAccountNumber"],
     receiverName: "Receiver User",
     createdAt: new Date("2024-01-01T00:00:00.000Z"),
   };
@@ -107,8 +107,8 @@ describe("TransactionModule", () => {
     it("should calculate new balance for sender account", async () => {
       await transactionModule.create(mockTransaction);
 
-      expect(adjustBalanceMock).toHaveBeenNthCalledWith(1, "account_sender", -5000);
-      expect(adjustBalanceMock).toHaveBeenNthCalledWith(2, "account_receiver", 5000);
+      expect(adjustBalanceMock).toHaveBeenNthCalledWith(1, "1111111111", -5000);
+      expect(adjustBalanceMock).toHaveBeenNthCalledWith(2, "2222222222", 5000);
     });
 
     it("should update both sender and receiver account balances", async () => {
@@ -146,9 +146,9 @@ describe("TransactionModule", () => {
           id: "tx_1" as ITransaction["id"],
           amount: BigInt(5000),
           userId: "user_123" as ITransaction["userId"],
-          senderAccountId: "account_1" as ITransaction["senderAccountId"],
+          senderAccountNumber: "1111111111" as ITransaction["senderAccountNumber"],
           senderName: "Sender",
-          receiverAccountId: "account_2" as ITransaction["receiverAccountId"],
+          receiverAccountNumber: "2222222222" as ITransaction["receiverAccountNumber"],
           receiverName: "Receiver",
           status: "success" as const,
           createdAt: new Date(),
@@ -170,9 +170,9 @@ describe("TransactionModule", () => {
           id: "tx_1" as ITransaction["id"],
           amount: BigInt(12345),
           userId: "user_123" as ITransaction["userId"],
-          senderAccountId: "account_1" as ITransaction["senderAccountId"],
+          senderAccountNumber: "1111111111" as ITransaction["senderAccountNumber"],
           senderName: "Sender",
-          receiverAccountId: "account_2" as ITransaction["receiverAccountId"],
+          receiverAccountNumber: "2222222222" as ITransaction["receiverAccountNumber"],
           receiverName: "Receiver",
           status: "success" as const,
           createdAt: new Date(),
@@ -200,9 +200,9 @@ describe("TransactionModule", () => {
           id: "tx_1" as ITransaction["id"],
           amount: BigInt(5000),
           userId,
-          senderAccountId: "account_1" as ITransaction["senderAccountId"],
+          senderAccountNumber: "1111111111" as ITransaction["senderAccountNumber"],
           senderName: "Sender",
-          receiverAccountId: "account_2" as ITransaction["receiverAccountId"],
+          receiverAccountNumber: "2222222222" as ITransaction["receiverAccountNumber"],
           receiverName: "Receiver",
           status: "success" as const,
           createdAt: new Date(),
@@ -224,9 +224,9 @@ describe("TransactionModule", () => {
           id: "tx_2" as ITransaction["id"],
           amount: BigInt(1000),
           userId,
-          senderAccountId: "account_1" as ITransaction["senderAccountId"],
+          senderAccountNumber: "1111111111" as ITransaction["senderAccountNumber"],
           senderName: "Sender",
-          receiverAccountId: "account_2" as ITransaction["receiverAccountId"],
+          receiverAccountNumber: "2222222222" as ITransaction["receiverAccountNumber"],
           receiverName: "Receiver",
           status: "failed" as const,
           createdAt: new Date(),
@@ -264,9 +264,9 @@ describe("TransactionModule", () => {
           id: "tx_1" as ITransaction["id"],
           amount: BigInt(99999),
           userId,
-          senderAccountId: "account_1" as ITransaction["senderAccountId"],
+          senderAccountNumber: "1111111111" as ITransaction["senderAccountNumber"],
           senderName: "Sender",
-          receiverAccountId: "account_2" as ITransaction["receiverAccountId"],
+          receiverAccountNumber: "2222222222" as ITransaction["receiverAccountNumber"],
           receiverName: "Receiver",
           status: "success" as const,
           createdAt: new Date(),

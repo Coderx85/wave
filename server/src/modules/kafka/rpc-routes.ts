@@ -1,13 +1,18 @@
 import { z } from "zod";
 import type { ITransactionEvent, IKafkaService } from "./kafka-service.interface";
+import type { TBankAccountNumber } from "@/types/id.types";
 
 // Zod schemas for type-safe RPC procedures
 const TransactionEventSchema = z.object({
   eventType: z.literal("transaction.created"),
   transactionId: z.string(),
   userId: z.string(),
-  senderAccountId: z.string(),
-  receiverAccountId: z.string(),
+  senderAccountNumber: z.transform(
+    (val) => val as unknown as TBankAccountNumber
+  ),
+  receiverAccountNumber: z.transform(
+    (val) => val as unknown as TBankAccountNumber
+  ),
   amount: z.string(),
   senderName: z.string(),
   receiverName: z.string(),

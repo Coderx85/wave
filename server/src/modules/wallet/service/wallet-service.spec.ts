@@ -4,9 +4,7 @@ import type {
   IAccount,
   ILedger,
 } from "./internal";
-import type { IAccountRepository } from "../repository/account-repo/account-repo.interface";
-import type { ITransactionRepository } from "../repository/transaction-repo/transaction-repo.interface";
-import type { ILedgerRepository } from "../repository/ledger-repo/ledger-repo.interface";
+import type { IAccountRepository, ITransactionRepository, ILedgerRepository } from "../repository";
 
 type MockedRepo<T> = {
   [K in keyof T]: ReturnType<typeof vi.fn>;
@@ -16,6 +14,7 @@ function createMockAccountRepo(): MockedRepo<IAccountRepository> {
   return {
     create: vi.fn(),
     findById: vi.fn(),
+    findByAccountNumber: vi.fn(),
     findByUserId: vi.fn(),
     checkBalance: vi.fn(),
     calculateNewBalance: vi.fn(),
@@ -54,8 +53,7 @@ describe("WalletService (Deep Module)", () => {
   let transactionRepo: ReturnType<typeof createMockTransactionRepo>;
   let ledgerRepo: ReturnType<typeof createMockLedgerRepo>;
 
-  const mockAccount: IAccount = {
-    id: "account_123" as any,
+  const mockAccount = {
     name: "Savings Account",
     userId: "user_123" as any,
     accountNumber: "1234567890",
@@ -117,18 +115,18 @@ describe("WalletService (Deep Module)", () => {
 
   describe("getAccountById", () => {
     it("should return account when found", async () => {
-      accountRepo.findById.mockResolvedValue(mockAccount);
+      accountRepo.findByAccountNumber.mockResolvedValue(mockAccount);
 
-      const result = await service.getAccountById("account_123" as any);
+      const result = await service.getAccountById("1234567890");
 
       expect(result).toEqual(mockAccount);
-      expect(accountRepo.findById).toHaveBeenCalledWith("account_123");
+      expect(accountRepo.findByAccountNumber).toHaveBeenCalledWith("1234567890");
     });
 
     it("should return null when not found", async () => {
-      accountRepo.findById.mockResolvedValue(null);
+      accountRepo.findByAccountNumber.mockResolvedValue(null);
 
-      const result = await service.getAccountById("account_999" as any);
+      const result = await service.getAccountById("0000000000");
 
       expect(result).toBeNull();
     });
@@ -176,9 +174,9 @@ describe("WalletService (Deep Module)", () => {
     const transferInput = {
       amount: 1000,
       userId: "user_123" as any,
-      senderAccountId: "account_sender" as any,
+      senderAccountNumber: "1111111111",
       senderName: "Alice",
-      receiverAccountId: "account_receiver" as any,
+      receiverAccountNumber: "2222222222",
       receiverName: "Bob",
       createdAt: new Date("2024-01-01"),
     };
@@ -190,14 +188,15 @@ describe("WalletService (Deep Module)", () => {
       transactionRepo.save.mockResolvedValue(undefined);
       transactionRepo.update.mockResolvedValue({
         id: "tx_123" as any,
-        amount: BigInt(1000),
+        amount: BigInt(100000),
         userId: "user_123" as any,
-        senderAccountId: "account_sender" as any,
+        senderAccountNumber: "1111111111",
         senderName: "Alice",
-        receiverAccountId: "account_receiver" as any,
+        receiverAccountNumber: "2222222222",
         receiverName: "Bob",
         status: "success" as const,
         createdAt: new Date(),
+        updatedAt: new Date(),
       });
       ledgerRepo.create.mockResolvedValue({} as ILedger);
     });
@@ -206,7 +205,7 @@ describe("WalletService (Deep Module)", () => {
       const result = await service.transfer(transferInput);
 
       expect(result.status).toBe("success");
-      expect(result.amount).toBe(BigInt(1000));
+      expect(result.amount).toBe(BigInt(100000));
       expect(result.senderName).toBe("Alice");
       expect(result.receiverName).toBe("Bob");
     });
@@ -214,8 +213,8 @@ describe("WalletService (Deep Module)", () => {
     it("should validate sender balance first", async () => {
       await service.transfer(transferInput);
 
-      expect(accountRepo.adjustBalance).toHaveBeenNthCalledWith(1, "account_sender", -1000);
-      expect(accountRepo.adjustBalance).toHaveBeenNthCalledWith(2, "account_receiver", 1000);
+      expect(accountRepo.adjustBalance).toHaveBeenNthCalledWith(1, "1111111111", -1000);
+      expect(accountRepo.adjustBalance).toHaveBeenNthCalledWith(2, "2222222222", 1000);
     });
 
     it("should debit sender and credit receiver", async () => {
@@ -229,7 +228,7 @@ describe("WalletService (Deep Module)", () => {
 
       expect(transactionRepo.save).toHaveBeenCalledTimes(1);
       const savedTx = transactionRepo.save.mock.calls[0][0];
-      expect(savedTx.amount).toBe(BigInt(1000));
+      expect(savedTx.amount).toBe(BigInt(100000));
       expect(savedTx.status).toBe("pending");
     });
 
@@ -244,8 +243,8 @@ describe("WalletService (Deep Module)", () => {
 
       expect(debitCall).toBeDefined();
       expect(creditCall).toBeDefined();
-      expect(debitCall![0].amount).toBe(1000);
-      expect(creditCall![0].amount).toBe(1000);
+      expect(debitCall![0].amount).toBe(100000);
+      expect(creditCall![0].amount).toBe(100000);
     });
 
     it("should throw when sender has insufficient funds", async () => {
@@ -270,21 +269,22 @@ describe("WalletService (Deep Module)", () => {
       transactionRepo.findByUserId.mockResolvedValue([
         {
           id: "tx_1" as any,
-          amount: BigInt(5000),
+          amount: BigInt(500000),
           userId: "user_123" as any,
-          senderAccountId: "a1" as any,
+          senderAccountNumber: "1111111111",
           senderName: "Alice",
-          receiverAccountId: "a2" as any,
+          receiverAccountNumber: "2222222222",
           receiverName: "Bob",
           status: "success" as const,
           createdAt: new Date(),
+          updatedAt: null,
         },
       ]);
 
       const result = await service.listTransactions("user_123" as any);
 
       expect(result).toHaveLength(1);
-      expect(result[0].amount).toBe(BigInt(5000));
+      expect(result[0].amount).toBe(BigInt(500000));
       expect(typeof result[0].amount).toBe("bigint");
     });
 
@@ -302,35 +302,37 @@ describe("WalletService (Deep Module)", () => {
       transactionRepo.successfulTransactions.mockResolvedValue([
         {
           id: "tx_1" as any,
-          amount: BigInt(2000),
+          amount: BigInt(200000),
           userId,
-          senderAccountId: "a1" as any,
+          senderAccountNumber: "1111111111",
           senderName: "Alice",
-          receiverAccountId: "a2" as any,
+          receiverAccountNumber: "2222222222",
           receiverName: "Bob",
           status: "success" as const,
           createdAt: new Date(),
+          updatedAt: null,
         },
       ]);
 
       const result = await service.queryTransactions({ status: "success" }, userId);
 
       expect(result).toHaveLength(1);
-      expect(result[0].amount).toBe(BigInt(2000));
+      expect(result[0].amount).toBe(BigInt(200000));
     });
 
     it("should query failed transactions", async () => {
       transactionRepo.failedTransactions.mockResolvedValue([
         {
           id: "tx_2" as any,
-          amount: BigInt(500),
+          amount: BigInt(50000),
           userId,
-          senderAccountId: "a1" as any,
+          senderAccountNumber: "1111111111",
           senderName: "Alice",
-          receiverAccountId: "a2" as any,
+          receiverAccountNumber: "2222222222",
           receiverName: "Bob",
           status: "failed" as const,
           createdAt: new Date(),
+          updatedAt: null,
         },
       ]);
 
@@ -338,7 +340,7 @@ describe("WalletService (Deep Module)", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0].status).toBe("failed");
-      expect(result[0].amount).toBe(BigInt(500));
+      expect(result[0].amount).toBe(BigInt(50000));
     });
 
     it("should pass date range filter to repository", async () => {
@@ -371,7 +373,7 @@ describe("WalletService (Deep Module)", () => {
         {
           id: "entry_1" as any,
           transactionId: "tx_123" as any,
-          amount: 1000,
+          amount: 100000,
           entryType: "debit",
           createdAt: new Date("2024-01-01"),
           updatedAt: null,
@@ -379,7 +381,7 @@ describe("WalletService (Deep Module)", () => {
         {
           id: "entry_2" as any,
           transactionId: "tx_123" as any,
-          amount: 1000,
+          amount: 100000,
           entryType: "credit",
           createdAt: new Date("2024-01-01"),
           updatedAt: null,

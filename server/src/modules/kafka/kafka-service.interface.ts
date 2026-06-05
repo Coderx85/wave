@@ -1,9 +1,11 @@
+import type { TBankAccountNumber } from "@/types";
+
 export interface ITransactionEvent {
   eventType: "transaction.created";
   transactionId: string;
   userId: string;
-  senderAccountId: string;
-  receiverAccountId: string;
+  senderAccountNumber: TBankAccountNumber;
+  receiverAccountNumber: TBankAccountNumber;
   amount: string;
   senderName: string;
   receiverName: string;

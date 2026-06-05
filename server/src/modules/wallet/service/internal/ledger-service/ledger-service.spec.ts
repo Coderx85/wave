@@ -18,7 +18,7 @@ vi.mock("@/lib/try-catch-wrapper", () => ({
 }));
 
 vi.mock("../../../repository", () => ({
-  LedgerRepo: function LedgerRepoMock(this: {
+  LedgerRepository: function LedgerRepositoryMock(this: {
     create: typeof createMock;
     findByTransactionId: typeof findByTransactionIdMock;
   }) {
