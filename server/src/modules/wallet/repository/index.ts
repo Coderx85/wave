@@ -1,7 +1,10 @@
-export * from "./account-repo";
+// ── Re-exports ───────────────────────────────────────
+export type { IAccountDTO, IAccountRepository } from "./contracts";
+export type { ITransactionDTO, TransactionQuery, ITransactionRepository } from "./contracts";
+export type { ILedgerEntryDTO, EntryType, ILedgerRepository } from "./contracts";
+export type { IOutboxEntry, IOutboxRepository } from "./contracts";
 
-export * from "./transaction-repo";
-
-export * from "./ledger-repo";
-
-export * from "./outbox-repo";
+export { AccountRepository } from "./account.repository";
+export { TransactionRepository } from "./transaction.repository";
+export { LedgerRepository } from "./ledger.repository";
+export { OutboxRepository } from "./outbox.repository";

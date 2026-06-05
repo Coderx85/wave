@@ -4,9 +4,7 @@ import type {
   IAccount,
   ILedger,
 } from "./internal";
-import type { IAccountRepository } from "../repository/account-repo/account-repo.interface";
-import type { ITransactionRepository } from "../repository/transaction-repo/transaction-repo.interface";
-import type { ILedgerRepository } from "../repository/ledger-repo/ledger-repo.interface";
+import type { IAccountRepository, ITransactionRepository, ILedgerRepository } from "../repository";
 
 type MockedRepo<T> = {
   [K in keyof T]: ReturnType<typeof vi.fn>;
