@@ -2,7 +2,6 @@ import { useState, useEffect } from "react"
 import { Outlet, Link } from "@tanstack/react-router"
 import { useSession } from "./lib/auth-client"
 import type { Session } from "./lib/auth-client"
-import { UserProvider } from "./lib/user-context"
 import { Skeleton } from "./components/ui/skeleton"
 import AuthPage from "./components/AuthPage"
 
@@ -73,7 +72,6 @@ export default function App() {
   }
 
   return (
-    <UserProvider user={activeSession.user}>
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         <nav className="flex items-center gap-6 px-8 h-14 border-b border-border bg-card">
           <span className="text-base font-bold tracking-tight text-foreground mr-2">Wave</span>
@@ -91,6 +89,5 @@ export default function App() {
         </nav>
         <Outlet />
       </div>
-    </UserProvider>
   )
 }

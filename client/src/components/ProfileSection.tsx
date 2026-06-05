@@ -1,7 +1,8 @@
-import { useUser } from "../lib/user-context"
+import { useSession } from "../lib/auth-client"
 
 export default function ProfileSection() {
-  const user = useUser()
+  const { data: session } = useSession()
+  const user = session!.user
   const initial = user.name.charAt(0).toUpperCase()
 
   return (

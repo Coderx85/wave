@@ -1,8 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react"
 import { Link } from "@tanstack/react-router"
 import { Plus, ArrowUpRight } from "lucide-react"
-import { signOut } from "../lib/auth-client"
-import { useUser } from "../lib/user-context"
+import { signOut, useSession } from "../lib/auth-client"
 import { Button } from "../components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import SectionCards from "../components/SectionCards"
@@ -16,7 +15,8 @@ const formatBalance = (b: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(b)
 
 export default function HomePage() {
-  const user = useUser()
+  const { data: session } = useSession()
+  const user = session!.user
   const [accounts, setAccounts] = useState<IWalletTransaction[]>([])
   const [transactions, setTransactions] = useState<ITransaction[]>([])
   const [loadingAccounts, setLoadingAccounts] = useState(true)

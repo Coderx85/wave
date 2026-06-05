@@ -8,7 +8,7 @@ import {
   type SortingState,
 } from "@tanstack/react-table"
 import { ArrowLeft } from "lucide-react"
-import { useUser } from "../lib/user-context"
+import { useSession } from "../lib/auth-client"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
@@ -26,7 +26,8 @@ const formatDate = (iso: string) =>
   new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(iso))
 
 export default function AccountTransactionsPage() {
-  const user = useUser()
+  const { data: session } = useSession()
+  const user = session!.user
   const [transactions, setTransactions] = useState<ITransaction[]>([])
   const [accounts, setAccounts] = useState<IWalletTransaction[]>([])
   const [accountsLoaded, setAccountsLoaded] = useState(false)

@@ -1,8 +1,7 @@
 import { useEffect, useState, useCallback } from "react"
 import { useSearch } from "@tanstack/react-router"
 import { MoreVertical } from "lucide-react"
-import { signOut } from "../lib/auth-client"
-import { useUser } from "../lib/user-context"
+import { signOut, useSession } from "../lib/auth-client"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
@@ -23,7 +22,8 @@ import { createAccount, fetchAccountData } from "@/actions/account.actions"
 type ApiResponse<T> = WaveResponse<T>
 
 export default function AccountPage() {
-  const user = useUser()
+  const { data: session } = useSession()
+  const user = session!.user
   const search = useSearch({ strict: false }) as { section?: string }
   const initialSection = search.section ?? null
 

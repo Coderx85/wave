@@ -22,7 +22,7 @@ describe("AuthPage", () => {
 
   it("renders sign-in form by default", () => {
     render(<AuthPage />)
-    expect(screen.getByRole("heading", { name: /sign in/i })).toBeInTheDocument()
+    expect(screen.getByText("Sign in to your account")).toBeInTheDocument()
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
     expect(screen.getByRole("button", { name: /sign in/i })).toBeInTheDocument()
@@ -32,7 +32,7 @@ describe("AuthPage", () => {
     const user = userEvent.setup()
     render(<AuthPage />)
     await user.click(screen.getByRole("button", { name: /sign up/i }))
-    expect(screen.getByRole("heading", { name: /create account/i })).toBeInTheDocument()
+    expect(screen.getByText("Create a new account")).toBeInTheDocument()
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument()
     expect(screen.getByRole("button", { name: /create account/i })).toBeInTheDocument()
   })

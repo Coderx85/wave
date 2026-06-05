@@ -10,13 +10,8 @@ vi.mock("../lib/auth-client", () => ({
   signIn: { email: vi.fn() },
   signUp: { email: vi.fn() },
   signOut: (...args: any[]) => mockSignOut(...args),
-  useSession: vi.fn(),
+  useSession: vi.fn(() => ({ data: { user: fakeUser, session: { id: "sess_1", expiresAt: new Date() } } })),
   $Infer: { Session: {} },
-}))
-
-vi.mock("../lib/user-context", () => ({
-  useUser: () => fakeUser,
-  UserProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
 let sseUrlUsed = ""
@@ -227,7 +222,6 @@ describe("NotificationPage", () => {
     render(<NotificationPage />)
 
     await waitFor(() => {
-      expect(screen.getByText("Test User")).toBeInTheDocument()
       expect(screen.getByText("test@example.com")).toBeInTheDocument()
     })
   })

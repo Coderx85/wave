@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react"
-import { signOut } from "../lib/auth-client"
-import { useUser } from "../lib/user-context"
+import { signOut, useSession } from "../lib/auth-client"
 import { Card, CardContent } from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
@@ -36,7 +35,8 @@ function statusLabel(status: string): string {
 }
 
 export default function NotificationPage() {
-  const user = useUser()
+  const { data: session } = useSession()
+  const user = session!.user
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

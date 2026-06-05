@@ -40,7 +40,7 @@ describe("App", () => {
       error: { message: "No session", status: 401, statusText: "Unauthorized" },
     })
     render(<App />)
-    expect(screen.getByRole("heading", { name: /sign in/i })).toBeInTheDocument()
+    expect(screen.getByText("Sign in to your account")).toBeInTheDocument()
   })
 
   it("renders layout and outlet when authenticated", () => {
