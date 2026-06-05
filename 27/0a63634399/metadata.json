@@ -3,7 +3,7 @@
   "checkpoint_id": "270a63634399",
   "strategy": "manual-commit",
   "branch": "setup/wave-fe",
-  "checkpoints_count": 24,
+  "checkpoints_count": 27,
   "files_touched": [
     "server/CONTEXT.md",
     "server/DESIGN_PATTERN.md",
@@ -16,13 +16,19 @@
       "transcript": "/27/0a63634399/0/full.jsonl",
       "content_hash": "/27/0a63634399/0/content_hash.txt",
       "prompt": "/27/0a63634399/0/prompt.txt"
+    },
+    {
+      "metadata": "/27/0a63634399/1/metadata.json",
+      "transcript": "/27/0a63634399/1/full.jsonl",
+      "content_hash": "/27/0a63634399/1/content_hash.txt",
+      "prompt": "/27/0a63634399/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 79995,
+    "input_tokens": 345539,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 4866432,
-    "output_tokens": 31097,
-    "api_call_count": 69
+    "cache_read_tokens": 18067968,
+    "output_tokens": 66303,
+    "api_call_count": 227
   }
 }
