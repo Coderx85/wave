@@ -17,21 +17,8 @@ import {
 } from "../components/ui/dropdown-menu"
 import ProfileSection from "../components/ProfileSection"
 import WalletCardCarousel from "../components/WalletCardCarousel"
-import type { TBankAccount, WaveResponse } from "@/types"
-import { createAccount } from "@/actions/account.actions"
-
-interface WalletTransaction {
-  id: string
-  userId: string
-  senderAccountId: string
-  senderName: string
-  receiverAccountId: string
-  receiverName: string
-  amount: string
-  status: "pending" | "success" | "failed"
-  createdAt: string
-  updatedAt?: string | null
-}
+import type { IWalletTransaction, WaveResponse, ITransaction, TBankAccountNumber } from "@/types"
+import { createAccount, fetchAccountData } from "@/actions/account.actions"
 
 type ApiResponse<T> = WaveResponse<T>
 
@@ -40,45 +27,48 @@ export default function AccountPage() {
   const search = useSearch({ strict: false }) as { section?: string }
   const initialSection = search.section ?? null
 
-  const [accounts, setAccounts] = useState<TBankAccount[]>([])
+  const [accounts, setAccounts] = useState<IWalletTransaction[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [creating, setCreating] = useState(false)
   const [createError, setCreateError] = useState<string | null>(null)
   const [accountName, setAccountName] = useState("")
 
-  const [depositAccountId, setDepositAccountId] = useState("")
-  const [depositAmount, setDepositAmount] = useState("")
-  const [depositing, setDepositing] = useState(false)
-  const [depositError, setDepositError] = useState<string | null>(null)
-  const [depositSuccess, setDepositSuccess] = useState<TBankAccount | null>(null)
+  const [depositAccountNumber, setDepositAccountNumber] = useState<TBankAccountNumber>();
+  const [depositAmount, setDepositAmount] = useState("");
+  const [depositing, setDepositing] = useState(false);
+  const [depositError, setDepositError] = useState<string | null>(null);
+  const [depositSuccess, setDepositSuccess] = useState<IWalletTransaction | null>(null);
 
-  const [transferring, setTransferring] = useState(false)
-  const [transferError, setTransferError] = useState<string | null>(null)
-  const [transferSuccess, setTransferSuccess] = useState<WalletTransaction | null>(null)
-  const [senderId, setSenderId] = useState("")
+  const [transferring, setTransferring] = useState(false);
+  const [transferError, setTransferError] = useState<string | null>(null);
+  const [transferSuccess, setTransferSuccess] = useState<ITransaction | null>(null);
+  const [senderAccountNumber, setSenderAccountNumber] = useState<TBankAccountNumber>();
   const [receiverNumber, setReceiverNumber] = useState("")
   const [amount, setAmount] = useState("")
-  const [receiverLookup, setReceiverLookup] = useState<{ name: string; id: string } | null>(null)
+  const [receiverLookup, setReceiverLookup] = useState<{ name: string; accountNumber: TBankAccountNumber } | null>(null)
   const [lookingUp, setLookingUp] = useState(false)
 
   const fetchAccounts = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
-      const res = await fetch(`/api/wallet/users/${user.id}/accounts`)
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const json: ApiResponse<TBankAccount[]> = await res.json()
-      const data = json.ok ? json.data : []
-      setAccounts(data)
-      if (data.length > 0 && !senderId) {
-        setSenderId(data[0]!.id)
+      
+      const res = await fetchAccountData(user.id);
+      if(!res.ok) {
+        setAccounts([])
+        setError(res.message || "Failed to load accounts")
+        
+        return;
       }
+
+      setAccounts(res.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load accounts")
       setAccounts([])
     } finally {
-      setLoading(false)
+      setError(null);
+      setLoading(false);
     }
   }, [user.id])
 
@@ -90,7 +80,7 @@ export default function AccountPage() {
     if (initialSection === "deposit") {
       const el = document.getElementById("deposit-section")
       if (el) el.scrollIntoView({ behavior: "smooth" })
-      setDepositAccountId(accounts.length > 0 ? accounts[0]!.id : "")
+      setDepositAccountNumber(accounts.length > 0 ? accounts[0]!.accountNumber : undefined)
     }
   }, [initialSection, accounts])
 
@@ -103,9 +93,12 @@ export default function AccountPage() {
       setLookingUp(true)
       try {
         const res = await fetch(`/api/wallet/accounts/by-number/${encodeURIComponent(receiverNumber.trim())}`)
-        if (res.ok) {
-          const json: ApiResponse<TBankAccount> = await res.json()
-          setReceiverLookup(json.ok ? { name: json.data.name, id: json.data.id } : null)
+        const json: ApiResponse<IWalletTransaction> = await res.json()
+        if (json.ok) {
+          setReceiverLookup({
+            accountNumber: json.data.accountNumber,
+            name: json.data.name,
+          })
         }
       } catch {
         setReceiverLookup(null)
@@ -125,7 +118,7 @@ export default function AccountPage() {
 
     const accountNumber = `WAVE-${Array.from({ length: 8 }, () =>
       "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 36)]
-    ).join("")}`
+    ).join("")}` as unknown as TBankAccountNumber;
 
     try {
       const res = await createAccount({
@@ -149,26 +142,26 @@ export default function AccountPage() {
 
   const handleDeposit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!depositAccountId || !depositAmount.trim()) return
+    if (!depositAccountNumber || !depositAmount.trim()) return
 
     setDepositing(true)
     setDepositError(null)
     setDepositSuccess(null)
 
     try {
-      const res = await fetch("/api/wallet/accounts/" + depositAccountId + "/deposit", {
+      const res = await fetch("/api/wallet/accounts/" + depositAccountNumber + "/deposit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId: user.id,
-          accountId: depositAccountId,
+          accountNumber: depositAccountNumber,
           amount: Number.parseFloat(depositAmount),
         }),
       })
-      const json: ApiResponse<TBankAccount> = await res.json()
+      const json: ApiResponse<IWalletTransaction> = await res.json()
       if (!json.ok) throw new Error(json.error ?? `HTTP ${res.status}`)
       setDepositSuccess(json.data)
-      setDepositAmount("")
+      setDepositAmount(json.data.balance.toString())
       fetchAccounts()
     } catch (err) {
       setDepositError(err instanceof Error ? err.message : "Failed to deposit funds")
@@ -179,13 +172,13 @@ export default function AccountPage() {
 
   const handleTransfer = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!senderId || !receiverLookup || !amount.trim()) return
+    if (!senderAccountNumber || !receiverLookup || !amount.trim()) return
 
     setTransferring(true)
     setTransferError(null)
     setTransferSuccess(null)
 
-    const sender = accounts.find((a) => a.id === senderId)
+    const sender = accounts.find((a) => a.accountNumber === senderAccountNumber)
 
     try {
       const res = await fetch("/api/wallet/transfers", {
@@ -193,17 +186,17 @@ export default function AccountPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId: user.id,
-          senderAccountId: senderId,
+          senderAccountNumber: senderAccountNumber,
           senderName: sender?.name ?? "Unknown",
-          receiverAccountId: receiverLookup.id,
+          receiverAccountNumber: receiverLookup.accountNumber,
           receiverName: receiverLookup.name,
           amount: Number.parseFloat(amount),
         }),
       })
-      const json: ApiResponse<WalletTransaction> = await res.json()
+      const json: ApiResponse<ITransaction> = await res.json()
       if (!json.ok) throw new Error(json.error ?? `HTTP ${res.status}`)
       setTransferSuccess(json.data)
-      setSenderId("")
+      setSenderAccountNumber(json.data.senderAccountNumber)
       setReceiverNumber("")
       setAmount("")
       setReceiverLookup(null)
@@ -365,20 +358,20 @@ export default function AccountPage() {
               <form onSubmit={handleDeposit} className="space-y-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="deposit-account">Into</Label>
-                  <select
-                    id="deposit-account"
-                    value={depositAccountId}
-                    onChange={(e) => setDepositAccountId(e.target.value)}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    required
-                  >
-                    <option value="" disabled>Select an account</option>
-                    {accounts.map((acc) => (
-                      <option key={acc.id} value={acc.id}>
-                        {acc.name} ({acc.accountNumber}) · {formatCurrency(acc.balance)}
-                      </option>
-                    ))}
-                  </select>
+                    <select
+                      id="deposit-account"
+                      value={depositAccountNumber as unknown as string}
+                      onChange={(e) => setDepositAccountNumber(e.target.value as unknown as TBankAccountNumber)}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      required
+                    >
+                      <option value="" disabled>Select an account</option>
+                      {accounts.map((acc) => (
+                        <option key={acc.id} value={acc.accountNumber as unknown as number}>
+                          {acc.name} ({acc.accountNumber}) · {formatCurrency(acc.balance)}
+                        </option>
+                      ))}
+                    </select>
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="deposit-amount">Amount (USD)</Label>
@@ -397,7 +390,7 @@ export default function AccountPage() {
                 )}
                 <Button
                   type="submit"
-                  disabled={!depositAccountId || !depositAmount.trim() || Number(depositAmount) <= 0}
+                  disabled={!depositAccountNumber || Number(depositAmount) <= 0}
                   className="w-full"
                 >
                   Add Money
@@ -431,20 +424,20 @@ export default function AccountPage() {
               <form onSubmit={handleTransfer} className="space-y-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="sender">From</Label>
-                  <select
-                    id="sender"
-                    value={senderId}
-                    onChange={(e) => setSenderId(e.target.value)}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    required
-                  >
-                    <option value="" disabled>Select an account</option>
-                    {accounts.map((acc) => (
-                      <option key={acc.id} value={acc.id}>
-                        {acc.name} ({acc.accountNumber}) · {formatCurrency(acc.balance)}
-                      </option>
-                    ))}
-                  </select>
+                    <select
+                      id="sender"
+                      value={senderAccountNumber as unknown as number}
+                      onChange={(e) => setSenderAccountNumber(e.target.value as unknown as TBankAccountNumber)}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      required
+                    >
+                      <option value="" disabled>Select an account</option>
+                      {accounts.map((acc) => (
+                        <option key={acc.id} value={acc.accountNumber as unknown as number}>
+                          {acc.name} ({acc.accountNumber}) · {formatCurrency(acc.balance)}
+                        </option>
+                      ))}
+                    </select>
                 </div>
 
                 <div className="space-y-1.5">
@@ -485,7 +478,7 @@ export default function AccountPage() {
 
                 <Button
                   type="submit"
-                  disabled={!senderId || !receiverLookup || !amount.trim() || Number(amount) <= 0}
+                  disabled={!senderAccountNumber || !receiverLookup || !amount.trim() || Number(amount) <= 0}
                   className="w-full"
                 >
                   Send Money
@@ -513,8 +506,8 @@ export default function AccountPage() {
               </p>
               <p className="text-sm text-muted-foreground">
                 {depositing
-                  ? accounts.find((a) => a.id === depositAccountId)?.name ?? "Account"
-                  : `${accounts.find((a) => a.id === senderId)?.name ?? "Sender"} \u2192 ${receiverLookup?.name ?? "Receiver"}`}
+                  ? accounts.find((a) => a.accountNumber === depositAccountNumber)?.name ?? "Account"
+                  : `${accounts.find((a) => a.accountNumber === senderAccountNumber)?.name ?? "Sender"} \u2192 ${receiverLookup?.name ?? "Receiver"}`}
               </p>
             </div>
             <p className="text-xs text-muted-foreground/70">

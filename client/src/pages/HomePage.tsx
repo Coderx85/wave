@@ -8,20 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import SectionCards from "../components/SectionCards"
 import ChartAreaInteractive from "../components/ChartAreaInteractive"
 import DataTable from "../components/DataTable"
-import type { TBankAccount, WaveResponse } from "@/types"
-
-interface WalletTransaction {
-  id: string
-  userId: string
-  senderAccountId: string
-  senderName: string
-  receiverAccountId: string
-  receiverName: string
-  amount: string
-  status: "pending" | "success" | "failed"
-  createdAt: string
-  updatedAt?: string | null
-}
+import type { IWalletTransaction, WaveResponse, ITransaction } from "@/types"
 
 type ApiResponse<T> = WaveResponse<T>
 
@@ -30,8 +17,8 @@ const formatBalance = (b: number) =>
 
 export default function HomePage() {
   const user = useUser()
-  const [accounts, setAccounts] = useState<TBankAccount[]>([])
-  const [transactions, setTransactions] = useState<WalletTransaction[]>([])
+  const [accounts, setAccounts] = useState<IWalletTransaction[]>([])
+  const [transactions, setTransactions] = useState<ITransaction[]>([])
   const [loadingAccounts, setLoadingAccounts] = useState(true)
   const [loadingTransactions, setLoadingTransactions] = useState(true)
 
@@ -42,7 +29,7 @@ export default function HomePage() {
     try {
       const res = await fetch(`/api/wallet/users/${user.id}/accounts`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const json: ApiResponse<TBankAccount[]> = await res.json()
+      const json: ApiResponse<IWalletTransaction[]> = await res.json()
       setAccounts(json.ok ? json.data : [])
     } catch {
       setAccounts([])
@@ -56,7 +43,7 @@ export default function HomePage() {
     try {
       const res = await fetch(`/api/wallet/users/${user.id}/transactions`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const json: ApiResponse<WalletTransaction[]> = await res.json()
+      const json: ApiResponse<ITransaction[]> = await res.json()
       if (json.ok) {
         const sorted = json.data.sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()

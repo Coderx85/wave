@@ -59,7 +59,7 @@ export default function TransactionsPage() {
   const getDirection = useCallback(
     (tx: ITransaction): "in" | "out" | "self" => {
       if (tx.senderName === tx.receiverName) return "self"
-      if (userAccountIds.has(tx.receiverAccountId) && !userAccountIds.has(tx.senderAccountId)) return "in"
+      if (userAccountIds.has(tx.receiverAccountNumber.toString()) && !userAccountIds.has(tx.senderAccountNumber.toString())) return "in"
       return "out"
     },
     [userAccountIds],

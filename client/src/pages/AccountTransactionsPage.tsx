@@ -14,7 +14,8 @@ import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
 import { Skeleton } from "../components/ui/skeleton"
 import { fetchTransactionsAction } from "@/actions/transaction.actions"
-import type { ITransaction, TBankAccount, WaveResponse } from "@/types"
+import type { ITransaction, IWalletTransaction, WaveResponse } from "@/types"
+import { fetchAccountTransactionsAction } from "@/actions/account.actions"
 
 type Filter = "all" | "success" | "failed" | "pending"
 
@@ -27,7 +28,7 @@ const formatDate = (iso: string) =>
 export default function AccountTransactionsPage() {
   const user = useUser()
   const [transactions, setTransactions] = useState<ITransaction[]>([])
-  const [accounts, setAccounts] = useState<TBankAccount[]>([])
+  const [accounts, setAccounts] = useState<IWalletTransaction[]>([])
   const [accountsLoaded, setAccountsLoaded] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -41,7 +42,8 @@ export default function AccountTransactionsPage() {
   const getDirection = useCallback(
     (tx: ITransaction): "in" | "out" | "self" => {
       if (tx.senderName === tx.receiverName) return "self"
-      if (userAccountIds.has(tx.receiverAccountId) && !userAccountIds.has(tx.senderAccountId)) return "in"
+      if (userAccountIds.has(tx.senderAccountNumber.toString())) return "in"
+      if (userAccountIds.has(tx.receiverAccountNumber.toString())) return "in"
       return "out"
     },
     [userAccountIds],
@@ -131,6 +133,7 @@ export default function AccountTransactionsPage() {
     try {
       const res = await fetchTransactionsAction(user.id);
       if (!res.ok) throw new Error(res.error ?? `HTTP ${res.status}`)
+
       const sorted = (res.data ?? []).sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       )
@@ -145,13 +148,14 @@ export default function AccountTransactionsPage() {
 
   const fetchAccounts = useCallback(async () => {
     try {
-      const res = await fetch(`/api/wallet/users/${user.id}/accounts`)
-      const json: WaveResponse<TBankAccount[]> = await res.json()
-      if (!json.ok) {
-        throw new Error(json.error ?? `HTTP ${res.status}`)
-      }
-      setAccounts(json.data ?? [])
-    } catch {
+      const res = await fetchAccountTransactionsAction(user.id); 
+      if (!res.ok) {
+        throw new Error(res.error ?? `HTTP ${res.status}`)
+      };
+
+      setAccounts(res.data)
+    } catch (error) {
+      console.error("Error fetching account data:", error)
       setAccounts([])
     } finally {
       setAccountsLoaded(true)

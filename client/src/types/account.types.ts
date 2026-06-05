@@ -1,11 +1,13 @@
-export type TBankAccount = {
+import type { TBankAccountNumber } from "./id.types";
+
+export type IWalletTransaction = {
   id: string;
   name: string;
   userId: string;
-  accountNumber: string;
+  accountNumber: TBankAccountNumber;
   balance: number;
   createdAt: Date;
   updatedAt: Date | null;
 };
 
-export type TCreateBankAccountInput = Omit<TBankAccount, "id" | "createdAt" | "updatedAt">;
+export type TCreateBankAccountInput = Omit<IWalletTransaction, "id" | "createdAt" | "updatedAt">;

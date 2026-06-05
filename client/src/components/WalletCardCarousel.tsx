@@ -1,11 +1,12 @@
 import { useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import WalletCard from "./WalletCard"
+import type { TBankAccountNumber } from "@/types"
 
 interface WalletCardAccount {
   id: string
   name: string
-  accountNumber: string
+  accountNumber: TBankAccountNumber
   balance: number
 }
 

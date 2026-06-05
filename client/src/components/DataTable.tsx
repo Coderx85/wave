@@ -9,20 +9,10 @@ import {
 } from "@tanstack/react-table"
 import { Badge } from "./ui/badge"
 import { Skeleton } from "./ui/skeleton"
-
-interface Transaction {
-  id: string
-  senderName: string
-  receiverName: string
-  senderAccountId: string
-  receiverAccountId: string
-  amount: string
-  status: "pending" | "success" | "failed"
-  createdAt: string
-}
+import type { ITransaction } from "@/types"
 
 interface DataTableProps {
-  data: Transaction[]
+  data: ITransaction[]
   userAccountIds: Set<string>
   loading?: boolean
   emptyMessage?: string
@@ -37,11 +27,11 @@ const formatDate = (iso: string) =>
 type SortDir = "in" | "out" | "self"
 
 export default function DataTable({ data, userAccountIds, loading, emptyMessage }: DataTableProps) {
-  const columnHelper = createColumnHelper<Transaction>()
+  const columnHelper = createColumnHelper<ITransaction>()
 
-  const getDirection = (tx: Transaction): SortDir => {
+  const getDirection = (tx: ITransaction): SortDir => {
     if (tx.senderName === tx.receiverName) return "self"
-    if (userAccountIds.has(tx.receiverAccountId) && !userAccountIds.has(tx.senderAccountId)) return "in"
+    if (userAccountIds.has(tx.receiverAccountNumber.toString()) && !userAccountIds.has(tx.senderAccountNumber.toString())) return "in"
     return "out"
   }
 

@@ -8,11 +8,12 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "./ui/dropdown-menu"
+import type { TBankAccountNumber } from "@/types"
 
 interface WalletCardAccount {
   id: string
   name: string
-  accountNumber: string
+  accountNumber: TBankAccountNumber
   balance: number
 }
 
@@ -103,7 +104,7 @@ export default function WalletCard({
 
         <div>
           <p className="text-xs sm:text-sm font-mono tracking-[0.15em] text-white/90">
-            {maskNumber(account.accountNumber)}
+            {account.balance}
           </p>
           <p className="mt-1 text-xs sm:text-sm font-medium text-white/50 truncate">
             {account.name}
