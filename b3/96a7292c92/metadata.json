@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "b396a7292c92",
+  "strategy": "manual-commit",
+  "branch": "setup/wave-fe",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "server/src/modules/wallet/repository/account-repo/account-repo.spec.ts",
+    "server/src/modules/wallet/repository/transaction-repo/transaction-repo.spec.ts",
+    "server/src/modules/wallet/service/internal/account-service/account-service.spec.ts",
+    "server/src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts",
+    "server/src/modules/wallet/service/internal/transaction-service/transaction-service.spec.ts",
+    "server/src/modules/wallet/service/wallet-service.spec.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/b3/96a7292c92/0/metadata.json",
+      "transcript": "/b3/96a7292c92/0/full.jsonl",
+      "content_hash": "/b3/96a7292c92/0/content_hash.txt",
+      "prompt": "/b3/96a7292c92/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 15657,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 83840,
+    "output_tokens": 6802,
+    "api_call_count": 8
+  }
+}

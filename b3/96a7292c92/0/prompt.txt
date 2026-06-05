@@ -1,0 +1,8 @@
+Search the /home/coderx85/Projects/Work/.GITHUB/wave-fe/client directory for any code that references:
+1. `senderAccountId` or `receiverAccountId`
+2. `senderAccountNumber` or `receiverAccountNumber`
+3. `TBankAccount` type usage (including accessing `.id` property)
+4. `ITransaction` type usage
+5. `TAccountId` type usage
+
+For each file found, report the file path and the specific line content with line numbers. Focus on src/ files (types, components, pages, actions, hooks, tests). Be thorough - check all .ts, .tsx files.
