@@ -1,0 +1,8 @@
+In the codebase at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server, find the TigerBeetle client library (TBClient, TB) from src/lib/tigerbeetle. Read the full source of ALL files in that directory. I need to understand:
+
+1. What methods does TBClient expose? (lookupAccounts, createAccounts, createTransfers, etc.)
+2. What types does TB provide? (Account, Transfer, AccountFlags, etc.)
+3. How are accounts looked up and how is balance calculated?
+4. What does the TB.id() function return?
+
+Return the complete contents of all files in the tigerbeetle directory.

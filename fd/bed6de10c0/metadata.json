@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "fdbed6de10c0",
+  "strategy": "manual-commit",
+  "branch": "wave-tigerbeetle",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "server/.gitignore",
+    "server/docker-compose.dev.yaml",
+    "server/src/lib/auth.ts",
+    "server/src/modules/database/schema/transaction.repository.ts",
+    "server/src/modules/wallet/controller/wallet.controller.ts",
+    "server/src/modules/wallet/repository/account.repository.ts",
+    "server/src/modules/wallet/repository/contracts.ts",
+    "server/src/modules/wallet/repository/index.ts",
+    "server/src/modules/wallet/service/internal/account-service/account-service.ts",
+    "server/src/modules/wallet/service/wallet-service.ts",
+    "server/src/schemas/wallet.schema.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/fd/bed6de10c0/0/metadata.json",
+      "transcript": "/fd/bed6de10c0/0/full.jsonl",
+      "content_hash": "/fd/bed6de10c0/0/content_hash.txt",
+      "prompt": "/fd/bed6de10c0/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 11827,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 64640,
+    "output_tokens": 3925,
+    "api_call_count": 10
+  }
+}
