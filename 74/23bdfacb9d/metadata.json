@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "7423bdfacb9d",
+  "strategy": "manual-commit",
+  "branch": "wave-tigerbeetle",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "server/package.json",
+    "server/pnpm-lock.yaml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/74/23bdfacb9d/0/metadata.json",
+      "transcript": "/74/23bdfacb9d/0/full.jsonl",
+      "content_hash": "/74/23bdfacb9d/0/content_hash.txt",
+      "prompt": "/74/23bdfacb9d/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 35449,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 153600,
+    "output_tokens": 5914,
+    "api_call_count": 8
+  }
+}
