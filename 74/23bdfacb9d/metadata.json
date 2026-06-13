@@ -3,7 +3,7 @@
   "checkpoint_id": "7423bdfacb9d",
   "strategy": "manual-commit",
   "branch": "wave-tigerbeetle",
-  "checkpoints_count": 18,
+  "checkpoints_count": 21,
   "files_touched": [
     "server/bruno/api/SignUp.bru",
     "server/bruno/api/notification/List Notifications.bru",
@@ -51,13 +51,19 @@
       "transcript": "/74/23bdfacb9d/3/full.jsonl",
       "content_hash": "/74/23bdfacb9d/3/content_hash.txt",
       "prompt": "/74/23bdfacb9d/3/prompt.txt"
+    },
+    {
+      "metadata": "/74/23bdfacb9d/4/metadata.json",
+      "transcript": "/74/23bdfacb9d/4/full.jsonl",
+      "content_hash": "/74/23bdfacb9d/4/content_hash.txt",
+      "prompt": "/74/23bdfacb9d/4/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 322936,
+    "input_tokens": 345526,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 17006592,
-    "output_tokens": 56303,
-    "api_call_count": 252
+    "cache_read_tokens": 17613056,
+    "output_tokens": 62911,
+    "api_call_count": 281
   }
 }

@@ -1,0 +1,91 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "7423bdfacb9d",
+  "session_id": "ses_13fc03268ffeGGU0K2rnSLAhps",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-13T18:51:09.047033273Z",
+  "branch": "wave-tigerbeetle",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "server/bruno/api/notification/List Notifications.bru",
+    "server/bruno/api/notification/Stream Notifications.bru",
+    "server/bruno/api/sample/GET Sample.bru",
+    "server/bruno/api/wallet/Create Account.bru",
+    "server/bruno/api/wallet/Deposit.bru",
+    "server/bruno/api/wallet/Get Account by ID.bru",
+    "server/bruno/api/wallet/Get Account by Number.bru",
+    "server/bruno/api/wallet/Get Balance.bru",
+    "server/bruno/api/wallet/Get Ledger Entries.bru",
+    "server/bruno/api/wallet/Get User Accounts.bru",
+    "server/bruno/api/wallet/List Transactions.bru",
+    "server/bruno/api/wallet/Query Transactions.bru",
+    "server/bruno/api/wallet/Transfer.bru",
+    "server/bruno/bruno.json",
+    "server/bruno/collection.bru",
+    "server/bruno/environments/Local.bru",
+    "server/bruno/health/Health Check.bru",
+    "server/package.json",
+    "server/pnpm-lock.yaml"
+  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "a3d4b1a218ca",
+  "token_usage": {
+    "input_tokens": 22590,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 606464,
+    "output_tokens": 6608,
+    "api_call_count": 29
+  },
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-13T18:51:09.035085724Z",
+    "agent_lines": 230,
+    "agent_removed": 0,
+    "human_added": 3,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 233,
+    "total_lines_changed": 233,
+    "agent_percentage": 98.71244635193133,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 160,
+      "user_lines_removed": 3,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "server/docker-compose.dev.yaml": 18,
+        "server/package.json": 1,
+        "server/pnpm-lock.yaml": 9,
+        "server/src/lib/tigerbeetle/client.ts": 8,
+        "server/src/lib/tigerbeetle/constant.ts": 10,
+        "server/src/lib/tigerbeetle/index.ts": 3,
+        "server/src/lib/tigerbeetle/interface.ts": 25,
+        "server/src/modules/wallet/repository/account.repository.ts": 86
+      },
+      "user_removed_per_file": {
+        "server/src/modules/wallet/repository/contracts.ts": 3
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 405,
+      "agent_lines_removed": 6
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
