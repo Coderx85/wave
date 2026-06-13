@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { successResponseSchema, errorResponseSchema } from "@/lib/response";
+import type { TBankAccountNumber } from "@/types";
 
 export const walletAccountDTO = z.object({
-  id: z.string(),
   name: z.string(),
   userId: z.string(),
-  accountNumber: z.string(),
+  accountNumber: z.number(),
   balance: z.number(),
   createdAt: z.string(),
   updatedAt: z.string().nullable(),
@@ -36,13 +36,19 @@ export const walletLedgerDTO = z.object({
 export const createAccountBodySchema = z.object({
   name: z.string(),
   userId: z.string(),
-  accountNumber: z.string(),
+  accountNumber: z.number().transform(
+    (num) => {
+      return BigInt(num) as TBankAccountNumber;
+    }
+  ),
   balance: z.number(),
 });
 
 export const depositBodySchema = z.object({
   userId: z.string(),
-  accountId: z.string(),
+  accountId: z.number().transform((id) => {
+    return BigInt(id) as TBankAccountNumber;
+  }),
   amount: z.number().positive(),
 });
 
@@ -56,19 +62,27 @@ export const depositResponseSchema = {
 
 export const transferBodySchema = z.object({
   userId: z.string(),
-  senderAccountId: z.string(),
+  senderAccountId: z.number().transform((id) => {
+    return BigInt(id) as TBankAccountNumber;
+  }),
   senderName: z.string(),
-  receiverAccountId: z.string(),
+  receiverAccountId: z.number().transform((id) => {
+    return BigInt(id) as TBankAccountNumber;
+  }),
   receiverName: z.string(),
   amount: z.number(),
 });
 
 export const accountNumberParamsSchema = z.object({
-  accountNumber: z.string(),
+  accountNumber: z.coerce.number().transform((num) => {
+    return BigInt(num) as TBankAccountNumber;
+  }),
 });
 
 export const accountIdParamsSchema = z.object({
-  accountId: z.string(),
+  accountId: z.coerce.number().transform((id) => {
+    return BigInt(id) as TBankAccountNumber;
+  }),
 });
 
 export const userIdParamsSchema = z.object({
@@ -124,7 +138,7 @@ export const getBalanceResponseSchema = {
   response: {
     200: successResponseSchema(
       z.object({
-        accountId: z.string(),
+        accountNumber: z.number(),
         balance: z.number(),
       }),
     ),

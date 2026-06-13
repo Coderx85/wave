@@ -2,7 +2,7 @@ import type { IAccountService, IAccount } from "./account-service.interface";
 import type { TBankAccountNumber, TUserId } from "@/types";
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { ID } from "@/lib/ID";
-import { AccountRepository, type IAccountRepository } from "../../../repository";
+import { AccountRepository, TBAccountRepository, type IAccountRepository } from "../../../repository";
 import { IdempotencyManager } from "../../../utils";
 import { CacheFactory, type ICacheStore } from "@/lib/cache";
 
@@ -11,7 +11,7 @@ export class AccountService implements IAccountService {
   private cacheManager: ICacheStore;
 
   constructor(
-    accountRepository: IAccountRepository = new AccountRepository(),
+    accountRepository: IAccountRepository = new TBAccountRepository() || new AccountRepository(),
     cacheStore?: ICacheStore,
   ) {
     this.accountRepository = accountRepository;

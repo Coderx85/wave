@@ -4,7 +4,8 @@ import type { IAccount, ILedger, ITransaction, TTransactionQuery } from "../serv
 import type { CreateAccountInput, TransferInput, DepositInput } from "../service";
 import type { TBankAccountNumber, TTransactionId, TUserId } from "@/types";
 
-export interface TWalletAccountDTO extends Omit<IAccount, "createdAt" | "updatedAt"> {
+export interface TWalletAccountDTO extends Omit<IAccount, "createdAt" | "updatedAt" | "accountNumber"> {
+  accountNumber: number;
   createdAt: string;
   updatedAt: string | null;
 }
@@ -24,7 +25,7 @@ export interface TWalletLedgerDTO extends Omit<ILedger, "amount" | "createdAt" |
 export type TCreateAccountResponse = StandardResponse<TWalletAccountDTO>;
 export type TGetAccountResponse = StandardResponse<TWalletAccountDTO>;
 export type TGetUserAccountsResponse = StandardResponse<TWalletAccountDTO[]>;
-export type TGetBalanceResponse = StandardResponse<{ accountNumber: TBankAccountNumber; balance: number }>;
+export type TGetBalanceResponse = StandardResponse<{ accountNumber: number; balance: number }>;
 export type TDepositResponse = StandardResponse<TWalletAccountDTO>;
 export type TTransferResponse = StandardResponse<TWalletTransactionDTO>;
 export type TListTransactionsResponse = StandardResponse<TWalletTransactionDTO[]>;
@@ -41,7 +42,7 @@ export interface IWalletController {
     reply: FastifyReply,
   ): Promise<TGetAccountResponse | void>;
   getAccountByIdHandler(
-    request: FastifyRequest<{ Params: { accountNumber: TBankAccountNumber } }>,
+    request: FastifyRequest<{ Params: { accountId: TBankAccountNumber } }>,
     reply: FastifyReply,
   ): Promise<TGetAccountResponse | void>;
   getUserAccountsHandler(
@@ -49,7 +50,7 @@ export interface IWalletController {
     reply: FastifyReply,
   ): Promise<TGetUserAccountsResponse | void>;
   getBalanceHandler(
-    request: FastifyRequest<{ Params: { accountNumber: TBankAccountNumber } }>,
+    request: FastifyRequest<{ Params: { accountId: TBankAccountNumber } }>,
     reply: FastifyReply,
   ): Promise<TGetBalanceResponse | void>;
   depositHandler(

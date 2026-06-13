@@ -39,10 +39,10 @@ export class WalletService implements IWalletService {
   }
 
   createAccount(account: CreateAccountInput): Promise<IAccount> {
-    const _idempotencyKey = IdempotencyManager.generateAccountCreationKey(
-      account.userId.toString(),
-      account.name,
-    );
+    // const _idempotencyKey = IdempotencyManager.generateAccountCreationKey(
+    //   account.userId.toString(),
+    //   account.name,
+    // );
 
     return tryCatch({
       ctx: async () => {
