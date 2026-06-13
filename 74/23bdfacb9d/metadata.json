@@ -3,8 +3,27 @@
   "checkpoint_id": "7423bdfacb9d",
   "strategy": "manual-commit",
   "branch": "wave-tigerbeetle",
-  "checkpoints_count": 3,
+  "checkpoints_count": 18,
   "files_touched": [
+    "server/bruno/api/SignUp.bru",
+    "server/bruno/api/notification/List Notifications.bru",
+    "server/bruno/api/notification/Stream Notifications.bru",
+    "server/bruno/api/sample/GET Sample.bru",
+    "server/bruno/api/wallet/Create Account.bru",
+    "server/bruno/api/wallet/Deposit.bru",
+    "server/bruno/api/wallet/Get Account by ID.bru",
+    "server/bruno/api/wallet/Get Account by Number.bru",
+    "server/bruno/api/wallet/Get Balance.bru",
+    "server/bruno/api/wallet/Get Ledger Entries.bru",
+    "server/bruno/api/wallet/Get User Accounts.bru",
+    "server/bruno/api/wallet/List Transactions.bru",
+    "server/bruno/api/wallet/Query Transactions.bru",
+    "server/bruno/api/wallet/Transfer.bru",
+    "server/bruno/bruno.json",
+    "server/bruno/collection.bru",
+    "server/bruno/environments/Local.bru",
+    "server/bruno/environments/development.bru",
+    "server/bruno/health/Health Check.bru",
     "server/package.json",
     "server/pnpm-lock.yaml"
   ],
@@ -26,13 +45,19 @@
       "transcript": "/74/23bdfacb9d/2/full.jsonl",
       "content_hash": "/74/23bdfacb9d/2/content_hash.txt",
       "prompt": "/74/23bdfacb9d/2/prompt.txt"
+    },
+    {
+      "metadata": "/74/23bdfacb9d/3/metadata.json",
+      "transcript": "/74/23bdfacb9d/3/full.jsonl",
+      "content_hash": "/74/23bdfacb9d/3/content_hash.txt",
+      "prompt": "/74/23bdfacb9d/3/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 74818,
+    "input_tokens": 322936,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 384512,
-    "output_tokens": 17663,
-    "api_call_count": 26
+    "cache_read_tokens": 17006592,
+    "output_tokens": 56303,
+    "api_call_count": 252
   }
 }

@@ -1,0 +1,222 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "7423bdfacb9d",
+  "session_id": "ses_13fb61926ffeZxMYq212xSML8Q",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-13T18:51:08.929681403Z",
+  "branch": "wave-tigerbeetle",
+  "checkpoints_count": 15,
+  "files_touched": [
+    "server/bruno/api/SignUp.bru",
+    "server/bruno/api/notification/List Notifications.bru",
+    "server/bruno/api/notification/Stream Notifications.bru",
+    "server/bruno/api/sample/GET Sample.bru",
+    "server/bruno/api/wallet/Create Account.bru",
+    "server/bruno/api/wallet/Deposit.bru",
+    "server/bruno/api/wallet/Get Account by ID.bru",
+    "server/bruno/api/wallet/Get Account by Number.bru",
+    "server/bruno/api/wallet/Get Balance.bru",
+    "server/bruno/api/wallet/Get Ledger Entries.bru",
+    "server/bruno/api/wallet/Get User Accounts.bru",
+    "server/bruno/api/wallet/List Transactions.bru",
+    "server/bruno/api/wallet/Query Transactions.bru",
+    "server/bruno/api/wallet/Transfer.bru",
+    "server/bruno/bruno.json",
+    "server/bruno/collection.bru",
+    "server/bruno/environments/Local.bru",
+    "server/bruno/environments/development.bru",
+    "server/bruno/health/Health Check.bru",
+    "server/package.json",
+    "server/pnpm-lock.yaml"
+  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "b82af3729a53",
+  "token_usage": {
+    "input_tokens": 248118,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 16622080,
+    "output_tokens": 38640,
+    "api_call_count": 226
+  },
+  "session_metrics": {
+    "turn_count": 15
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-13T18:51:08.890632886Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 5,
+    "human_modified": 4,
+    "human_removed": 0,
+    "total_committed": 8,
+    "total_lines_changed": 9,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 432,
+      "user_lines_removed": 6,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "server/.gitignore": 1,
+        "server/bruno/api/SignUp.bru": 27,
+        "server/bruno/api/notification/List Notifications.bru": 15,
+        "server/bruno/api/notification/Stream Notifications.bru": 15,
+        "server/bruno/api/sample/GET Sample.bru": 11,
+        "server/bruno/api/wallet/Create Account.bru": 20,
+        "server/bruno/api/wallet/Deposit.bru": 19,
+        "server/bruno/api/wallet/Get Account by ID.bru": 11,
+        "server/bruno/api/wallet/Get Account by Number.bru": 11,
+        "server/bruno/api/wallet/Get Balance.bru": 11,
+        "server/bruno/api/wallet/Get Ledger Entries.bru": 11,
+        "server/bruno/api/wallet/Get User Accounts.bru": 11,
+        "server/bruno/api/wallet/List Transactions.bru": 11,
+        "server/bruno/api/wallet/Query Transactions.bru": 17,
+        "server/bruno/api/wallet/Transfer.bru": 22,
+        "server/bruno/bruno.json": 10,
+        "server/bruno/bruno/.gitignore": 9,
+        "server/bruno/bruno/bruno.json": 9,
+        "server/bruno/collection.bru": 5,
+        "server/bruno/environments/Local.bru": 15,
+        "server/bruno/health/Health Check.bru": 11,
+        "server/docker-compose.dev.yaml": 18,
+        "server/package.json": 1,
+        "server/pnpm-lock.yaml": 9,
+        "server/src/lib/tigerbeetle/client.ts": 8,
+        "server/src/lib/tigerbeetle/constant.ts": 10,
+        "server/src/lib/tigerbeetle/index.ts": 3,
+        "server/src/lib/tigerbeetle/interface.ts": 25,
+        "server/src/modules/wallet/repository/account.repository.ts": 86
+      },
+      "user_removed_per_file": {
+        "server/.gitignore": 3,
+        "server/src/modules/wallet/repository/contracts.ts": 3
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 432,
+      "agent_lines_removed": 6
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 8,
+      "user_lines_removed": 3,
+      "agent_lines_added": 432,
+      "agent_lines_removed": 6,
+      "user_added_per_file": {
+        "server/bruno/api/SignUp.bru": 8
+      },
+      "user_removed_per_file": {
+        "server/bruno/api/SignUp.bru": 3
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 441,
+      "agent_lines_removed": 7
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 441,
+      "agent_lines_removed": 7
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 441,
+      "agent_lines_removed": 7
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 45,
+      "user_lines_removed": 25,
+      "agent_lines_added": 423,
+      "agent_lines_removed": 7,
+      "user_added_per_file": {
+        "server/bruno/api/wallet/Create Account.bru": 1,
+        "server/src/modules/wallet/controller/wallet.controller.ts": 16,
+        "server/src/modules/wallet/repository/index.ts": 1,
+        "server/src/modules/wallet/service/internal/account-service/account-service.ts": 2,
+        "server/src/modules/wallet/service/wallet-service.ts": 4,
+        "server/src/schemas/wallet.schema.ts": 21
+      },
+      "user_removed_per_file": {
+        "server/bruno/api/wallet/Create Account.bru": 1,
+        "server/src/modules/wallet/controller/wallet.controller.ts": 7,
+        "server/src/modules/wallet/repository/contracts.ts": 2,
+        "server/src/modules/wallet/repository/index.ts": 2,
+        "server/src/modules/wallet/service/internal/account-service/account-service.ts": 2,
+        "server/src/modules/wallet/service/wallet-service.ts": 4,
+        "server/src/schemas/wallet.schema.ts": 7
+      }
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 10,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 468,
+      "agent_lines_removed": 31
+    },
+    {
+      "checkpoint_number": 11,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 474,
+      "agent_lines_removed": 33
+    },
+    {
+      "checkpoint_number": 12,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 615,
+      "agent_lines_removed": 37
+    },
+    {
+      "checkpoint_number": 13,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 615,
+      "agent_lines_removed": 37
+    },
+    {
+      "checkpoint_number": 14,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 615,
+      "agent_lines_removed": 37
+    },
+    {
+      "checkpoint_number": 15,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 622,
+      "agent_lines_removed": 44
+    }
+  ]
+}
