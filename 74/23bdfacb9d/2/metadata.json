@@ -1,0 +1,89 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "7423bdfacb9d",
+  "session_id": "ses_13fb60601ffe3mZqGjBT3bcpHM",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-13T18:51:07.843656987Z",
+  "branch": "wave-tigerbeetle",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "server/package.json",
+    "server/pnpm-lock.yaml"
+  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "665ffe8a244c",
+  "token_usage": {
+    "input_tokens": 20400,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 133760,
+    "output_tokens": 5861,
+    "api_call_count": 10
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-13T18:51:07.833929965Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 7,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 7,
+    "total_lines_changed": 7,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 432,
+      "user_lines_removed": 6,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "server/.gitignore": 1,
+        "server/bruno/api/SignUp.bru": 27,
+        "server/bruno/api/notification/List Notifications.bru": 15,
+        "server/bruno/api/notification/Stream Notifications.bru": 15,
+        "server/bruno/api/sample/GET Sample.bru": 11,
+        "server/bruno/api/wallet/Create Account.bru": 20,
+        "server/bruno/api/wallet/Deposit.bru": 19,
+        "server/bruno/api/wallet/Get Account by ID.bru": 11,
+        "server/bruno/api/wallet/Get Account by Number.bru": 11,
+        "server/bruno/api/wallet/Get Balance.bru": 11,
+        "server/bruno/api/wallet/Get Ledger Entries.bru": 11,
+        "server/bruno/api/wallet/Get User Accounts.bru": 11,
+        "server/bruno/api/wallet/List Transactions.bru": 11,
+        "server/bruno/api/wallet/Query Transactions.bru": 17,
+        "server/bruno/api/wallet/Transfer.bru": 22,
+        "server/bruno/bruno.json": 10,
+        "server/bruno/bruno/.gitignore": 9,
+        "server/bruno/bruno/bruno.json": 9,
+        "server/bruno/collection.bru": 5,
+        "server/bruno/environments/Local.bru": 15,
+        "server/bruno/health/Health Check.bru": 11,
+        "server/docker-compose.dev.yaml": 18,
+        "server/package.json": 1,
+        "server/pnpm-lock.yaml": 9,
+        "server/src/lib/tigerbeetle/client.ts": 8,
+        "server/src/lib/tigerbeetle/constant.ts": 10,
+        "server/src/lib/tigerbeetle/index.ts": 3,
+        "server/src/lib/tigerbeetle/interface.ts": 25,
+        "server/src/modules/wallet/repository/account.repository.ts": 86
+      },
+      "user_removed_per_file": {
+        "server/.gitignore": 3,
+        "server/src/modules/wallet/repository/contracts.ts": 3
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 432,
+      "agent_lines_removed": 6
+    }
+  ]
+}
