@@ -72,6 +72,9 @@ importers:
       pino:
         specifier: ^10.1.0
         version: 10.3.1
+      tigerbeetle-node:
+        specifier: ^0.17.5
+        version: 0.17.5
       typescript:
         specifier: ^5
         version: 5.9.3
@@ -2517,6 +2520,10 @@ packages:
     resolution: {integrity: sha512-4iMVL6HAINXWf1ZKZjIPcz5wYaOdPhtO8ATvZ+Xqp3BTdaqtAwQkNmKORqcIo5YkQqGXq5cwfswDwMqqQNrpJA==}
     engines: {node: '>=20'}
 
+  tigerbeetle-node@0.17.5:
+    resolution: {integrity: sha512-9+CAXXv8ua7CgdsoCSsffkmr0eCUT7vKsfK77EPeJh9jKCzn54iV41/0zGoANLTaNZRS2CZ3gTC4zihic44sYw==}
+    engines: {node: '>=18.0.0'}
+
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
@@ -4494,6 +4501,8 @@ snapshots:
   thread-stream@4.0.0:
     dependencies:
       real-require: 0.2.0
+
+  tigerbeetle-node@0.17.5: {}
 
   tinybench@2.9.0: {}
 
