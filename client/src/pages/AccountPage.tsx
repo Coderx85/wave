@@ -208,33 +208,7 @@ export default function AccountPage() {
     }
   }
 
-  const handleUnlinkAccount = async () => {
-    const confirmed = window.confirm("Are you sure you want to unlink your account? This action cannot be undone.")
-    if (!confirmed) return
-    try {
-      const res = await fetch("/api/wallet/users/" + user.id + "/account", {
-        method: "DELETE",
-      })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      await signOut()
-    } catch {
-      alert("Failed to unlink account. Please try again.")
-    }
-  }
 
-  const handleUnlinkWalletAccount = async (accountId: string) => {
-    const confirmed = window.confirm("Are you sure you want to unlink this wallet account?")
-    if (!confirmed) return
-    try {
-      const res = await fetch(`/api/wallet/accounts/${accountId}`, {
-        method: "DELETE",
-      })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      fetchAccounts()
-    } catch {
-      alert("Failed to unlink account. Please try again.")
-    }
-  }
 
   const handleSignOut = async () => {
     await signOut()
@@ -258,10 +232,6 @@ export default function AccountPage() {
                 <MoreVertical className="size-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={handleUnlinkAccount} className="text-destructive">
-                  Unlink Account
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => window.location.href = "/account/settings"}>
                   Edit
                 </DropdownMenuItem>
@@ -312,7 +282,7 @@ export default function AccountPage() {
             )}
 
             {!loading && !error && accounts.length > 0 && (
-              <WalletCardCarousel accounts={accounts} onUnlink={handleUnlinkWalletAccount} />
+              <WalletCardCarousel accounts={accounts} />
             )}
 
             <form onSubmit={handleCreateAccount} className="space-y-3 pt-4 border-t border-border">

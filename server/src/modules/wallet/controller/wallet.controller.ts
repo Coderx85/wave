@@ -150,27 +150,49 @@ export class WalletController implements IWalletController {
   };
 
   getAccountByIdHandler = async (
-    request: FastifyRequest<{ Params: { accountId: TBankAccountNumber } }>,
+    request: FastifyRequest<{ Params: { accountId: TBankAccountNumber }, Headers: ReturnType<typeof fromNodeHeaders> }>,
     reply: FastifyReply,
   ) => {
-    const account = await this.walletService.getAccountById(request.params.accountId);
+    try {
+      const session = await auth.api.getSession({
+        headers: fromNodeHeaders(request.headers),
+      });
 
-    if (!account) {
+      if (!session) {
+        return sendError({
+          reply,
+          statusCode: 401,
+          message: "UNAUTHORIZED",
+          error: "ERROR FROM AUTH SERVICE",
+        });
+      }
+
+      const account = await this.walletService.getAccountById(request.params.accountId);
+
+      if (!account) {
+        sendError({
+          reply,
+          statusCode: 404,
+          message: "ACCOUNT_NOT_FOUND",
+          error: "ACCOUNT_NOT_FOUND",
+        });
+        return;
+      }
+
+      sendSuccess<TWalletAccountDTO>({
+        reply,
+        statusCode: 200,
+        message: "Successfully fetched account",
+        data: toAccountDTO(account),
+      });
+    } catch (error: unknown) {
       sendError({
         reply,
-        statusCode: 404,
-        message: "ACCOUNT_NOT_FOUND",
-        error: "ACCOUNT_NOT_FOUND",
+        statusCode: 500,
+        message: "FAILED_TO_FETCH_ACCOUNT",
+        error: error instanceof Error ? error.message : "INTERNAL_SERVER_ERROR",
       });
-      return;
     }
-
-    sendSuccess<TWalletAccountDTO>({
-      reply,
-      statusCode: 200,
-      message: "Successfully fetched account",
-      data: toAccountDTO(account),
-    });
   };
 
   getUserAccountsHandler = async (
@@ -215,56 +237,144 @@ export class WalletController implements IWalletController {
     request: FastifyRequest<{ Params: { accountId: TBankAccountNumber }, Headers: ReturnType<typeof fromNodeHeaders> }>,
     reply: FastifyReply,
   ) => {
-    const accountNumber = request.params.accountId;
-    const balance = await this.walletService.getBalance(accountNumber);
-    sendSuccess<{ accountNumber: TBankAccountNumber; balance: number }>({
-      reply,
-      statusCode: 200,
-      message: "SUCCESSFULLY_FETCHED_BALANCE",
-      data: {
-        accountNumber,
-        balance,
-      },
-    });
+    try {
+      const session = await auth.api.getSession({
+        headers: fromNodeHeaders(request.headers),
+      });
+
+      if (!session) {
+        return sendError({
+          reply,
+          statusCode: 401,
+          message: "UNAUTHORIZED",
+          error: "ERROR FROM AUTH SERVICE",
+        });
+      }
+
+      const accountNumber = request.params.accountId;
+      const balance = await this.walletService.getBalance(accountNumber);
+      sendSuccess<{ accountNumber: TBankAccountNumber; balance: number }>({
+        reply,
+        statusCode: 200,
+        message: "SUCCESSFULLY_FETCHED_BALANCE",
+        data: {
+          accountNumber,
+          balance,
+        },
+      });
+    } catch (error: unknown) {
+      sendError({
+        reply,
+        statusCode: 500,
+        message: "FAILED_TO_FETCH_BALANCE",
+        error: error instanceof Error ? error.message : "INTERNAL_SERVER_ERROR",
+      });
+    }
   };
 
   depositHandler = async (
     request: FastifyRequest<{ Body: Parameters<IWalletService["deposit"]>[0], Headers: ReturnType<typeof fromNodeHeaders> }>,
     reply: FastifyReply,
   ) => {
-    const account = await this.walletService.deposit(request.body);
-    sendSuccess<TWalletAccountDTO>({
-      reply,
-      statusCode: 200,
-      message: "Successfully deposited funds",
-      data: toAccountDTO(account),
-    });
+    try {
+      const session = await auth.api.getSession({
+        headers: fromNodeHeaders(request.headers),
+      });
+
+      if (!session) {
+        return sendError({
+          reply,
+          statusCode: 401,
+          message: "UNAUTHORIZED",
+          error: "ERROR FROM AUTH SERVICE",
+        });
+      }
+
+      const account = await this.walletService.deposit(request.body);
+      sendSuccess<TWalletAccountDTO>({
+        reply,
+        statusCode: 200,
+        message: "Successfully deposited funds",
+        data: toAccountDTO(account),
+      });
+    } catch (error: unknown) {
+      sendError({
+        reply,
+        statusCode: 500,
+        message: "FAILED_TO_DEPOSIT_FUNDS",
+        error: error instanceof Error ? error.message : "INTERNAL_SERVER_ERROR",
+      });
+    }
   };
 
   transferHandler = async (
     request: FastifyRequest<{ Body: Parameters<IWalletService["transfer"]>[0], Headers: ReturnType<typeof fromNodeHeaders> }>,
     reply: FastifyReply,
   ) => {
-    const transaction = await this.walletService.transfer(request.body);
-    sendSuccess<TWalletTransactionDTO>({
-      reply,
-      statusCode: 201,
-      message: "Successfully completed transfer",
-      data: toTransactionDTO(transaction),
-    });
+    try {
+      const session = await auth.api.getSession({
+        headers: fromNodeHeaders(request.headers),
+      });
+
+      if (!session) {
+        return sendError({
+          reply,
+          statusCode: 401,
+          message: "UNAUTHORIZED",
+          error: "ERROR FROM AUTH SERVICE",
+        });
+      }
+
+      const transaction = await this.walletService.transfer(request.body);
+      sendSuccess<TWalletTransactionDTO>({
+        reply,
+        statusCode: 201,
+        message: "Successfully completed transfer",
+        data: toTransactionDTO(transaction),
+      });
+    } catch (error: unknown) {
+      sendError({
+        reply,
+        statusCode: 500,
+        message: "FAILED_TO_TRANSFER_FUNDS",
+        error: error instanceof Error ? error.message : "INTERNAL_SERVER_ERROR",
+      });
+    }
   };
 
   listTransactionsHandler = async (
     request: FastifyRequest<{ Params: { userId: Parameters<IWalletService["listTransactions"]>[0] }, Headers: ReturnType<typeof fromNodeHeaders> }>,
     reply: FastifyReply,
   ) => {
-    const transactions = await this.walletService.listTransactions(request.params.userId);
-    sendSuccess<TWalletTransactionDTO[]>({
-      reply,
-      statusCode: 200,
-      message: "Successfully fetched transactions",
-      data: toTransactionsDTO(transactions),
-    });
+    try {
+      const session = await auth.api.getSession({
+        headers: fromNodeHeaders(request.headers),
+      });
+
+      if (!session) {
+        return sendError({
+          reply,
+          statusCode: 401,
+          message: "UNAUTHORIZED",
+          error: "ERROR FROM AUTH SERVICE",
+        });
+      }
+
+      const transactions = await this.walletService.listTransactions(request.params.userId);
+      sendSuccess<TWalletTransactionDTO[]>({
+        reply,
+        statusCode: 200,
+        message: "Successfully fetched transactions",
+        data: toTransactionsDTO(transactions),
+      });
+    } catch (error: unknown) {
+      sendError({
+        reply,
+        statusCode: 500,
+        message: "FAILED_TO_FETCH_TRANSACTIONS",
+        error: error instanceof Error ? error.message : "INTERNAL_SERVER_ERROR",
+      });
+    }
   };
 
   queryTransactionsHandler = async (
@@ -275,17 +385,39 @@ export class WalletController implements IWalletController {
     }>,
     reply: FastifyReply,
   ) => {
-    const transactions = await this.walletService.queryTransactions(
-      request.query,
-      request.params.userId,
-    );
+    try {
+      const session = await auth.api.getSession({
+        headers: fromNodeHeaders(request.headers),
+      });
 
-    sendSuccess<TWalletTransactionDTO[]>({
-      reply,
-      statusCode: 200,
-      message: "Successfully queried transactions",
-      data: toTransactionsDTO(transactions),
-    });
+      if (!session) {
+        return sendError({
+          reply,
+          statusCode: 401,
+          message: "UNAUTHORIZED",
+          error: "ERROR FROM AUTH SERVICE",
+        });
+      }
+
+      const transactions = await this.walletService.queryTransactions(
+        request.query,
+        request.params.userId,
+      );
+
+      sendSuccess<TWalletTransactionDTO[]>({
+        reply,
+        statusCode: 200,
+        message: "Successfully queried transactions",
+        data: toTransactionsDTO(transactions),
+      });
+    } catch (error: unknown) {
+      sendError({
+        reply,
+        statusCode: 500,
+        message: "FAILED_TO_QUERY_TRANSACTIONS",
+        error: error instanceof Error ? error.message : "INTERNAL_SERVER_ERROR",
+      });
+    }
   };
 
   getLedgerEntriesHandler = async (
@@ -295,13 +427,35 @@ export class WalletController implements IWalletController {
     }>,
     reply: FastifyReply,
   ) => {
-    const entries = await this.walletService.getLedgerEntries(request.params.transactionId);
-    sendSuccess<TWalletLedgerDTO[]>({
-      reply,
-      statusCode: 200,
-      message: "Successfully fetched ledger entries",
-      data: toLedgerDTO(entries),
-    });
+    try {
+      const session = await auth.api.getSession({
+        headers: fromNodeHeaders(request.headers),
+      });
+
+      if (!session) {
+        return sendError({
+          reply,
+          statusCode: 401,
+          message: "UNAUTHORIZED",
+          error: "ERROR FROM AUTH SERVICE",
+        });
+      }
+
+      const entries = await this.walletService.getLedgerEntries(request.params.transactionId);
+      sendSuccess<TWalletLedgerDTO[]>({
+        reply,
+        statusCode: 200,
+        message: "Successfully fetched ledger entries",
+        data: toLedgerDTO(entries),
+      });
+    } catch (error: unknown) {
+      sendError({
+        reply,
+        statusCode: 500,
+        message: "FAILED_TO_FETCH_LEDGER_ENTRIES",
+        error: error instanceof Error ? error.message : "INTERNAL_SERVER_ERROR",
+      });
+    }
   };
 }
 

@@ -36,10 +36,8 @@ function maskNumber(num: string) {
 
 export default function WalletCard({
   account,
-  onUnlink,
 }: {
   account: WalletCardAccount
-  onUnlink: (id: string) => void
 }) {
   const [showBalance, setShowBalance] = useState(true)
 
@@ -70,10 +68,6 @@ export default function WalletCard({
                   <MoreVertical className="w-4 h-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => onUnlink(account.id)} className="text-destructive">
-                    Unlink Account
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => window.location.href = "/account/settings"}>
                     Edit
                   </DropdownMenuItem>
