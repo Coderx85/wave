@@ -9,4 +9,3 @@ data:
   DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/wave_db"
   TB_HOST: "tigerbeetle.server.svc.cluster.local"
   TB_PORT: "4343"
-  TIGERBEETLE_PORT: "4343"

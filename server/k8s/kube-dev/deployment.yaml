@@ -13,19 +13,6 @@ spec:
       labels:
         app: backend-server
     spec:
-      initContainers:
-      - name: resolve-tigerbeetle
-        image: busybox:1.37
-        command:
-        - sh
-        - -c
-        - |
-          TB_HOST=$(nslookup tigerbeetle.server.svc.cluster.local | awk '/Address/{print $2}' | tail -1)
-          echo "TIGERBEETLE_ADDRESS=$TB_HOST" > /env/tigerbeetle.env
-          echo "Resolved tigerbeetle to $TB_HOST"
-        volumeMounts:
-        - name: tigerbeetle-env
-          mountPath: /env
       containers:
       - name: backend-server
         image: server:latest
@@ -35,21 +22,17 @@ spec:
         envFrom:
         - configMapRef:
             name: server-config
-        - secretRef:
-            name: tigerbeetle-resolved
-            optional: true
-        command:
-        - sh
-        - -c
-        - |
-          if [ -f /env/tigerbeetle.env ]; then
-            export $(grep -v '^#' /env/tigerbeetle.env | xargs)
-          fi
-          node dist/index.js
-        volumeMounts:
-        - name: tigerbeetle-env
-          mountPath: /env
-          readOnly: true
-      volumes:
-      - name: tigerbeetle-env
-        emptyDir: {}
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          timeoutSeconds: 3

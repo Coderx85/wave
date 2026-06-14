@@ -29,6 +29,10 @@ spec:
         volumeMounts:
         - name: postgres-data
           mountPath: /var/lib/postgresql
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
         startupProbe:
           exec:
             command: ["pg_isready", "-U", "postgres"]
@@ -92,6 +96,10 @@ spec:
         volumeMounts:
         - name: tigerbeetle-data
           mountPath: /data
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 500m
         startupProbe:
           exec:
             command:
