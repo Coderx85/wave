@@ -1,0 +1,14 @@
+Thoroughly explore the codebase structure at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/ and provide me with:
+
+1. The full directory tree (at least 3 levels deep)
+2. For each module (wallet, notification, user, kafka, etc.), identify the layers present (controller, service, repository, etc.) and how they depend on each other
+3. Find ALL interface/abstract class definitions (contracts) and where they're implemented
+4. Identify any violations of Clean Architecture / dependency rules (e.g., service layer importing from controller, domain depending on infrastructure)
+5. Map the current dependency flow:
+   - Do repositories depend on ORM/Database directly in their types?
+   - Do services import repository interfaces or implementations?
+   - Do controllers import services directly?
+   - Where does Zod/Fastify/Drizzle specific code leak into domain layers?
+6. List every file that uses `@/schemas/` imports to understand where schema coupling exists
+
+Return your findings as structured bullet points grouped by concern.

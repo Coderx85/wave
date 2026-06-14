@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "1ad1ea890af6",
+  "strategy": "manual-commit",
+  "branch": "wave-tigerbeetle",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "server/src/routes/api/notification/index.spec.ts",
+    "server/src/routes/api/sample/index.spec.ts",
+    "server/src/routes/api/wallet/index.spec.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/1a/d1ea890af6/0/metadata.json",
+      "transcript": "/1a/d1ea890af6/0/full.jsonl",
+      "content_hash": "/1a/d1ea890af6/0/content_hash.txt",
+      "prompt": "/1a/d1ea890af6/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 69584,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 362240,
+    "output_tokens": 14413,
+    "api_call_count": 11
+  }
+}
