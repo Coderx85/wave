@@ -1,0 +1,43 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "5b1666fb335b",
+  "session_id": "ses_139449780ffeG1c0gSTTsbgkQe",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-14T16:36:40.546068319Z",
+  "branch": "wave-tigerbeetle",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "server/bruno/api/SignUp.bru",
+    "server/src/modules/database/schema/transaction.repository.ts",
+    "server/src/modules/notification/notification-service.ts",
+    "server/src/routes/api/notification/handler.ts",
+    "server/src/routes/api/notification/index.spec.ts",
+    "server/src/routes/api/sample/index.spec.ts",
+    "server/src/routes/api/wallet/index.spec.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.5-free",
+  "turn_id": "e9fb8837c9ce",
+  "token_usage": {
+    "input_tokens": 6162,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 7040,
+    "output_tokens": 3433,
+    "api_call_count": 2
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-14T16:36:40.543624307Z",
+    "agent_lines": 73,
+    "agent_removed": 248,
+    "human_added": 2238,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 2311,
+    "total_lines_changed": 2559,
+    "agent_percentage": 12.543962485345839,
+    "metric_version": 2
+  }
+}
