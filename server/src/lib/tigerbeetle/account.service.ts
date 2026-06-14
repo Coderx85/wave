@@ -4,6 +4,7 @@ import type { IAccountDTO, IAccountRepository } from "@/modules/wallet/repositor
 import { TB, TBClient } from "./client";
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { CURRENCY_CODE, WALLET_LEDGER_CODE } from "./constant";
+import { AccountRepository } from "@/modules/wallet/repository/account.repository";
 
 function hashUserId(userId: string): bigint {
   const digest = createHash("sha256").update(userId).digest();
@@ -12,11 +13,29 @@ function hashUserId(userId: string): bigint {
 
 const userIdReverseMap = new Map<bigint, string>();
 
-export class TigerBeetleAccountService implements IAccountRepository {
+export class AccountService implements IAccountRepository {
   private readonly client = TBClient;
+  private readonly accountRepository: IAccountRepository = new AccountRepository();
 
-  create(account: Omit<IAccountDTO, "createdAt" | "updatedAt">): Promise<IAccountDTO> {
-    return tryCatch({
+  async create(account: Omit<IAccountDTO, "createdAt" | "updatedAt">): Promise<IAccountDTO> {
+    // Save to primary database first
+    const data = tryCatch({
+      ctx: async () => {
+        const newAccount = await this.accountRepository.create({
+          ...account,
+        });
+        return newAccount;
+      },
+      errorMessage: "FAILED_TO_CREATE_ACCOUNT",
+    });
+    
+    // Error handling for TigerBeetle account creation.
+    if(!data) {
+      throw new Error("Failed to create account");
+    };
+
+    // Then create corresponding account in TigerBeetle
+    const tbData = tryCatch({
       ctx: async () => {
         const accountId = TB.id();
 
@@ -52,50 +71,39 @@ export class TigerBeetleAccountService implements IAccountRepository {
 
         userIdReverseMap.set(hashUserId(account.userId), account.userId);
 
-        return {
-          accountNumber: accountId as unknown as TBankAccountNumber,
-          balance: 0,
-          createdAt: new Date(),
-          updatedAt: null,
-          name: account.name,
-          userId: account.userId,
-        };
+        return result;
       },
       errorMessage: "FAILED_TO_CREATE_ACCOUNT",
     });
+
+    if(!tbData) {
+      throw new Error("Failed to create account in TigerBeetle");
+    };
+
+    return data;
   }
 
-  findByAccountNumber(accountNumber: TBankAccountNumber): Promise<IAccountDTO | null> {
+  async findByAccountNumber(accountNumber: TBankAccountNumber): Promise<IAccountDTO | null> {
     return tryCatch({
       ctx: async () => {
-        const accounts = await this.client.lookupAccounts([BigInt(accountNumber)]);
-        const tbAccount = accounts[0];
-
-        if (!tbAccount) return null;
-
-        return {
-          accountNumber: tbAccount.id as unknown as TBankAccountNumber,
-          balance:
-            Number(tbAccount.credits_posted) - Number(tbAccount.debits_posted),
-          createdAt: new Date(Number(tbAccount.timestamp) / 1_000_000),
-          updatedAt: null,
-          name: "",
-          userId: (userIdReverseMap.get(tbAccount.user_data_128) ?? String(tbAccount.user_data_128)) as TUserId,
-        };
+        const account = await this.accountRepository.findByAccountNumber(accountNumber);
+        return account;
       },
-      errorMessage: "FAILED_TO_FIND_ACCOUNT",
+      errorMessage: "FAILED_TO_GET_ACCOUNT",
     });
   }
 
-  /**
-   * TigerBeetle does not support querying accounts by user_data_128.
-   * TODO: Implement when TigerBeetle query-by-user-data is available.
-   */
-  findByUserId(_userId: TUserId): Promise<IAccountDTO[]> {
-    return Promise.resolve([]);
+  async findByUserId(_userId: TUserId): Promise<IAccountDTO[]> {
+    return tryCatch({
+      ctx: async () => {
+        const accounts = await this.accountRepository.findByUserId(_userId);
+        return accounts;
+      },
+      errorMessage: "FAILED_TO_GET_USER_ACCOUNTS",
+    });
   }
 
-  adjustBalance(
+  async adjustBalance(
     accountNumber: TBankAccountNumber,
     amount: number,
   ): Promise<number> {
@@ -121,7 +129,7 @@ export class TigerBeetleAccountService implements IAccountRepository {
     });
   }
 
-  checkBalance(accountNumber: TBankAccountNumber): Promise<IAccountDTO> {
+  async checkBalance(accountNumber: TBankAccountNumber): Promise<IAccountDTO> {
     return tryCatch({
       ctx: async () => {
         const account = await this.findByAccountNumber(accountNumber);
