@@ -1,0 +1,5 @@
+Find the actual API route definitions for the wallet module. Look for Fastify route registrations (e.g. `app.post`, `app.get`, `fastify.post`, `fastify.get`, or route arrays) in the wallet module files. Check:
+- /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/wallet/
+- /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/routes/
+
+Return the complete route definitions with their HTTP methods, URL paths, and which handler/schema they reference. Do NOT summarize or truncate.
