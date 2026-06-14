@@ -1,0 +1,93 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "f870b71f7461",
+  "session_id": "ses_13b35c13effe30uRj2194KcdyF",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-14T16:48:12.911248304Z",
+  "branch": "wave-tigerbeetle",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "server/k8s/kube-dev/Guide.md",
+    "server/k8s/kube-dev/configmap.yaml",
+    "server/k8s/kube-dev/deployment.yaml",
+    "server/k8s/kube-dev/kustomization.yaml",
+    "server/k8s/kube-dev/pvc.yaml",
+    "server/k8s/kube-dev/statefulset.yaml"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.5-free",
+  "turn_id": "f2080a3b8a88",
+  "checkpoint_transcript_start": 473,
+  "transcript_lines_at_start": 473,
+  "token_usage": {
+    "input_tokens": 305624,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 1652352,
+    "output_tokens": 6545,
+    "api_call_count": 14
+  },
+  "session_metrics": {
+    "turn_count": 86
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-14T16:48:12.848200262Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 51,
+    "human_removed": 25,
+    "total_committed": 0,
+    "total_lines_changed": 76,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 2311,
+      "agent_lines_removed": 248
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 16,
+      "user_lines_removed": 0,
+      "agent_lines_added": 4,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "server/bruno/api/wallet/Deposit.bru": 4,
+        "server/bruno/api/wallet/Get Account by Number.bru": 4,
+        "server/bruno/api/wallet/Get Balance.bru": 4,
+        "server/bruno/api/wallet/Query Transactions.bru": 4
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 51,
+      "user_lines_removed": 76,
+      "agent_lines_added": 20,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "server/k8s/kube-dev/Guide.md": 26,
+        "server/k8s/kube-dev/deployment.yaml": 14,
+        "server/k8s/kube-dev/pvc.yaml": 3,
+        "server/k8s/kube-dev/statefulset.yaml": 8
+      },
+      "user_removed_per_file": {
+        "server/k8s/kube-dev/Guide.md": 19,
+        "server/k8s/kube-dev/configmap.yaml": 1,
+        "server/k8s/kube-dev/deployment.yaml": 31,
+        "server/k8s/kube-dev/kustomization.yaml": 1,
+        "server/k8s/kube-dev/pvc.yaml": 24
+      }
+    }
+  ]
+}
