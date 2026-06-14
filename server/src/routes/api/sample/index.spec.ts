@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
 import type { FastifyInstance } from "fastify";
+import * as definition from "./definition";
+import { sampleController } from "./handler";
 import sampleRoute from "./index";
 
 describe("Sample API", () => {

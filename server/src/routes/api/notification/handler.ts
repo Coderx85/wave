@@ -1,11 +1,15 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { sendError, sendSuccess } from "@/lib/response";
-import { NotificationService } from "@/modules/notification";
+import { NotificationRepository } from "@/modules/notification/repository";
+import type { INotificationRepository } from "@/modules/notification/repository";
+import { notificationStream } from "@/modules/notification/stream";
+import type { INotificationStream } from "@/modules/notification/stream";
 import type { INotificationController, INotificationParams, INotificationQuery, INotificationDTO } from "./definition";
 
 export class NotificationController implements INotificationController {
   constructor(
-    private notificationService: NotificationService = new NotificationService(),
+    private notificationRepository: INotificationRepository = new NotificationRepository(),
+    private stream: INotificationStream = notificationStream
   ) {}
 
   async listNotificationsHandler(
@@ -15,7 +19,7 @@ export class NotificationController implements INotificationController {
     const { userId } = request.params;
     const limit = request.query.limit ?? 50;
     try {
-      const res = await this.notificationService.findByUserId(userId, limit);
+      const res = await this.notificationRepository.findByUserId(userId, limit);
       sendSuccess({
         reply,
         statusCode: 200,
@@ -48,7 +52,7 @@ export class NotificationController implements INotificationController {
     
       try{
         // Send the unread notifications immediately upon connection
-        data = await this.notificationService.findByUserId(userId, limit);
+        data = await this.notificationRepository.findByUserId(userId, limit);
         
         // Send initial batch of notifications
         reply.sse.send({

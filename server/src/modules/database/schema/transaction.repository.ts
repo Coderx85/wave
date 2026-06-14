@@ -13,7 +13,7 @@ export const AccountsTable = pgTable("accounts", {
   ).$type<TUserId>(),
   accountNumber: bigint("accountNumber", { 
     mode: "bigint"
-  }).primaryKey().$type<TBankAccountNumber>(),
+  }).notNull().unique().$type<TBankAccountNumber>(),
   balance: numeric("balance", { precision: 10, scale: 2 }).notNull(),
   ...timeStamps,
 }, 
