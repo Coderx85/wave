@@ -1,11 +1,10 @@
 import { z } from "zod";
 import { successResponseSchema, errorResponseSchema } from "@/lib/response";
-import type { TBankAccountNumber } from "@/types";
 
 export const walletAccountDTO = z.object({
   name: z.string(),
   userId: z.string(),
-  accountNumber: z.number(),
+  accountNumber: z.string(),
   balance: z.number(),
   createdAt: z.string(),
   updatedAt: z.string().nullable(),
@@ -36,19 +35,13 @@ export const walletLedgerDTO = z.object({
 export const createAccountBodySchema = z.object({
   name: z.string(),
   userId: z.string(),
-  accountNumber: z.number().transform(
-    (num) => {
-      return BigInt(num) as TBankAccountNumber;
-    }
-  ),
+  accountNumber: z.union([z.string(), z.number()]).transform(String),
   balance: z.number(),
 });
 
 export const depositBodySchema = z.object({
   userId: z.string(),
-  accountId: z.number().transform((id) => {
-    return BigInt(id) as TBankAccountNumber;
-  }),
+  accountId: z.string(),
   amount: z.number().positive(),
 });
 
@@ -62,27 +55,19 @@ export const depositResponseSchema = {
 
 export const transferBodySchema = z.object({
   userId: z.string(),
-  senderAccountId: z.number().transform((id) => {
-    return BigInt(id) as TBankAccountNumber;
-  }),
+  senderAccountId: z.string(),
   senderName: z.string(),
-  receiverAccountId: z.number().transform((id) => {
-    return BigInt(id) as TBankAccountNumber;
-  }),
+  receiverAccountId: z.string(),
   receiverName: z.string(),
   amount: z.number(),
 });
 
 export const accountNumberParamsSchema = z.object({
-  accountNumber: z.coerce.number().transform((num) => {
-    return BigInt(num) as TBankAccountNumber;
-  }),
+  accountNumber: z.string(),
 });
 
 export const accountIdParamsSchema = z.object({
-  accountId: z.coerce.number().transform((id) => {
-    return BigInt(id) as TBankAccountNumber;
-  }),
+  accountId: z.string(),
 });
 
 export const userIdParamsSchema = z.object({
@@ -138,7 +123,7 @@ export const getBalanceResponseSchema = {
   response: {
     200: successResponseSchema(
       z.object({
-        accountNumber: z.number(),
+        accountId: z.string(),
         balance: z.number(),
       }),
     ),

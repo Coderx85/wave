@@ -14,7 +14,6 @@ import type { TBankAccountNumber, TUserId, TTransactionId } from "@/types";
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { ID } from "@/lib/ID";
 import {
-  AccountRepository,
   type IAccountRepository,
   TransactionRepository,
   type ITransactionRepository,
@@ -22,6 +21,7 @@ import {
   type ILedgerRepository,
 } from "../repository";
 import { IdempotencyManager } from "../utils";
+import { TigerBeetleAccountService } from "@/lib/tigerbeetle";
 
 export class WalletService implements IWalletService {
   private readonly accountRepo: IAccountRepository;
@@ -33,16 +33,12 @@ export class WalletService implements IWalletService {
     transactionRepo?: ITransactionRepository,
     ledgerRepo?: ILedgerRepository,
   ) {
-    this.accountRepo = accountRepo ?? new AccountRepository();
+    this.accountRepo = accountRepo ?? new TigerBeetleAccountService();
     this.transactionRepo = transactionRepo ?? new TransactionRepository();
     this.ledgerRepo = ledgerRepo ?? new LedgerRepository();
   }
 
   createAccount(account: CreateAccountInput): Promise<IAccount> {
-    // const _idempotencyKey = IdempotencyManager.generateAccountCreationKey(
-    //   account.userId.toString(),
-    //   account.name,
-    // );
 
     return tryCatch({
       ctx: async () => {

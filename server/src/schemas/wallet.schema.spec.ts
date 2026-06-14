@@ -14,10 +14,10 @@ describe("createAccountBodySchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("transforms accountNumber to BigInt", () => {
+  it("transforms accountNumber to string", () => {
     const result = schema.createAccountBodySchema.parse(validInput);
-    expect(typeof result.accountNumber).toBe("bigint");
-    expect(result.accountNumber).toBe(BigInt(123456789));
+    expect(typeof result.accountNumber).toBe("string");
+    expect(result.accountNumber).toBe("123456789");
   });
 
   it("rejects missing name", () => {
@@ -30,9 +30,9 @@ describe("createAccountBodySchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects non-numeric accountNumber", () => {
-    const result = schema.createAccountBodySchema.safeParse({ ...validInput, accountNumber: "not-a-number" });
-    expect(result.success).toBe(false);
+  it("accepts string accountNumber", () => {
+    const result = schema.createAccountBodySchema.safeParse({ ...validInput, accountNumber: "999" });
+    expect(result.success).toBe(true);
   });
 
   it("rejects non-numeric balance", () => {
@@ -44,7 +44,7 @@ describe("createAccountBodySchema", () => {
 describe("depositBodySchema", () => {
   const validInput = {
     userId: "user_1",
-    accountId: 456,
+    accountId: "456",
     amount: 100,
   };
 
@@ -53,10 +53,10 @@ describe("depositBodySchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("transforms accountId to BigInt", () => {
+  it("returns accountId as string", () => {
     const result = schema.depositBodySchema.parse(validInput);
-    expect(typeof result.accountId).toBe("bigint");
-    expect(result.accountId).toBe(BigInt(456));
+    expect(typeof result.accountId).toBe("string");
+    expect(result.accountId).toBe("456");
   });
 
   it("rejects negative amount", () => {
@@ -70,7 +70,7 @@ describe("depositBodySchema", () => {
   });
 
   it("rejects missing userId", () => {
-    const result = schema.depositBodySchema.safeParse({ accountId: 456, amount: 100 });
+    const result = schema.depositBodySchema.safeParse({ accountId: "456", amount: 100 });
     expect(result.success).toBe(false);
   });
 });
@@ -78,9 +78,9 @@ describe("depositBodySchema", () => {
 describe("transferBodySchema", () => {
   const validInput = {
     userId: "user_1",
-    senderAccountId: 123,
+    senderAccountId: "123",
     senderName: "Alice",
-    receiverAccountId: 456,
+    receiverAccountId: "456",
     receiverName: "Bob",
     amount: 50,
   };
@@ -90,16 +90,16 @@ describe("transferBodySchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("transforms senderAccountId to BigInt", () => {
+  it("returns senderAccountId as string", () => {
     const result = schema.transferBodySchema.parse(validInput);
-    expect(typeof result.senderAccountId).toBe("bigint");
-    expect(result.senderAccountId).toBe(BigInt(123));
+    expect(typeof result.senderAccountId).toBe("string");
+    expect(result.senderAccountId).toBe("123");
   });
 
-  it("transforms receiverAccountId to BigInt", () => {
+  it("returns receiverAccountId as string", () => {
     const result = schema.transferBodySchema.parse(validInput);
-    expect(typeof result.receiverAccountId).toBe("bigint");
-    expect(result.receiverAccountId).toBe(BigInt(456));
+    expect(typeof result.receiverAccountId).toBe("string");
+    expect(result.receiverAccountId).toBe("456");
   });
 
   it("rejects missing senderName", () => {
@@ -119,40 +119,38 @@ describe("transferBodySchema", () => {
 });
 
 describe("accountNumberParamsSchema", () => {
-  it("coerces string to BigInt", () => {
+  it("returns accountNumber as string", () => {
     const result = schema.accountNumberParamsSchema.parse({ accountNumber: "123" });
-    expect(typeof result.accountNumber).toBe("bigint");
-    expect(result.accountNumber).toBe(BigInt(123));
+    expect(typeof result.accountNumber).toBe("string");
+    expect(result.accountNumber).toBe("123");
   });
 
-  it("coerces number to BigInt", () => {
-    const result = schema.accountNumberParamsSchema.parse({ accountNumber: 456 });
-    expect(typeof result.accountNumber).toBe("bigint");
-    expect(result.accountNumber).toBe(BigInt(456));
-  });
-
-  it("rejects non-numeric string", () => {
-    const result = schema.accountNumberParamsSchema.safeParse({ accountNumber: "abc" });
+  it("rejects missing accountNumber", () => {
+    const result = schema.accountNumberParamsSchema.safeParse({});
     expect(result.success).toBe(false);
+  });
+
+  it("accepts numeric string", () => {
+    const result = schema.accountNumberParamsSchema.safeParse({ accountNumber: "456" });
+    expect(result.success).toBe(true);
   });
 });
 
 describe("accountIdParamsSchema", () => {
-  it("coerces string to BigInt", () => {
+  it("returns accountId as string", () => {
     const result = schema.accountIdParamsSchema.parse({ accountId: "789" });
-    expect(typeof result.accountId).toBe("bigint");
-    expect(result.accountId).toBe(BigInt(789));
+    expect(typeof result.accountId).toBe("string");
+    expect(result.accountId).toBe("789");
   });
 
-  it("coerces number to BigInt", () => {
-    const result = schema.accountIdParamsSchema.parse({ accountId: 101 });
-    expect(typeof result.accountId).toBe("bigint");
-    expect(result.accountId).toBe(BigInt(101));
-  });
-
-  it("rejects non-numeric string", () => {
-    const result = schema.accountIdParamsSchema.safeParse({ accountId: "xyz" });
+  it("rejects missing accountId", () => {
+    const result = schema.accountIdParamsSchema.safeParse({});
     expect(result.success).toBe(false);
+  });
+
+  it("accepts numeric string", () => {
+    const result = schema.accountIdParamsSchema.safeParse({ accountId: "101" });
+    expect(result.success).toBe(true);
   });
 });
 
@@ -233,7 +231,7 @@ describe("walletAccountDTO", () => {
   const validDTO = {
     name: "Alice's Checking",
     userId: "user_1",
-    accountNumber: 123,
+    accountNumber: "123",
     balance: 1000,
     createdAt: "2024-01-01T00:00:00.000Z",
     updatedAt: null,
@@ -333,7 +331,7 @@ describe("createAccountResponseSchema", () => {
     });
     expect(bodyResult.success).toBe(true);
     if (bodyResult.success) {
-      expect(typeof bodyResult.data.accountNumber).toBe("bigint");
+      expect(typeof bodyResult.data.accountNumber).toBe("string");
     }
   });
 });
@@ -344,9 +342,9 @@ describe("getAccountByNumberResponseSchema", () => {
     expect(schema.getAccountByNumberResponseSchema).toHaveProperty("response");
   });
 
-  it("params schema coerces accountNumber to BigInt", () => {
+  it("params schema coerces accountNumber to string", () => {
     const result = schema.getAccountByNumberResponseSchema.params.parse({ accountNumber: "789" });
-    expect(typeof result.accountNumber).toBe("bigint");
+    expect(typeof result.accountNumber).toBe("string");
   });
 });
 

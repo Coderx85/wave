@@ -1,5 +1,6 @@
 import type { TBankAccountNumber, TLedgerEntryId, TTransactionId, TUserId } from "@/types";
 
+// ── Account ──────────────────────────────────────────
 export interface IAccountDTO {
   name: string;
   userId: TUserId;
@@ -17,6 +18,7 @@ export interface IAccountRepository {
   checkBalance(accountNumber: TBankAccountNumber): Promise<IAccountDTO>;
 }
 
+// ── Transaction ──────────────────────────────────────
 export interface ITransactionDTO {
   id: TTransactionId;
   amount: bigint;

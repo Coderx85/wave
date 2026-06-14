@@ -10,7 +10,7 @@ export interface IAccount {
 }
 
 export interface IAccountService {
-  create(account: Omit<IAccount, "id" | "createdAt" | "updatedAt">): Promise<IAccount>;
+  create(account: Omit<IAccount, | "createdAt" | "updatedAt">): Promise<IAccount>;
   getAccountByNumber(accountNumber: TBankAccountNumber): Promise<IAccount | null>;
   getUserAccounts(userId: TUserId): Promise<IAccount[]>;
   getBalance(accountNumber: TBankAccountNumber): Promise<number>;

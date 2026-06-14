@@ -9,12 +9,13 @@ import {
 import type { TBankAccountNumber } from "@/types";
 import type { IWalletService } from "../service";
 import { WalletService } from "../service";
+import z from "zod";
 
-const toAccountDTO = ({ createdAt, updatedAt, accountNumber, ...rest }: Awaited<ReturnType<IWalletService["createAccount"]>>): TWalletAccountDTO => ({
-  ...rest,
-  accountNumber: Number(accountNumber),
-  createdAt: createdAt.toISOString(),
-  updatedAt: updatedAt ? updatedAt.toISOString() : null,
+const toAccountDTO = (account: Awaited<ReturnType<IWalletService["createAccount"]>>): TWalletAccountDTO => ({
+  ...account,
+  accountNumber: String(account.accountNumber) as unknown as TBankAccountNumber,
+  createdAt: (account.createdAt instanceof Date ? account.createdAt.toISOString() : String(account.createdAt)) as unknown as Date,
+  updatedAt: (account.updatedAt instanceof Date ? account.updatedAt.toISOString() : (account.updatedAt ?? null)) as unknown as Date | null,
 });
 
 const toTransactionDTO = (transaction: Awaited<ReturnType<IWalletService["transfer"]>>): TWalletTransactionDTO => ({
@@ -41,6 +42,14 @@ const toLedgerDTO = (entries: Awaited<ReturnType<IWalletService["getLedgerEntrie
     updatedAt: entry.updatedAt ? entry.updatedAt.toISOString() : null,
   }));
 
+const AccountNumberSchemaDTO = z.transform((val) => {
+  const num = Number(val);
+  if (isNaN(num)) {
+    throw new Error("Invalid account number format");
+  }
+  return BigInt(num) as TBankAccountNumber;
+});
+
 export class WalletController implements IWalletController {
   constructor(private readonly walletService: IWalletService = new WalletService()) {}
 
@@ -49,19 +58,26 @@ export class WalletController implements IWalletController {
     reply: FastifyReply,
   ) => {
     try {
-      const account = await this.walletService.createAccount(request.body);
+      const { accountNumber } = request.body;
+      const accNumber = AccountNumberSchemaDTO.parse(accountNumber);
+
+      const account = await this.walletService.createAccount({
+        ...request.body,
+        accountNumber: accNumber,
+      });
+      
       sendSuccess<TWalletAccountDTO>({
         reply,
         statusCode: 201,
         message: "SUCCESSFULLY_CREATED_ACCOUNT",
         data: toAccountDTO(account),
       });
-    } catch (error) {
+    } catch (error: unknown) {
       sendError({
         reply,
         statusCode: 500,
         message: "FAILED_TO_CREATE_ACCOUNT",
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : "Unknown error",
       });
     }
   };
@@ -131,13 +147,14 @@ export class WalletController implements IWalletController {
     request: FastifyRequest<{ Params: { accountId: TBankAccountNumber } }>,
     reply: FastifyReply,
   ) => {
-    const balance = await this.walletService.getBalance(request.params.accountId);
-    sendSuccess<{ accountNumber: number; balance: number }>({
+    const accountNumber = request.params.accountId;
+    const balance = await this.walletService.getBalance(accountNumber);
+    sendSuccess<{ accountNumber: TBankAccountNumber; balance: number }>({
       reply,
       statusCode: 200,
       message: "SUCCESSFULLY_FETCHED_BALANCE",
       data: {
-        accountNumber: Number(request.params.accountId),
+        accountNumber,
         balance,
       },
     });
