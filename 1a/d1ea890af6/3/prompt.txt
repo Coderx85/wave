@@ -1,0 +1,6 @@
+In the codebase at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server, find all files related to:
+1. Cache/Redis configuration and initialization - search for "RedisCacheStore", "CacheFactory", "cache" in src/
+2. The cache store implementation - read the full source of any files that create or manage Redis/cache connections
+3. Any configuration that controls whether cache is required or optional
+
+Return the full contents of all relevant cache-related source files.
