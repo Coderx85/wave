@@ -1,0 +1,173 @@
+Update the @server/docker-compose.dev.yaml to include tigerbeetle as well. without any profile
+Called the Read tool with the following input: {"filePath":"/home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/docker-compose.dev.yaml"}
+<path>/home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/docker-compose.dev.yaml</path>
+<type>file</type>
+<content>
+1: version: '3.8'
+2: 
+3: services: 
+4:   database: 
+5:     image: postgres:18-alpine
+6:     environment:
+7:       POSTGRES_USER: postgres
+8:       POSTGRES_PASSWORD: postgres
+9:       POSTGRES_DB: wave_db
+10:     ports:
+11:       - "5432:5432"
+12:     volumes:
+13:       - postgres_data:/var/lib/postgresql
+14:     healthcheck:
+15:       test: ["CMD-SHELL", "pg_isready -U postgres"]
+16:       interval: 10s
+17:       timeout: 5s
+18:       retries: 5
+19: 
+20:   backend-server:
+21:     build: .
+22:     command: node --import tsx src/index.ts
+23:     env_file:
+24:       - src/.env.development
+25:     environment:
+26:       DATABASE_URL: REDACTED
+27:     expose:
+28:       - "3000"
+29:     depends_on:
+30:       database:
+31:         condition: service_healthy  
+32:     profiles: [backend]
+33: 
+34:   auth-service:
+35:     build: .
+36:     command: node --import tsx src/index.ts
+37:     env_file:
+38:       - src/.env.development
+39:     environment:
+40:       DATABASE_URL: REDACTED
+41:     ports:
+42:       - "3003:3000"
+43:     depends_on:
+44:       database:
+45:         condition: service_healthy  
+46:     profiles: [devops]
+47:   
+48:   user-service:
+49:     build: .
+50:     command: node --import tsx src/index.ts
+51:     env_file:
+52:       - src/.env.development
+53:     environment:
+54:       DATABASE_URL: REDACTED
+55:     ports:
+56:       - "3002:3000"
+57:     depends_on:
+58:       database:
+59:         condition: service_healthy  
+60:     profiles: [devops]
+61: 
+62:   redpanda:
+63:     image: docker.redpanda.com/redpandadata/redpanda:latest
+64:     container_name: redpanda
+65:     command:
+66:       - redpanda
+67:       - start
+68:       - --kafka-addr
+69:       - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+70:       - --advertise-kafka-addr
+71:       - PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+72:       - --node-id
+73:       - "1"
+74:     ports:
+75:       - "9092:9092"
+76:       - "29092:29092"
+77:     healthcheck:
+78:       test: ["CMD-SHELL", "rpk cluster info"]
+79:       interval: 10s
+80:       timeout: 5s
+81:       retries: 5
+82:     environment:
+83:       REDPANDA_AUTO_CREATE_TOPICS_ENABLED: "true"
+84: 
+85:   mailhog:
+86:     image: mailhog/mailhog:latest
+87:     container_name: mailhog
+88:     ports:
+89:       - "1025:1025"
+90:       - "8025:8025"
+91:     healthcheck:
+92:       test: ["CMD", "curl", "-f", "http://localhost:8025"]
+93:       interval: 10s
+94:       timeout: 5s
+95:       retries: 5
+96:     profiles: [devops]
+97: 
+98:   wallet-service:
+99:     build: .
+100:     command: node --import tsx src/index.ts
+101:     env_file:
+102:       - src/.env.development
+103:     environment:
+104:       DATABASE_URL: REDACTED
+105:       KAFKA_BROKER_URL: redpanda:29092
+106:       EMAIL_HOST: mailhog
+107:       EMAIL_PORT: 1025
+108:     ports:
+109:       - "3001:3000"
+110:     depends_on:
+111:       database:
+112:         condition: service_healthy
+113:       redpanda:
+114:         condition: service_healthy
+115:       mailhog:
+116:         condition: service_healthy
+117:       dragonfly:
+118:         condition: service_healthy
+119:     profiles: [devops]
+120: 
+121:   dragonfly:
+122:     image: dragonflydb/dragonfly:latest
+123:     container_name: dragonfly
+124:     ports:
+125:       - "6379:6379"
+126:     healthcheck:
+127:       test: ["CMD", "redis-cli", "-h", "localhost", "-p", "6379", "ping"]
+128:       interval: 10s
+129:       timeout: 5s
+130:       retries: 5
+131:     profiles: [devops]
+132: 
+133:   notification-service:
+134:     build: .
+135:     command: node --import tsx src/notification-service.ts
+136:     env_file:
+137:       - src/.env.development
+138:     environment:
+139:       DATABASE_URL: REDACTED
+140:       KAFKA_BROKER_URL: redpanda:29092
+141:       EMAIL_HOST: mailhog
+142:       EMAIL_PORT: 1025
+143:     depends_on:
+144:       database:
+145:         condition: service_healthy
+146:       redpanda:
+147:         condition: service_healthy
+148:       mailhog:
+149:         condition: service_healthy
+150:     profiles: [devops]
+151: 
+152:   nginx:
+153:     image: nginx:1.27-alpine
+154:     depends_on:
+155:       - auth-service
+156:       - wallet-service
+157:       - user-service
+158:     ports:
+159:       - "3000:80"
+160:     volumes:
+161:       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+162:     profiles: [devops]
+163: 
+164: volumes:
+165:   postgres_data:
+
+(End of file - total 165 lines)
+</content>
