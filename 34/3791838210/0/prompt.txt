@@ -1,0 +1,5 @@
+Read these files and return their COMPLETE contents:
+1. /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/wallet/controller/wallet.controller.ts
+2. /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/wallet/service/wallet-service.ts
+
+Return the full contents of both files, do not truncate.
