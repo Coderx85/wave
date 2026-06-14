@@ -1,0 +1,430 @@
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should retrieve all entries for a transaction
+[MemoryCacheStore] ℹ️  MemoryCache MISS for key: tx_123 undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should retrieve all entries for a transaction
+[MemoryCacheStore] ℹ️  MemoryCache SET for key: tx_123 undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should return empty array if no entries found
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should return empty array if no entries found
+[MemoryCacheStore] ℹ️  MemoryCache MISS for key: tx_999 undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should return empty array if no entries found
+[MemoryCacheStore] ℹ️  MemoryCache SET for key: tx_999 undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should preserve amount as number in results
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should preserve amount as number in results
+[MemoryCacheStore] ℹ️  MemoryCache MISS for key: tx_123 undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should preserve amount as number in results
+[MemoryCacheStore] ℹ️  MemoryCache SET for key: tx_123 undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should pass correct transaction ID to repository
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should pass correct transaction ID to repository
+[MemoryCacheStore] ℹ️  MemoryCache MISS for key: tx_123 undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should pass correct transaction ID to repository
+[MemoryCacheStore] ℹ️  MemoryCache SET for key: tx_123 undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should throw error if retrieval fails
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should throw error if retrieval fails
+[MemoryCacheStore] ℹ️  MemoryCache MISS for key: tx_123 undefined
+
+stderr | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should throw error if retrieval fails
+FAILED_TO_GET_LEDGER_ENTRIES_FROM_DB Error: Database error
+    at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts:161:49
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:302:14
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:1903:28
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2326:24
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2323:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2305:24
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2272:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2955:70
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should preserve entry metadata
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should preserve entry metadata
+[MemoryCacheStore] ℹ️  MemoryCache MISS for key: tx_123 undefined
+
+stdout | src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts > LedgerService > getEntries > should preserve entry metadata
+[MemoryCacheStore] ℹ️  MemoryCache SET for key: tx_123 undefined
+
+ ✓ src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts (11 tests) 82ms
+ ✓ src/modules/auth/utils/passsword/password.spec.ts (6 tests) 2003ms
+     ✓ should hash and compare passwords correctly  1215ms
+     ✓ should handle empty passwords during verification  331ms
+     ✓ should handle excessively long passwords during verification  441ms
+stdout | src/modules/kafka/rpc-integration.spec.ts > Kafka RPC Integration > should call connect through RPC client
+[KafkaRPCClient] ℹ️  Kafka RPC client initialized undefined
+
+stdout | src/modules/kafka/rpc-integration.spec.ts > Kafka RPC Integration > should call disconnect through RPC client
+[KafkaRPCClient] ℹ️  Kafka RPC client initialized undefined
+
+stdout | src/modules/kafka/rpc-integration.spec.ts > Kafka RPC Integration > should publish transaction event through RPC client
+[KafkaRPCClient] ℹ️  Kafka RPC client initialized undefined
+
+stdout | src/modules/kafka/rpc-integration.spec.ts > Kafka RPC Integration > should handle RPC errors properly
+[KafkaRPCClient] ℹ️  Kafka RPC client initialized undefined
+
+stderr | src/modules/kafka/rpc-integration.spec.ts > Kafka RPC Integration > should handle RPC errors properly
+[KafkaRPCClient] ❌ RPC call failed: connect Error: Kafka connection failed
+    at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/kafka/rpc-integration.spec.ts:50:19
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:302:14
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:1903:28
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2326:24
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2323:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2305:24
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2272:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2955:70
+
+stdout | src/modules/kafka/rpc-integration.spec.ts > Kafka RPC Integration > should raise error if RPC client is not initialized
+[KafkaRPCClient] ℹ️  Kafka RPC client initialized undefined
+
+stdout | src/modules/kafka/rpc-integration.spec.ts > Kafka RPC Integration > should have all RPC procedures defined
+[KafkaRPCClient] ℹ️  Kafka RPC client initialized undefined
+
+ ✓ src/modules/kafka/rpc-integration.spec.ts (6 tests) 39ms
+stdout | src/modules/notification/notification-service.spec.ts
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+ ✓ src/modules/notification/consumer/__tests__/notification-consumer.spec.ts (11 tests) 13ms
+stdout | src/modules/wallet/service/wallet-service.spec.ts
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+ ✓ src/modules/notification/stream/notification-stream.spec.ts (2 tests) 30ms
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Service Lifecycle > should start service successfully
+[NotificationService] ℹ️  Starting notification service... undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Service Lifecycle > should start service successfully
+[NotificationService] ℹ️  Notification service started successfully undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Service Lifecycle > should start service successfully
+[NotificationService] ℹ️  Notification service stopped undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Service Lifecycle > should stop service successfully
+[NotificationService] ℹ️  Starting notification service... undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Service Lifecycle > should stop service successfully
+[NotificationService] ℹ️  Notification service started successfully undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Service Lifecycle > should stop service successfully
+[NotificationService] ℹ️  Notification service stopped undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Service Lifecycle > should stop service successfully
+[NotificationService] ℹ️  Notification service stopped undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should continue consuming on individual message failure
+[NotificationService] ℹ️  Starting notification service... undefined
+
+warning(message_bus): 25961971231797921773742093407807147163: on_connect: error to=0 error.ConnectionRefused
+stderr | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should continue consuming on individual message failure
+[NotificationService] ❌ Error handling transaction event bad_transaction DrizzleQueryError: Failed query: select "id", "name", "email", "emailVerified", "image", "updated_at", "created_at" from "users" where "users"."id" = $1
+params: bad_user
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/drizzle-orm@1.0.0-beta.22_@types+pg@8.20.0_pg@8.21.0_zod@4.3.6/node_modules/drizzle-orm/pg-core/async/session.js:37:10
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/drizzle-orm@1.0.0-beta.22_@types+pg@8.20.0_pg@8.21.0_zod@4.3.6/node_modules/drizzle-orm/node-postgres/session.js:56:19
+    ... 2 lines matching cause stack trace ...
+    at Object.<anonymous> (/home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/notification/notification-service.spec.ts:98:13) {
+  query: 'select "id", "name", "email", "emailVerified", "image", "updated_at", "created_at" from "users" where "users"."id" = $1',
+  params: [ 'bad_user' ],
+  cause: Error: connect ECONNREFUSED 127.0.0.1:5432
+      at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/pg-pool@3.14.0_pg@8.21.0/node_modules/pg-pool/index.js:45:11
+      at processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/drizzle-orm@1.0.0-beta.22_@types+pg@8.20.0_pg@8.21.0_zod@4.3.6/node_modules/drizzle-orm/node-postgres/session.js:63:13
+      at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/drizzle-orm@1.0.0-beta.22_@types+pg@8.20.0_pg@8.21.0_zod@4.3.6/node_modules/drizzle-orm/node-postgres/session.js:56:19
+      at NotificationService.handleTransactionEvent (/home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/notification/notification-service.ts:80:29)
+      at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/notification/notification-service.ts:51:9
+      at Object.<anonymous> (/home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/notification/notification-service.spec.ts:98:13) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 5432
+  }
+}
+
+stderr | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should continue consuming on individual message failure
+[NotificationService] ❌ Error handling transaction event good_transaction DrizzleQueryError: Failed query: select "id", "name", "email", "emailVerified", "image", "updated_at", "created_at" from "users" where "users"."id" = $1
+params: good_user
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/drizzle-orm@1.0.0-beta.22_@types+pg@8.20.0_pg@8.21.0_zod@4.3.6/node_modules/drizzle-orm/pg-core/async/session.js:37:10
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/drizzle-orm@1.0.0-beta.22_@types+pg@8.20.0_pg@8.21.0_zod@4.3.6/node_modules/drizzle-orm/node-postgres/session.js:56:19
+    ... 2 lines matching cause stack trace ...
+    at Object.<anonymous> (/home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/notification/notification-service.spec.ts:107:11) {
+  query: 'select "id", "name", "email", "emailVerified", "image", "updated_at", "created_at" from "users" where "users"."id" = $1',
+  params: [ 'good_user' ],
+  cause: Error: connect ECONNREFUSED 127.0.0.1:5432
+      at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/pg-pool@3.14.0_pg@8.21.0/node_modules/pg-pool/index.js:45:11
+      at processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/drizzle-orm@1.0.0-beta.22_@types+pg@8.20.0_pg@8.21.0_zod@4.3.6/node_modules/drizzle-orm/node-postgres/session.js:63:13
+      at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/drizzle-orm@1.0.0-beta.22_@types+pg@8.20.0_pg@8.21.0_zod@4.3.6/node_modules/drizzle-orm/node-postgres/session.js:56:19
+      at NotificationService.handleTransactionEvent (/home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/notification/notification-service.ts:80:29)
+      at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/notification/notification-service.ts:51:9
+      at Object.<anonymous> (/home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/notification/notification-service.spec.ts:107:11) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 5432
+  }
+}
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should continue consuming on individual message failure
+[NotificationService] ℹ️  Notification service started successfully undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should continue consuming on individual message failure
+[NotificationService] ℹ️  Notification service stopped undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should continue consuming on individual message failure
+[NotificationService] ℹ️  Notification service stopped undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should handle database errors gracefully
+[NotificationService] ℹ️  Starting notification service... undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should handle database errors gracefully
+[NotificationService] ℹ️  Notification service started successfully undefined
+
+stderr | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should handle database errors gracefully
+[NotificationService] ❌ Error handling transaction event txn_123 DrizzleQueryError: Failed query: select "id", "name", "email", "emailVerified", "image", "updated_at", "created_at" from "users" where "users"."id" = $1
+params: user_456
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/drizzle-orm@1.0.0-beta.22_@types+pg@8.20.0_pg@8.21.0_zod@4.3.6/node_modules/drizzle-orm/pg-core/async/session.js:37:10
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/drizzle-orm@1.0.0-beta.22_@types+pg@8.20.0_pg@8.21.0_zod@4.3.6/node_modules/drizzle-orm/node-postgres/session.js:56:19
+    ... 3 lines matching cause stack trace ...
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:1903:22 {
+  query: 'select "id", "name", "email", "emailVerified", "image", "updated_at", "created_at" from "users" where "users"."id" = $1',
+  params: [ 'user_456' ],
+  cause: Error: connect ECONNREFUSED 127.0.0.1:5432
+      at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/pg-pool@3.14.0_pg@8.21.0/node_modules/pg-pool/index.js:45:11
+      at processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/drizzle-orm@1.0.0-beta.22_@types+pg@8.20.0_pg@8.21.0_zod@4.3.6/node_modules/drizzle-orm/node-postgres/session.js:63:13
+      at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/drizzle-orm@1.0.0-beta.22_@types+pg@8.20.0_pg@8.21.0_zod@4.3.6/node_modules/drizzle-orm/node-postgres/session.js:56:19
+      at NotificationService.handleTransactionEvent (/home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/notification/notification-service.ts:80:29)
+      at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/notification/notification-service.ts:51:9
+      at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/notification/notification-service.spec.ts:171:7
+      at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:1903:22 {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 5432
+  }
+}
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should handle database errors gracefully
+[NotificationService] ℹ️  Notification service stopped undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should handle database errors gracefully
+[NotificationService] ℹ️  Notification service stopped undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should handle email service initialization errors
+[NotificationService] ℹ️  Starting notification service... undefined
+
+stderr | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should handle email service initialization errors
+[NotificationService] ❌ Failed to start notification service Error: SMTP connection failed
+    at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/notification/notification-service.spec.ts:177:47
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:302:14
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:1903:28
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2326:24
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2323:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2305:24
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2272:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2955:70
+
+warning(message_bus): 25961971231797921773742093407807147163: on_connect: error to=0 error.ConnectionRefused
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should handle email service initialization errors
+[NotificationService] ℹ️  Notification service stopped undefined
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should handle Kafka consumer connection errors
+[NotificationService] ℹ️  Starting notification service... undefined
+
+stderr | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should handle Kafka consumer connection errors
+[NotificationService] ❌ Failed to start notification service Error: Kafka broker unavailable
+    at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/notification/notification-service.spec.ts:194:44
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:302:14
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:1903:28
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2326:24
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2323:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2305:24
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2272:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2955:70
+
+stdout | src/modules/notification/notification-service.spec.ts > NotificationService - Integration Tests > Transaction Event Handling > should handle Kafka consumer connection errors
+[NotificationService] ℹ️  Notification service stopped undefined
+
+ ✓ src/modules/notification/notification-service.spec.ts (6 tests) 167ms
+stderr | src/modules/wallet/service/wallet-service.spec.ts > WalletService (Deep Module) > createAccount > should throw when repository fails
+FAILED_TO_CREATE_ACCOUNT Error: DB error
+    at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/wallet/service/wallet-service.spec.ts:103:44
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:302:14
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:1903:28
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2326:24
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2323:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2305:24
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2272:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2955:70
+
+stderr | src/modules/wallet/service/wallet-service.spec.ts > WalletService (Deep Module) > getBalance > should throw when account not found
+FAILED_TO_GET_BALANCE Error: Not found
+    at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/wallet/service/wallet-service.spec.ts:165:50
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:302:14
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:1903:28
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2326:24
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2323:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2305:24
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2272:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2955:70
+
+stderr | src/modules/wallet/service/wallet-service.spec.ts > WalletService (Deep Module) > transfer > should throw when sender has insufficient funds
+FAILED_TO_TRANSFER Error: Insufficient funds
+    at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/wallet/service/wallet-service.spec.ts:252:9
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:302:14
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:1903:28
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2326:24
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2323:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2305:24
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2272:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2955:70
+
+stderr | src/modules/wallet/service/wallet-service.spec.ts > WalletService (Deep Module) > transfer > should throw when transaction save fails
+FAILED_TO_TRANSFER Error: Save failed
+    at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/wallet/service/wallet-service.spec.ts:259:50
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:302:14
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:1903:28
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2326:24
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2323:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2305:24
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2272:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2955:70
+
+stderr | src/modules/wallet/service/wallet-service.spec.ts > WalletService (Deep Module) > listTransactions > should throw when query fails
+FAILED_TO_LIST_TRANSACTIONS Error: DB error
+    at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/wallet/service/wallet-service.spec.ts:292:54
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:302:14
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:1903:28
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2326:24
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2323:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2305:24
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2272:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2955:70
+
+stderr | src/modules/wallet/service/wallet-service.spec.ts > WalletService (Deep Module) > queryTransactions > should throw for invalid status
+FAILED_TO_QUERY_TRANSACTIONS Error: Invalid status value. Allowed values are 'success' or 'failed'.
+    at Object.ctx (/home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/wallet/service/wallet-service.ts:235:19)
+    at tryCatch (/home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/lib/try-catch-wrapper.ts:8:22)
+    at WalletService.queryTransactions (/home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/wallet/service/wallet-service.ts:213:12)
+    at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/wallet/service/wallet-service.spec.ts:363:17
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:302:14
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:1903:28
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2326:24
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2323:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2305:24
+
+stderr | src/modules/wallet/service/wallet-service.spec.ts > WalletService (Deep Module) > getLedgerEntries > should throw when retrieval fails
+FAILED_TO_GET_LEDGER_ENTRIES Error: DB error
+    at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/src/modules/wallet/service/wallet-service.spec.ts:408:56
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:302:14
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:1903:28
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2326:24
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2323:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2305:24
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2272:12)
+    at file:///home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/node_modules/.pnpm/@voidzero-dev+vite-plus-test@0.1.24_@types+node@25.5.0_@vitest+coverage-v8@4.1.7_esbuil_3f9776e31e4143ccc4457d1db40eaa1e/node_modules/@voidzero-dev/vite-plus-test/dist/@vitest/runner/chunk-artifact.js:2955:70
+
+ ✓ src/modules/wallet/service/wallet-service.spec.ts (24 tests) 98ms
+ ✓ src/modules/sample/sample.spec.ts (1 test) 10ms
+stdout | src/modules/wallet/utils/currency-formatter.spec.ts
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+stdout | src/modules/wallet/utils/idempotency.spec.ts
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+warning(message_bus): 98152537356874558363697207004432703403: on_connect: error to=0 error.ConnectionRefused
+warning(message_bus): 306830501617882585065815573161864831019: on_connect: error to=0 error.ConnectionRefused
+warning(message_bus): 98152537356874558363697207004432703403: on_connect: error to=0 error.ConnectionRefused
+warning(message_bus): 306830501617882585065815573161864831019: on_connect: error to=0 error.ConnectionRefused
+stdout | src/modules/user/service/user-service.spec.ts
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+stdout | src/modules/user/service/user-service.spec.ts
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+ ✓ src/modules/user/service/user-service.spec.ts (15 tests) 33ms
+stdout | src/modules/wallet/utils/idempotency.spec.ts
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+stdout | src/modules/wallet/utils/currency-formatter.spec.ts
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+ ✓ src/modules/wallet/utils/currency-formatter.spec.ts (46 tests) 24ms
+ ✓ src/modules/wallet/utils/idempotency.spec.ts (43 tests) 28ms
+warning(message_bus): 306830501617882585065815573161864831019: on_connect: error to=0 error.ConnectionRefused
+stdout | src/modules/user/repository/user.repo.spec.ts
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+stdout | src/modules/user/repository/user.repo.spec.ts
+[CacheFactory] ℹ️  Using MemoryCacheStore undefined
+
+ ✓ src/modules/user/repository/user.repo.spec.ts (5 tests) 7ms
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/routes/api/wallet/index.spec.ts > Wallet API > registers create account endpoint
+ FAIL  src/routes/api/wallet/index.spec.ts > Wallet API > registers balance endpoint
+ FAIL  src/routes/api/wallet/index.spec.ts > Wallet API > registers transaction query endpoint
+FastifyError: Missing handler function for "GET:/accounts/by-number/:accountNumber" route.
+ ❯ Object.route node_modules/.pnpm/fastify@5.8.4/node_modules/fastify/lib/route.js:217:13
+ ❯ Object.prepareRoute node_modules/.pnpm/fastify@5.8.4/node_modules/fastify/lib/route.js:172:18
+ ❯ Object._get [as get] node_modules/.pnpm/fastify@5.8.4/node_modules/fastify/fastify.js:181:34
+ ❯ walletRoute src/routes/api/wallet/index.ts:15:7
+     13|   });
+     14|
+     15|   api.get(walletApiRoutes.getAccountByNumber, {
+       |       ^
+     16|     schema: schema.getAccountByNumberResponseSchema,
+     17|     handler: walletController.getAccountByNumberHandler,
+ ❯ Plugin.exec node_modules/.pnpm/avvio@9.2.0/node_modules/avvio/lib/plugin.js:125:28
+ ❯ Boot._loadPlugin node_modules/.pnpm/avvio@9.2.0/node_modules/avvio/boot.js:446:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+ Test Files  1 failed | 18 passed (19)
+      Tests  3 failed | 266 passed (269)
+   Start at  11:49:57
+   Duration  5.10s (transform 3.44s, setup 768ms, import 16.81s, tests 3.53s, environment 13ms)
+
+[ELIFECYCLE] Test failed. See above for more details.
