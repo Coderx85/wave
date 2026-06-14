@@ -1,0 +1,13 @@
+Read all files in /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server/bruno/api/wallet/ and return the full contents of each file. The files are:
+- Create Account.bru
+- Deposit.bru
+- Get Account by ID.bru
+- Get Account by Number.bru
+- Get Balance.bru
+- Get Ledger Entries.bru
+- Get User Accounts.bru
+- List Transactions.bru
+- Query Transactions.bru
+- Transfer.bru
+
+Return the COMPLETE contents of every file, do not summarize or truncate.

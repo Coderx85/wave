@@ -3,7 +3,7 @@
   "checkpoint_id": "343791838210",
   "strategy": "manual-commit",
   "branch": "wave-tigerbeetle",
-  "checkpoints_count": 2,
+  "checkpoints_count": 3,
   "files_touched": [
     "server/.gitignore",
     "server/bruno/api/wallet/Create Account.bru",
@@ -42,13 +42,19 @@
       "transcript": "/34/3791838210/1/full.jsonl",
       "content_hash": "/34/3791838210/1/content_hash.txt",
       "prompt": "/34/3791838210/1/prompt.txt"
+    },
+    {
+      "metadata": "/34/3791838210/2/metadata.json",
+      "transcript": "/34/3791838210/2/full.jsonl",
+      "content_hash": "/34/3791838210/2/content_hash.txt",
+      "prompt": "/34/3791838210/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 22502,
+    "input_tokens": 29144,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 78464,
-    "output_tokens": 7153,
-    "api_call_count": 10
+    "cache_read_tokens": 86592,
+    "output_tokens": 8709,
+    "api_call_count": 13
   }
 }
