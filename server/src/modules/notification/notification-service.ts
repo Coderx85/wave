@@ -3,6 +3,7 @@ import { EmailSender } from "./email-sender";
 import { NotificationRepository } from "./repository";
 import { notificationStream } from "./stream";
 import type {
+  INotification,
   INotificationRepository,
 } from "./repository";
 import type { IEmailSender } from "./email-sender";
@@ -67,6 +68,10 @@ export class NotificationService {
       logger.error("Error stopping notification service", error);
       throw error;
     }
+  }
+
+  async findByUserId(userId: string, limit: number = 50): Promise<INotification[]> {
+    return this.notificationRepository.findByUserId(userId, limit);
   }
 
   private async handleTransactionEvent(event: ITransactionEvent): Promise<void> {
