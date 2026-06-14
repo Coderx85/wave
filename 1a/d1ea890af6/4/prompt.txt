@@ -1,0 +1,8 @@
+Search the codebase at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle for database configuration files. Look for:
+1. Any .env files or .env.example files
+2. Database connection strings or config in source code (search for "database", "DATABASE_URL", "wave" in connection configs)
+3. Docker compose or similar files that set up databases
+4. Package.json scripts that might create/migrate databases
+5. Any drizzle or migration config files
+
+Return the contents of the relevant config files and any scripts related to database setup.
