@@ -3,7 +3,7 @@
   "checkpoint_id": "343791838210",
   "strategy": "manual-commit",
   "branch": "wave-tigerbeetle",
-  "checkpoints_count": 3,
+  "checkpoints_count": 68,
   "files_touched": [
     "server/.gitignore",
     "server/bruno/api/wallet/Create Account.bru",
@@ -16,6 +16,16 @@
     "server/bruno/api/wallet/List Transactions.bru",
     "server/bruno/api/wallet/Query Transactions.bru",
     "server/bruno/api/wallet/Transfer.bru",
+    "server/k8s/kube-dev/Guide.md",
+    "server/k8s/kube-dev/configmap.yaml",
+    "server/k8s/kube-dev/deployment.yaml",
+    "server/k8s/kube-dev/kustomization.yaml",
+    "server/k8s/kube-dev/namespace.yaml",
+    "server/k8s/kube-dev/pvc.yaml",
+    "server/k8s/kube-dev/service.yaml",
+    "server/k8s/kube-dev/statefulset.yaml",
+    "server/src/lib/tigerbeetle/account.service.ts",
+    "server/src/lib/tigerbeetle/client.ts",
     "server/src/lib/tigerbeetle/index.ts",
     "server/src/modules/wallet/controller/wallet.controller.interface.ts",
     "server/src/modules/wallet/controller/wallet.controller.ts",
@@ -48,13 +58,19 @@
       "transcript": "/34/3791838210/2/full.jsonl",
       "content_hash": "/34/3791838210/2/content_hash.txt",
       "prompt": "/34/3791838210/2/prompt.txt"
+    },
+    {
+      "metadata": "/34/3791838210/3/metadata.json",
+      "transcript": "/34/3791838210/3/full.jsonl",
+      "content_hash": "/34/3791838210/3/content_hash.txt",
+      "prompt": "/34/3791838210/3/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 29144,
+    "input_tokens": 897327,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 86592,
-    "output_tokens": 8709,
-    "api_call_count": 13
+    "cache_read_tokens": 30180160,
+    "output_tokens": 73798,
+    "api_call_count": 343
   }
 }
