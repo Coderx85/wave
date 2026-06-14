@@ -1,0 +1,11 @@
+In the codebase at /home/coderx85/Projects/Work/.GITHUB/wave-tigerbeetle/server, find all files related to:
+1. Route/endpoint registration - search for patterns like "app.get", "app.post", "app.route", "register", "fastify" in src/ directory
+2. Account-related routes - search for "account", "/api/accounts" etc.
+3. The server builder function (likely in server.ts or similar) - read its full contents
+4. Any module registration or plugin loading that registers routes
+5. Search for "not found", "404", route registration patterns to understand how routes are organized
+
+Return the full contents of:
+- The server builder file
+- Any account-related route files
+- Any module registration/index files that wire up routes
