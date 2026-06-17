@@ -130,6 +130,23 @@ services:
       retries: 5
     profiles: [devops]
 
+  tigerbeetle:
+    image: ghcr.io/tigerbeetle/tigerbeetle:latest
+    container_name: tigerbeetle
+    command:
+      - start
+      - --addresses=0.0.0.0:4343
+      - /data/tigerbeetle
+    ports:
+      - "4343:4343"
+    volumes:
+      - tigerbeetle_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "kill -0 $$(pidof tigerbeetle) 2>/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   notification-service:
     build: .
     command: node --import tsx src/notification-service.ts
@@ -163,3 +180,4 @@ services:
 
 volumes:
   postgres_data:
+  tigerbeetle_data:

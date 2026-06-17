@@ -2,27 +2,28 @@ import type { IAccountService, IAccount } from "./account-service.interface";
 import type { TBankAccountNumber, TUserId } from "@/types";
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { ID } from "@/lib/ID";
-import { AccountRepository, type IAccountRepository } from "../../../repository";
+import { type IAccountRepository } from "../../../repository";
 import { IdempotencyManager } from "../../../utils";
 import { CacheFactory, type ICacheStore } from "@/lib/cache";
+import { TBAccountRepository } from "@/modules/wallet/repository/account.repository";
 
 export class AccountService implements IAccountService {
   private accountRepository: IAccountRepository;
   private cacheManager: ICacheStore;
 
   constructor(
-    accountRepository: IAccountRepository = new AccountRepository(),
+    accountRepository: IAccountRepository = new TBAccountRepository(),
     cacheStore?: ICacheStore,
   ) {
     this.accountRepository = accountRepository;
     this.cacheManager = cacheStore ?? CacheFactory.create();
   }
 
-  async create(account: Omit<IAccount, "id" | "createdAt" | "updatedAt">): Promise<IAccount> {
-    const idempotencyKey = IdempotencyManager.generateAccountCreationKey(
-      account.userId.toString(),
-      account.name
-    );
+  async create(account: Omit<IAccount, "createdAt" | "updatedAt">): Promise<IAccount> {
+    // const idempotencyKey = IdempotencyManager.generateAccountCreationKey(
+    //   account.userId.toString(),
+    //   account.name
+    // );
 
     const data = await tryCatch({
       ctx: async () => {

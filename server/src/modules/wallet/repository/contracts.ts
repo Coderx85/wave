@@ -12,13 +12,10 @@ export interface IAccountDTO {
 
 export interface IAccountRepository {
   create(account: Omit<IAccountDTO, "createdAt" | "updatedAt">): Promise<IAccountDTO>;
-  findById(accountNumber: TBankAccountNumber): Promise<IAccountDTO | null>;
   findByAccountNumber(accountNumber: TBankAccountNumber): Promise<IAccountDTO | null>;
   findByUserId(userId: TUserId): Promise<IAccountDTO[]>;
-  calculateNewBalance(accountNumber: TBankAccountNumber, amount: number): Promise<number>;
   adjustBalance(accountNumber: TBankAccountNumber, amount: number): Promise<number>;
   checkBalance(accountNumber: TBankAccountNumber): Promise<IAccountDTO>;
-  updateBalance(accountNumber: TBankAccountNumber, newBalance: number): Promise<void>;
 }
 
 // ── Transaction ──────────────────────────────────────

@@ -1,0 +1,24 @@
+meta {
+  name: Create Account
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/api/wallet/accounts
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "My Account",
+    "userId": "{{userId}}",
+    "accountNumber": "2323233322321",
+    "balance": 0
+  }
+}
+
+vars:pre-request {
+  userId: woAYEqH8OMOYPJeN4Z7uhlWRlvBxi4qn
+}

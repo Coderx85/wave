@@ -1,0 +1,15 @@
+meta {
+  name: Get Balance
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:3000/api/wallet/accounts/{{accountId}}/balance
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  accountId: 2153644948425970591025061943740579815
+}

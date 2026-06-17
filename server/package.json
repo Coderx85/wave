@@ -41,6 +41,7 @@
     "nodemailer": "^6.9.13",
     "pg": "^8.21.0",
     "pino": "^10.1.0",
+    "tigerbeetle-node": "^0.17.5",
     "typescript": "^5",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "npm:@voidzero-dev/vite-plus-test@latest",

@@ -2,7 +2,6 @@ import { z } from "zod";
 import { successResponseSchema, errorResponseSchema } from "@/lib/response";
 
 export const walletAccountDTO = z.object({
-  id: z.string(),
   name: z.string(),
   userId: z.string(),
   accountNumber: z.string(),
@@ -36,7 +35,7 @@ export const walletLedgerDTO = z.object({
 export const createAccountBodySchema = z.object({
   name: z.string(),
   userId: z.string(),
-  accountNumber: z.string(),
+  accountNumber: z.union([z.string(), z.number()]).transform(String),
   balance: z.number(),
 });
 

@@ -3,11 +3,9 @@ import type { StandardResponse } from "@/lib/response";
 import type { IAccount, ILedger, ITransaction, TTransactionQuery } from "../service/internal";
 import type { CreateAccountInput, TransferInput, DepositInput } from "../service";
 import type { TBankAccountNumber, TTransactionId, TUserId } from "@/types";
+import type { fromNodeHeaders } from "better-auth/node";
 
-export interface TWalletAccountDTO extends Omit<IAccount, "createdAt" | "updatedAt"> {
-  createdAt: string;
-  updatedAt: string | null;
-}
+export interface TWalletAccountDTO extends IAccount {}
 
 export interface TWalletTransactionDTO extends Omit<ITransaction, "amount" | "createdAt" | "updatedAt"> {
   amount: string;
@@ -37,31 +35,31 @@ export interface IWalletController {
     reply: FastifyReply,
   ): Promise<TCreateAccountResponse | void>;
   getAccountByNumberHandler(
-    request: FastifyRequest<{ Params: { accountNumber: TBankAccountNumber } }>,
+    request: FastifyRequest<{ Params: { accountNumber: TBankAccountNumber }, Headers: ReturnType<typeof fromNodeHeaders> }>,
     reply: FastifyReply,
   ): Promise<TGetAccountResponse | void>;
   getAccountByIdHandler(
-    request: FastifyRequest<{ Params: { accountNumber: TBankAccountNumber } }>,
+    request: FastifyRequest<{ Params: { accountId: TBankAccountNumber }, Headers: ReturnType<typeof fromNodeHeaders> }>,
     reply: FastifyReply,
   ): Promise<TGetAccountResponse | void>;
   getUserAccountsHandler(
-    request: FastifyRequest<{ Params: { userId: TUserId } }>,
+    request: FastifyRequest<{ Headers: ReturnType<typeof fromNodeHeaders> }>,
     reply: FastifyReply,
   ): Promise<TGetUserAccountsResponse | void>;
   getBalanceHandler(
-    request: FastifyRequest<{ Params: { accountNumber: TBankAccountNumber } }>,
+    request: FastifyRequest<{ Params: { accountId: TBankAccountNumber } }>,
     reply: FastifyReply,
   ): Promise<TGetBalanceResponse | void>;
   depositHandler(
-    request: FastifyRequest<{ Body: DepositInput }>,
+    request: FastifyRequest<{ Body: DepositInput, Headers: ReturnType<typeof fromNodeHeaders> }>,
     reply: FastifyReply,
   ): Promise<TDepositResponse | void>;
   transferHandler(
-    request: FastifyRequest<{ Body: TransferInput }>,
+    request: FastifyRequest<{ Body: TransferInput, Headers: ReturnType<typeof fromNodeHeaders> }>,
     reply: FastifyReply,
   ): Promise<TTransferResponse | void>;
   listTransactionsHandler(
-    request: FastifyRequest<{ Params: { userId: TUserId } }>,
+    request: FastifyRequest<{ Headers: ReturnType<typeof fromNodeHeaders> }>,
     reply: FastifyReply,
   ): Promise<TListTransactionsResponse | void>;
   queryTransactionsHandler(

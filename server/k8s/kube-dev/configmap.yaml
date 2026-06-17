@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server-config
+  namespace: server
+data:
+  NODE_ENV: "development"
+  PORT: "3000"
+  DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/wave_db"
+  TB_HOST: "tigerbeetle.server.svc.cluster.local"
+  TB_PORT: "4343"

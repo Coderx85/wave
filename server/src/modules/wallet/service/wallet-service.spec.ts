@@ -1,4 +1,31 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+
+vi.mock("dns", () => ({
+  lookup: vi.fn((_host: string, cb: any) => {
+    if (typeof cb === "function") cb(null, "127.0.0.1");
+  }),
+}));
+vi.mock("util", async (importOriginal) => {
+  const orig = await importOriginal<typeof import("util")>();
+  return {
+    ...orig,
+    promisify: (fn: any) => {
+      return (...args: any[]) =>
+        new Promise((resolve, reject) => {
+          const callback = (...cbArgs: any[]) => {
+            const err = cbArgs[0];
+            if (err) reject(err);
+            else resolve(cbArgs[1]);
+          };
+          fn(...args, callback);
+        });
+    },
+  };
+});
+vi.mock("tigerbeetle-node", () => ({
+  createClient: vi.fn(() => ({})),
+}));
+
 import { WalletService } from "./wallet-service";
 import type {
   IAccount,
@@ -132,6 +159,31 @@ describe("WalletService (Deep Module)", () => {
     });
   });
 
+  describe("getAccountByAccountNumber", () => {
+    it("should return account when found", async () => {
+      accountRepo.findByAccountNumber.mockResolvedValue(mockAccount);
+
+      const result = await service.getAccountByAccountNumber("1234567890");
+
+      expect(result).toEqual(mockAccount);
+      expect(accountRepo.findByAccountNumber).toHaveBeenCalledWith("1234567890");
+    });
+
+    it("should return null when not found", async () => {
+      accountRepo.findByAccountNumber.mockResolvedValue(null);
+
+      const result = await service.getAccountByAccountNumber("9999999999");
+
+      expect(result).toBeNull();
+    });
+
+    it("should throw when repository fails", async () => {
+      accountRepo.findByAccountNumber.mockRejectedValue(new Error("DB error"));
+
+      await expect(service.getAccountByAccountNumber("1234567890")).rejects.toThrow();
+    });
+  });
+
   describe("getUserAccounts", () => {
     it("should return all user accounts", async () => {
       const accounts = [mockAccount, { ...mockAccount, id: "account_456" as any }];
@@ -165,6 +217,75 @@ describe("WalletService (Deep Module)", () => {
       accountRepo.checkBalance.mockRejectedValue(new Error("Not found"));
 
       await expect(service.getBalance("bad_id" as any)).rejects.toThrow();
+    });
+  });
+
+  // ── Deposit ──────────────────────────────────────────────────────
+
+  describe("deposit", () => {
+    const depositInput = {
+      userId: "user_123" as any,
+      accountNumber: "1234567890" as any,
+      amount: 500,
+    };
+
+    beforeEach(() => {
+      accountRepo.findByAccountNumber.mockResolvedValue(mockAccount);
+      accountRepo.adjustBalance.mockResolvedValue(5500);
+      transactionRepo.save.mockResolvedValue(undefined);
+      ledgerRepo.create.mockResolvedValue({} as ILedger);
+    });
+
+    it("should deposit funds and return updated account", async () => {
+      const updatedAccount = { ...mockAccount, balance: 5500 };
+      accountRepo.findByAccountNumber.mockResolvedValueOnce(mockAccount).mockResolvedValueOnce(updatedAccount);
+
+      const result = await service.deposit(depositInput);
+
+      expect(result).toEqual(updatedAccount);
+      expect(accountRepo.adjustBalance).toHaveBeenCalledWith("1234567890", 500);
+    });
+
+    it("should save a success transaction record", async () => {
+      const updatedAccount = { ...mockAccount, balance: 5500 };
+      accountRepo.findByAccountNumber.mockResolvedValueOnce(mockAccount).mockResolvedValueOnce(updatedAccount);
+
+      await service.deposit(depositInput);
+
+      expect(transactionRepo.save).toHaveBeenCalledTimes(1);
+      const savedTx = transactionRepo.save.mock.calls[0][0];
+      expect(savedTx.status).toBe("success");
+      expect(savedTx.amount).toBe(BigInt(50000));
+      expect(savedTx.senderAccountNumber).toBe(depositInput.accountNumber);
+      expect(savedTx.receiverAccountNumber).toBe(depositInput.accountNumber);
+    });
+
+    it("should create debit and credit ledger entries", async () => {
+      const updatedAccount = { ...mockAccount, balance: 5500 };
+      accountRepo.findByAccountNumber.mockResolvedValueOnce(mockAccount).mockResolvedValueOnce(updatedAccount);
+
+      await service.deposit(depositInput);
+
+      expect(ledgerRepo.create).toHaveBeenCalledTimes(2);
+      const calls = ledgerRepo.create.mock.calls;
+      const debitCall = calls.find((c: any) => c[0].entryType === "debit");
+      const creditCall = calls.find((c: any) => c[0].entryType === "credit");
+      expect(debitCall).toBeDefined();
+      expect(creditCall).toBeDefined();
+      expect(debitCall![0].amount).toBe(50000);
+      expect(creditCall![0].amount).toBe(50000);
+    });
+
+    it("should throw when account not found", async () => {
+      accountRepo.findByAccountNumber.mockResolvedValue(null);
+
+      await expect(service.deposit(depositInput)).rejects.toThrow();
+    });
+
+    it("should throw when repository fails", async () => {
+      accountRepo.findByAccountNumber.mockRejectedValue(new Error("DB error"));
+
+      await expect(service.deposit(depositInput)).rejects.toThrow();
     });
   });
 

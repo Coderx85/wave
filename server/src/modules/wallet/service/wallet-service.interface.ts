@@ -11,7 +11,7 @@ import type {
   ILedger
 } from "./internal";
 
-export type CreateAccountInput = Omit<IAccount, "id" | "createdAt" | "updatedAt">;
+export type CreateAccountInput = Omit<IAccount, "createdAt" | "updatedAt">;
 
 export type TransferInput = Omit<ITransaction, "id" | "status" | "amount"> & {
   amount: number;

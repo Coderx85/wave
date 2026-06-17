@@ -1,8 +1,11 @@
 import { eq } from "drizzle-orm";
-import { CompositeRepository, type IPostgresStore, type ICacheStore } from "@/lib/repository";
+import { type IPostgresStore, type ICacheStore, CompositeRepository } from "@/lib/repository";
 import { AccountsTable } from "@/modules/database/schema/transaction.repository";
 import type { TBankAccountNumber, TUserId } from "@/types";
 import type { IAccountDTO, IAccountRepository } from "./contracts";
+import { TB, TBClient } from "@/lib/tigerbeetle";
+import { tryCatch } from "@/lib/try-catch-wrapper";
+import { CURRENCY_CODE, WALLET_LEDGER_CODE } from "@/lib/tigerbeetle/constant";
 
 type StoreOpts = { pg?: IPostgresStore; cache?: ICacheStore };
 
@@ -121,4 +124,123 @@ export class AccountRepository extends CompositeRepository implements IAccountRe
 
     await this.cache.del(this.accountCacheKey(accountNumber));
   }
+};
+
+/**
+ * @deprecated Use TigerBeetleAccountService from @/lib/tigerbeetle instead.
+ * This repository is kept for backward compatibility only.
+ */
+export class TBAccountRepository implements IAccountRepository {
+  private tigerBeetle: typeof TBClient = TBClient;
+
+  create(account: Omit<IAccountDTO, "createdAt" | "updatedAt">): Promise<IAccountDTO> {
+    return tryCatch({
+      ctx: async () => {
+        const accountId = TB.id();
+        const tbAccount = await this.tigerBeetle.createAccounts([
+          {
+            id: accountId,
+            flags: TB.AccountFlags.debits_must_not_exceed_credits,
+            ledger: WALLET_LEDGER_CODE,
+            code: CURRENCY_CODE.INR,
+            timestamp: BigInt(Date.now()),
+            user_data_128: BigInt(account.userId),
+            user_data_64: 0n,
+            user_data_32: 0,
+            debits_pending: 0n,
+            credits_pending: 0n,
+            debits_posted: 0n,
+            credits_posted: 0n,
+            reserved: 0
+          }
+        ]);
+
+        if (tbAccount.length || !tbAccount[0]) {
+          throw new Error("Failed to create account in TigerBeetle");
+        };
+
+        if(tbAccount[0].status !== TB.CreateAccountStatus.created){
+
+          if(tbAccount[0].status === TB.CreateAccountStatus.exists_with_different_user_data_128) {
+            throw new Error("")
+          };
+
+          if(tbAccount[0].status === TB.CreateAccountStatus.credits_posted_must_be_zero) {
+            throw new Error("")
+          }
+
+          throw new Error(`Failed to create account in TigerBeetle: ${TB.CreateAccountStatus[tbAccount[0].status]}`);
+        };
+
+        const acc = tbAccount[0];
+
+        return {
+          accountNumber: accountId as unknown as TBankAccountNumber,
+          balance: 0,
+          createdAt: new Date(),
+          updatedAt: null,
+          name: account.name,
+          userId: account.userId
+        }
+       },
+      errorMessage: "Failed to create account in TigerBeetle",
+    })
+  };
+
+  findByAccountNumber(accountNumber: TBankAccountNumber): Promise<IAccountDTO | null> {
+    return tryCatch({
+      ctx: async () => {
+        const [tbAccount] = await this.tigerBeetle.lookupAccounts([accountNumber]);
+        if (!tbAccount) return null;
+
+        return {
+          accountNumber: tbAccount.id as unknown as TBankAccountNumber,
+          balance: Number(tbAccount.credits_posted) - Number(tbAccount.debits_posted),
+          createdAt: new Date(Number(tbAccount.timestamp)),
+          updatedAt: null,
+          name: "",
+          userId: Number(tbAccount.user_data_128) as unknown as TUserId
+        }
+      },
+      errorMessage: "Failed to find account by account number in TigerBeetle",
+    })
+  };
+
+  /**
+   * @deprecated TigerBeetle does not support querying accounts by user_data_128.
+   * Use TigerBeetleAccountService from @/lib/tigerbeetle instead.
+   */
+  findByUserId(_userId: TUserId): Promise<IAccountDTO[]> {
+    // TODO: Implement when TigerBeetle query-by-user-data is available
+    return Promise.resolve([]);
+  };
+
+  /**
+   * @deprecated Use TigerBeetleAccountService from @/lib/tigerbeetle instead.
+   */
+  calculateNewBalance(accountNumber: TBankAccountNumber, amount: number): Promise<number> {
+    throw new Error("Method not implemented.");
+  };
+
+  /**
+   * @deprecated Use TigerBeetleAccountService from @/lib/tigerbeetle instead.
+   */
+  adjustBalance(accountNumber: TBankAccountNumber, amount: number): Promise<number> {
+    throw new Error("Method not implemented.");
+  };
+
+  /**
+   * @deprecated Use TigerBeetleAccountService from @/lib/tigerbeetle instead.
+   */
+  checkBalance(accountNumber: TBankAccountNumber): Promise<IAccountDTO> {
+    throw new Error("Method not implemented.");
+  };
+
+  /**
+   * @deprecated Use TigerBeetleAccountService from @/lib/tigerbeetle instead.
+   */
+  updateBalance(accountNumber: TBankAccountNumber, newBalance: number): Promise<void> {
+    throw new Error("Method not implemented.");
+  };
+
 }

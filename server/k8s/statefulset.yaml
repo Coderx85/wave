@@ -1,0 +1,138 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: server
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:18-alpine
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: POSTGRES_DB
+          value: wave_db
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql
+        startupProbe:
+          exec:
+            command: ["pg_isready", "-U", "postgres"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command: ["pg_isready", "-U", "postgres"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redpanda
+  namespace: server
+spec:
+  serviceName: redpanda
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redpanda
+  template:
+    metadata:
+      labels:
+        app: redpanda
+    spec:
+      containers:
+      - name: redpanda
+        image: docker.redpanda.com/redpandadata/redpanda:latest
+        args:
+        - redpanda
+        - start
+        - --kafka-addr
+        - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+        - --advertise-kafka-addr
+        - PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+        - --node-id
+        - "1"
+        ports:
+        - containerPort: 9092
+          name: kafka-external
+        - containerPort: 29092
+          name: kafka-internal
+        env:
+        - name: REDPANDA_AUTO_CREATE_TOPICS_ENABLED
+          value: "true"
+        startupProbe:
+          exec:
+            command: ["rpk", "cluster", "info"]
+          initialDelaySeconds: 10
+          periodSeconds: 5
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tigerbeetle
+  namespace: server
+spec:
+  serviceName: tigerbeetle
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tigerbeetle
+  template:
+    metadata:
+      labels:
+        app: tigerbeetle
+    spec:
+      containers:
+      - name: tigerbeetle
+        image: ghcr.io/tigerbeetle/tigerbeetle:latest
+        args:
+        - start
+        - --addresses=0.0.0.0:4343
+        - /data/tigerbeetle
+        ports:
+        - containerPort: 4343
+        volumeMounts:
+        - name: tigerbeetle-data
+          mountPath: /data
+        startupProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "kill -0 $(pidof tigerbeetle) 2>/dev/null || exit 1"
+          initialDelaySeconds: 3
+          periodSeconds: 3
+  volumeClaimTemplates:
+  - metadata:
+      name: tigerbeetle-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi

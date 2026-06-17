@@ -1,0 +1,21 @@
+meta {
+  name: Query Transactions
+  type: http
+  seq: 9
+}
+
+get {
+  url: http://localhost:3000/api/wallet/users/{{userId}}/transactions/query
+  body: none
+  auth: none
+}
+
+params:query {
+  status: success
+  from: 2025-01-01
+  to: 2026-12-31
+}
+
+vars:pre-request {
+  userId: woAYEqH8OMOYPJeN4Z7uhlWRlvBxi4qn
+}

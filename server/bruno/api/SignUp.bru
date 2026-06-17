@@ -1,0 +1,32 @@
+meta {
+  name: SignUp
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3000/api/auth/sign-up/email
+  body: json
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Wave Member 2",
+    "email": "member2@wave.com",
+    "password": "wave123@Wave",
+    "image": "https:://avatar.io/github/username?=coderx85",
+    "callbackURL": "http:localhost:3000/api",
+    "rememberMe": true
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

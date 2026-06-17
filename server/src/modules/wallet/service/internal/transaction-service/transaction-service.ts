@@ -8,8 +8,7 @@ import { tryCatch } from "@/lib/try-catch-wrapper";
 import { ID } from "@/lib/ID";
 import {
   TransactionRepository,
-  type ITransactionRepository,
-  AccountRepository, 
+  type ITransactionRepository, 
   type IAccountRepository,
   OutboxRepository,
   type IOutboxRepository,
@@ -17,6 +16,7 @@ import {
 import { IdempotencyManager } from "../../../utils";
 import { kafkaRPCClient, type IKafkaService } from "../../../../kafka";
 import type { TUserId } from "@/types";
+import { TBAccountRepository } from "@/modules/wallet/repository/account.repository";
 
 export class TransactionModule implements ITransactionModule {
   private transactionRepository: ITransactionRepository;
@@ -26,7 +26,7 @@ export class TransactionModule implements ITransactionModule {
 
   constructor(
     transactionRepository: ITransactionRepository = new TransactionRepository(),
-    accountRepository: IAccountRepository = new AccountRepository(),
+    accountRepository: IAccountRepository = new TBAccountRepository(),
     outboxRepository: IOutboxRepository = new OutboxRepository(),
     kafkaService: IKafkaService = kafkaRPCClient,
   ) {

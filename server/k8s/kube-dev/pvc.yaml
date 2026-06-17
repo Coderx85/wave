@@ -1,0 +1,3 @@
+# PVCs are created automatically by volumeClaimTemplates in statefulset.yaml
+# This file is intentionally empty and kept for documentation.
+# See statefulset.yaml for postgres-data and tigerbeetle-data PVCs.
