@@ -1,5 +1,5 @@
 import type { ILedgerService, ILedger, TEntryType } from "./ledger-service.interface";
-import type { TTransactionId } from "@/types";
+import type { TBankAccountNumber, TTransactionId } from "@/types";
 import { tryCatch } from "@/lib/try-catch-wrapper";
 import { LedgerRepository, type ILedgerRepository } from "../../../repository";
 import { CacheFactory, type ICacheStore } from "@/lib/cache";
@@ -16,12 +16,13 @@ export class LedgerService implements ILedgerService {
     this.cacheManager = cacheStore ?? CacheFactory.create();
   }
 
-  async createEntry(transactionId: TTransactionId, amount: number, entryType: TEntryType): Promise<ILedger> {
+  async createEntry(transactionId: TTransactionId, accountNumber: TBankAccountNumber, amount: number, entryType: TEntryType): Promise<ILedger> {
 
     const data = await tryCatch({
       ctx: async () => {
         const entry = await this.ledgerRepository.create({
           transactionId,
+          accountNumber,
           amount,
           entryType,
         });

@@ -1,9 +1,9 @@
 import { NotificationConsumer } from "./consumer";
 import { EmailSender } from "./email-sender";
-import { NotificationRepository } from "./repository";
+import { NotificationRepository, NotificationPreferenceRepository } from "./repository";
 import { notificationStream } from "./stream";
 import type {
-  INotificationRepository,
+  INotificationRepository, INotificationPreferenceRepository, NotificationEventType,
 } from "./repository";
 import type { IEmailSender } from "./email-sender";
 import type { INotificationConsumer } from "./consumer";
@@ -21,6 +21,7 @@ export class NotificationService {
   private emailSender: IEmailSender;
   private notificationRepository: INotificationRepository;
   private stream: INotificationStream;
+  private preferenceRepository: INotificationPreferenceRepository;
 
   // userLookup: optional injection to resolve user email by id (for tests)
   constructor(
@@ -28,12 +29,14 @@ export class NotificationService {
     emailSender: IEmailSender = new EmailSender(),
     notificationRepository: INotificationRepository = new NotificationRepository(),
     stream: INotificationStream = notificationStream,
-    private readonly userLookup?: (userId: string) => Promise<{ email: string } | null>
+    private readonly userLookup?: (userId: string) => Promise<{ email: string } | null>,
+    preferenceRepository?: INotificationPreferenceRepository,
   ) {
     this.consumer = consumer;
     this.emailSender = emailSender;
     this.notificationRepository = notificationRepository;
     this.stream = stream;
+    this.preferenceRepository = preferenceRepository ?? new NotificationPreferenceRepository();
   }
 
   async start(): Promise<void> {
@@ -96,6 +99,14 @@ export class NotificationService {
         return;
       }
 
+      const eventType: NotificationEventType = "transfer_incoming";
+
+      const isEnabled = await this.preferenceRepository.isEventEnabled(event.userId, eventType);
+      if (!isEnabled) {
+        logger.info(`User ${event.userId} has disabled ${eventType} notifications, skipping`);
+        return;
+      }
+
       // Create notification in database
       const notification = await this.notificationRepository.create({
         transactionId: event.transactionId,
@@ -104,6 +115,7 @@ export class NotificationService {
         subject: `Transaction Notification - ${event.transactionId}`,
         message: `You have received a transaction from ${event.senderName} for ${event.amount}`,
         status: "pending",
+        read: false,
         sentAt: null,
       });
       this.stream.publish({

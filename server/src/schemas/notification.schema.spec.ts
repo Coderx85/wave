@@ -10,6 +10,7 @@ describe("notificationDTO", () => {
     subject: "Payment Received",
     message: "You received $50",
     status: "sent",
+    read: false,
     sentAt: "2024-01-01T00:00:00Z",
     createdAt: "2024-01-01T00:00:00Z",
     updatedAt: "2024-01-01T00:00:00Z",

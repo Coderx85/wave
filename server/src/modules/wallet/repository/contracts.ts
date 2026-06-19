@@ -53,6 +53,7 @@ export type EntryType = "debit" | "credit";
 export interface ILedgerEntryDTO {
   id: TLedgerEntryId;
   transactionId: TTransactionId;
+  accountNumber: TBankAccountNumber;
   amount: number;
   entryType: EntryType;
   createdAt: Date;

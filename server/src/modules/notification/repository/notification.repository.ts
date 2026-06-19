@@ -24,6 +24,7 @@ export class NotificationRepository extends CompositeRepository implements INoti
         subject: row.subject,
         message: row.message,
         status: row.status as INotification["status"],
+        read: row.read,
         sentAt: row.sentAt,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,
@@ -38,6 +39,23 @@ export class NotificationRepository extends CompositeRepository implements INoti
         .set({ status, sentAt: sentAt ?? (status === "sent" ? new Date() : undefined) })
         .where(eq(NotificationsTable.id, id));
     }, "FAILED_TO_UPDATE_NOTIFICATION_STATUS");
+  }
+
+  async markAsRead(id: string): Promise<void> {
+    await this.pg.run(async () => {
+      await this.pg.client
+        .update(NotificationsTable)
+        .set({ read: true })
+        .where(eq(NotificationsTable.id, id));
+    }, "FAILED_TO_MARK_NOTIFICATION_READ");
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.pg.run(async () => {
+      await this.pg.client
+        .delete(NotificationsTable)
+        .where(eq(NotificationsTable.id, id));
+    }, "FAILED_TO_DELETE_NOTIFICATION");
   }
 
   async findPending(limit: number = 100): Promise<INotification[]> {
@@ -55,6 +73,7 @@ export class NotificationRepository extends CompositeRepository implements INoti
         subject: row.subject,
         message: row.message,
         status: row.status as INotification["status"],
+        read: row.read,
         sentAt: row.sentAt,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,
@@ -78,6 +97,7 @@ export class NotificationRepository extends CompositeRepository implements INoti
         subject: row.subject,
         message: row.message,
         status: row.status as INotification["status"],
+        read: row.read,
         sentAt: row.sentAt,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,
@@ -101,6 +121,7 @@ export class NotificationRepository extends CompositeRepository implements INoti
         subject: row.subject,
         message: row.message,
         status: row.status as INotification["status"],
+        read: row.read,
         sentAt: row.sentAt,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,

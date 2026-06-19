@@ -22,6 +22,8 @@ const toAccountDTO = (account: Awaited<ReturnType<IWalletService["createAccount"
 
 const toTransactionDTO = (transaction: Awaited<ReturnType<IWalletService["transfer"]>>): TWalletTransactionDTO => ({
   ...transaction,
+  senderAccountNumber: String(transaction.senderAccountNumber) as unknown as TBankAccountNumber,
+  receiverAccountNumber: String(transaction.receiverAccountNumber) as unknown as TBankAccountNumber,
   amount: (Number(transaction.amount) / 100).toFixed(2),
   createdAt: transaction.createdAt.toISOString(),
   updatedAt: (() => {

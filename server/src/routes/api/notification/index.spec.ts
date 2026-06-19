@@ -1,15 +1,19 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 
-const { listNotificationsHandlerMock, streamNotificationsHandlerMock } = vi.hoisted(() => ({
+const { listNotificationsHandlerMock, streamNotificationsHandlerMock, getPreferencesHandlerMock, updatePreferenceHandlerMock } = vi.hoisted(() => ({
   listNotificationsHandlerMock: vi.fn(),
   streamNotificationsHandlerMock: vi.fn(),
+  getPreferencesHandlerMock: vi.fn(),
+  updatePreferenceHandlerMock: vi.fn(),
 }));
 
 vi.mock("./handler", () => ({
   notificationController: {
     listNotificationsHandler: listNotificationsHandlerMock,
     streamNotificationsHandler: streamNotificationsHandlerMock,
+    getPreferencesHandler: getPreferencesHandlerMock,
+    updatePreferenceHandler: updatePreferenceHandlerMock,
   },
 }));
 
@@ -70,5 +74,51 @@ describe("Notification API route registration", () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.headers["content-type"]).toContain("text/event-stream");
+  });
+
+  it("registers the GET preferences endpoint", async () => {
+    getPreferencesHandlerMock.mockImplementation(async (_request, reply) =>
+      reply.code(200).send({
+        ok: true,
+        status: 200,
+        message: "SUCCESSFULLY_FETCHED_PREFERENCES",
+        data: [],
+      }),
+    );
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/users/user_1/notification-preferences",
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toMatchObject({
+      ok: true,
+      message: "SUCCESSFULLY_FETCHED_PREFERENCES",
+      data: [],
+    });
+  });
+
+  it("registers the PUT preferences endpoint", async () => {
+    updatePreferenceHandlerMock.mockImplementation(async (_request, reply) =>
+      reply.code(200).send({
+        ok: true,
+        status: 200,
+        message: "SUCCESSFULLY_UPDATED_PREFERENCE",
+        data: { userId: "user_1", eventType: "deposit", enabled: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      }),
+    );
+
+    const response = await app.inject({
+      method: "PUT",
+      url: "/users/user_1/notification-preferences",
+      payload: { eventType: "deposit", enabled: false },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toMatchObject({
+      ok: true,
+      message: "SUCCESSFULLY_UPDATED_PREFERENCE",
+    });
   });
 });

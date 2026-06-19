@@ -206,4 +206,101 @@ describe('NotificationService - Integration Tests', () => {
       await expect(failingService.start()).rejects.toThrow();
     });
   });
+
+  describe('Notification Preferences', () => {
+    it('should skip notification creation when preference is disabled', async () => {
+      let messageCallback: any = null;
+      const prefConsumer = {
+        connect: vi.fn().mockResolvedValue(undefined),
+        disconnect: vi.fn().mockResolvedValue(undefined),
+        startConsuming: vi.fn().mockImplementation(async (callback) => {
+          messageCallback = callback;
+        }),
+      };
+
+      const mockPreferenceRepo = {
+        findByUserId: vi.fn(),
+        upsert: vi.fn(),
+        isEventEnabled: vi.fn().mockResolvedValue(false),
+      };
+
+      const prefService = new NotificationService(
+        prefConsumer as any,
+        mockEmailSender as any,
+        mockRepository as any,
+        undefined as any,
+        vi.fn().mockResolvedValue({ email: 'test@example.com' }),
+        mockPreferenceRepo as any,
+      );
+
+      await prefService.start();
+
+      const testEvent: ITransactionEvent = {
+        eventType: 'transaction.created',
+        transactionId: 'txn_123',
+        userId: 'user_456',
+        senderAccountNumber: '100200300' as any,
+        receiverAccountNumber: '400500600' as any,
+        amount: '1000',
+        senderName: 'John',
+        receiverName: 'Jane',
+        status: 'pending',
+        timestamp: new Date().toISOString(),
+      };
+
+      await messageCallback(testEvent);
+
+      expect(mockPreferenceRepo.isEventEnabled).toHaveBeenCalledWith('user_456', 'transfer_incoming');
+      expect(mockRepository.create).not.toHaveBeenCalled();
+      expect(mockEmailSender.sendTransactionNotification).not.toHaveBeenCalled();
+      await prefService.stop();
+    });
+
+    it('should create notification when preference is enabled', async () => {
+      let messageCallback: any = null;
+      const prefConsumer = {
+        connect: vi.fn().mockResolvedValue(undefined),
+        disconnect: vi.fn().mockResolvedValue(undefined),
+        startConsuming: vi.fn().mockImplementation(async (callback) => {
+          messageCallback = callback;
+        }),
+      };
+
+      const mockPreferenceRepo = {
+        findByUserId: vi.fn(),
+        upsert: vi.fn(),
+        isEventEnabled: vi.fn().mockResolvedValue(true),
+      };
+
+      const prefService = new NotificationService(
+        prefConsumer as any,
+        mockEmailSender as any,
+        mockRepository as any,
+        undefined as any,
+        vi.fn().mockResolvedValue({ email: 'test@example.com' }),
+        mockPreferenceRepo as any,
+      );
+
+      await prefService.start();
+
+      const testEvent: ITransactionEvent = {
+        eventType: 'transaction.created',
+        transactionId: 'txn_456',
+        userId: 'user_789',
+        senderAccountNumber: '100200300' as any,
+        receiverAccountNumber: '400500600' as any,
+        amount: '2000',
+        senderName: 'Alice',
+        receiverName: 'Bob',
+        status: 'pending',
+        timestamp: new Date().toISOString(),
+      };
+
+      await messageCallback(testEvent);
+
+      expect(mockPreferenceRepo.isEventEnabled).toHaveBeenCalledWith('user_789', 'transfer_incoming');
+      expect(mockRepository.create).toHaveBeenCalled();
+      await prefService.stop();
+    });
+  });
 });

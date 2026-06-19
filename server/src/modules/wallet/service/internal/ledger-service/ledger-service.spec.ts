@@ -35,6 +35,7 @@ describe("LedgerService", () => {
   const mockEntry: ILedger = {
     id: "entry_123" as any,
     transactionId: "tx_123" as any,
+    accountNumber: 100001n as any,
     amount: 1000,
     entryType: "debit",
     createdAt: new Date("2024-01-01"),
@@ -61,7 +62,7 @@ describe("LedgerService", () => {
     it("should create a debit entry", async () => {
       createMock.mockResolvedValue(mockEntry);
 
-      const result = await ledgerService.createEntry("tx_123" as any, 1000, "debit");
+      const result = await ledgerService.createEntry("tx_123" as any, 100001n as any, 1000, "debit");
 
       expect(result).toEqual(mockEntry);
       expect(result.amount).toBe(1000);
@@ -76,7 +77,7 @@ describe("LedgerService", () => {
       };
       createMock.mockResolvedValue(creditEntry);
 
-      const result = await ledgerService.createEntry("tx_456" as any, 500, "credit");
+      const result = await ledgerService.createEntry("tx_456" as any, 100002n as any, 500, "credit");
 
       expect(result.entryType).toBe("credit");
       expect(result.amount).toBe(500);
@@ -85,7 +86,7 @@ describe("LedgerService", () => {
     it("should preserve amount as number", async () => {
       createMock.mockResolvedValue(mockEntry);
 
-      const result = await ledgerService.createEntry("tx_123" as any, 1000, "debit");
+      const result = await ledgerService.createEntry("tx_123" as any, 100001n as any, 1000, "debit");
 
       expect(result.amount).toBe(1000);
       expect(typeof result.amount).toBe("number");
@@ -94,10 +95,11 @@ describe("LedgerService", () => {
     it("should pass correct parameters to repository", async () => {
       createMock.mockResolvedValue(mockEntry);
 
-      await ledgerService.createEntry("tx_123" as any, 1000, "debit");
+      await ledgerService.createEntry("tx_123" as any, 100001n as any, 1000, "debit");
 
       expect(createMock).toHaveBeenCalledWith({
         transactionId: "tx_123",
+        accountNumber: 100001n,
         amount: 1000,
         entryType: "debit",
       });
@@ -107,7 +109,7 @@ describe("LedgerService", () => {
       createMock.mockRejectedValue(new Error("Database error"));
 
       await expect(
-        ledgerService.createEntry("tx_123" as any, 1000, "debit")
+        ledgerService.createEntry("tx_123" as any, 100001n as any, 1000, "debit")
       ).rejects.toThrow();
     });
   });

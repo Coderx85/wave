@@ -21,7 +21,7 @@ import {
   type ILedgerRepository,
 } from "../repository";
 import { IdempotencyManager } from "../utils";
-import { TigerBeetleAccountService } from "@/lib/tigerbeetle";
+import { TigerBeetleAccountService, VAULT_ACCOUNT_ID } from "@/lib/tigerbeetle";
 
 export class WalletService implements IWalletService {
   private readonly accountRepo: IAccountRepository;
@@ -119,11 +119,13 @@ export class WalletService implements IWalletService {
         await Promise.all([
           this.ledgerRepo.create({
             transactionId: transaction.id,
+            accountNumber: VAULT_ACCOUNT_ID as TBankAccountNumber,
             amount: amountInCents,
             entryType: "debit",
           }),
           this.ledgerRepo.create({
             transactionId: transaction.id,
+            accountNumber: input.accountNumber,
             amount: amountInCents,
             entryType: "credit",
           }),
@@ -168,11 +170,13 @@ export class WalletService implements IWalletService {
         await Promise.all([
           this.ledgerRepo.create({
             transactionId: transaction.id,
+            accountNumber: input.senderAccountNumber,
             amount: amountInCents,
             entryType: "debit",
           }),
           this.ledgerRepo.create({
             transactionId: transaction.id,
+            accountNumber: input.receiverAccountNumber,
             amount: amountInCents,
             entryType: "credit",
           }),
