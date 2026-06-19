@@ -13,13 +13,57 @@ function hashUserId(userId: string): bigint {
 
 const userIdReverseMap = new Map<bigint, string>();
 
-export class AccountService implements IAccountRepository {
-  private readonly client = TBClient;
+export class TigerBeetleAccountService implements IAccountRepository {
   private readonly accountRepository: IAccountRepository = new AccountRepository();
 
+  private async createInTigerBeetle(account: IAccountDTO): Promise<void> {
+    try {
+      if (!TBClient.ready) return;
+
+      const client = TBClient.getClient();
+      if (!client) return;
+
+      const accountId = BigInt(account.accountNumber.toString());
+
+      const results = await client.createAccounts([
+        {
+          id: accountId,
+          flags: TB.AccountFlags.debits_must_not_exceed_credits,
+          ledger: WALLET_LEDGER_CODE,
+          code: CURRENCY_CODE.INR,
+          timestamp: 0n,
+          user_data_128: hashUserId(account.userId),
+          user_data_64: 0n,
+          user_data_32: 0,
+          debits_pending: 0n,
+          credits_pending: 0n,
+          debits_posted: 0n,
+          credits_posted: 0n,
+          reserved: 0,
+        },
+      ]);
+
+      if (results.length !== 1 || !results[0]) {
+        console.warn("[TigerBeetle] Failed to create account");
+        return;
+      }
+
+      const result = results[0];
+
+      if (result.status !== TB.CreateAccountStatus.created) {
+        console.warn(`[TigerBeetle] Account create status: ${TB.CreateAccountStatus[result.status]}`);
+        return;
+      }
+
+      userIdReverseMap.set(hashUserId(account.userId), account.userId);
+      console.log(`[TigerBeetle] Account created: ${account.accountNumber}`);
+    } catch (err: unknown) {
+      console.warn(`[TigerBeetle] createAccounts failed: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
   async create(account: Omit<IAccountDTO, "createdAt" | "updatedAt">): Promise<IAccountDTO> {
-    // Save to primary database first
-    const data = tryCatch({
+    const data = await tryCatch({
       ctx: async () => {
         const newAccount = await this.accountRepository.create({
           ...account,
@@ -28,57 +72,13 @@ export class AccountService implements IAccountRepository {
       },
       errorMessage: "FAILED_TO_CREATE_ACCOUNT",
     });
-    
-    // Error handling for TigerBeetle account creation.
-    if(!data) {
+
+    if (!data) {
       throw new Error("Failed to create account");
-    };
+    }
 
-    // Then create corresponding account in TigerBeetle
-    const tbData = tryCatch({
-      ctx: async () => {
-        const accountId = TB.id();
-
-        const results = await this.client.createAccounts([
-          {
-            id: accountId,
-            flags: TB.AccountFlags.debits_must_not_exceed_credits,
-            ledger: WALLET_LEDGER_CODE,
-            code: CURRENCY_CODE.INR,
-            timestamp: 0n,
-            user_data_128: hashUserId(account.userId),
-            user_data_64: 0n,
-            user_data_32: 0,
-            debits_pending: 0n,
-            credits_pending: 0n,
-            debits_posted: 0n,
-            credits_posted: 0n,
-            reserved: 0,
-          },
-        ]);
-
-        if (results.length !== 1 || !results[0]) {
-          throw new Error("Failed to create account in TigerBeetle");
-        }
-
-        const result = results[0];
-
-        if (result.status !== TB.CreateAccountStatus.created) {
-          throw new Error(
-            `Failed to create account in TigerBeetle: ${TB.CreateAccountStatus[result.status]}`,
-          );
-        }
-
-        userIdReverseMap.set(hashUserId(account.userId), account.userId);
-
-        return result;
-      },
-      errorMessage: "FAILED_TO_CREATE_ACCOUNT",
-    });
-
-    if(!tbData) {
-      throw new Error("Failed to create account in TigerBeetle");
-    };
+    // Fire and forget — don't await, let it log warnings on failure
+    this.createInTigerBeetle(data).catch(() => {});
 
     return data;
   }
@@ -107,22 +107,42 @@ export class AccountService implements IAccountRepository {
     accountNumber: TBankAccountNumber,
     amount: number,
   ): Promise<number> {
+    // Try TigerBeetle first
+    if (TBClient.ready) {
+      try {
+        const client = TBClient.getClient();
+        if (client) {
+          const accounts = await client.lookupAccounts([BigInt(accountNumber)]);
+          const tbAccount = accounts[0];
+
+          if (tbAccount) {
+            const credits = Number(tbAccount.credits_posted);
+            const debits = Number(tbAccount.debits_posted);
+            const currentBalance = credits - debits;
+            const newBalance = currentBalance + amount;
+
+            if (newBalance < 0) {
+              throw new Error("Insufficient funds");
+            }
+
+            return newBalance;
+          }
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error && err.message === "Insufficient funds") {
+          throw err;
+        }
+        console.warn(`[TigerBeetle] adjustBalance lookup failed, falling back to Postgres`);
+      }
+    }
+
+    // Fallback to Postgres
     return tryCatch({
       ctx: async () => {
-        const accounts = await this.client.lookupAccounts([BigInt(accountNumber)]);
-        const tbAccount = accounts[0];
-
-        if (!tbAccount) throw new Error("Account not found");
-
-        const credits = Number(tbAccount.credits_posted);
-        const debits = Number(tbAccount.debits_posted);
-        const currentBalance = credits - debits;
-        const newBalance = currentBalance + amount;
-
-        if (newBalance < 0) {
-          throw new Error("Insufficient funds");
-        }
-
+        const account = await this.accountRepository.findByAccountNumber(accountNumber);
+        if (!account) throw new Error("Account not found");
+        const newBalance = account.balance + amount;
+        if (newBalance < 0) throw new Error("Insufficient funds");
         return newBalance;
       },
       errorMessage: "FAILED_TO_ADJUST_BALANCE",

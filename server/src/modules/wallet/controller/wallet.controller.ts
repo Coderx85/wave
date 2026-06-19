@@ -44,7 +44,7 @@ const toLedgerDTO = (entries: Awaited<ReturnType<IWalletService["getLedgerEntrie
     updatedAt: entry.updatedAt ? entry.updatedAt.toISOString() : null,
   }));
 
-const AccountNumberSchemaDTO = z.transform((val) => {
+const AccountNumberSchemaDTO = z.any().transform((val) => {
   const num = Number(val);
   if (isNaN(num)) {
     throw new Error("Invalid account number format");
@@ -81,6 +81,7 @@ export class WalletController implements IWalletController {
 
       const account = await this.walletService.createAccount({
         ...request.body,
+        balance: 0,
         accountNumber: accNumber,
       });
       
@@ -325,7 +326,15 @@ export class WalletController implements IWalletController {
         });
       }
 
-      const transaction = await this.walletService.transfer(request.body);
+      const { senderAccountNumber, receiverAccountNumber, ...rest } = request.body;
+      const senderAccountBigInt = BigInt(senderAccountNumber) as TBankAccountNumber;
+      const receiverAccountBigInt = BigInt(receiverAccountNumber) as TBankAccountNumber;
+
+      const transaction = await this.walletService.transfer({
+        ...rest,
+        senderAccountNumber: senderAccountBigInt,
+        receiverAccountNumber: receiverAccountBigInt,
+      });
       sendSuccess<TWalletTransactionDTO>({
         reply,
         statusCode: 201,

@@ -8,7 +8,7 @@ export default async function walletRoute(fastify: FastifyInstance) {
   const api = fastify.withTypeProvider<ZodTypeProvider>();
 
   api.post(walletApiRoutes.createAccount, {
-    schema: schema.createAccountResponseSchema,
+    schema: { body: schema.createAccountBodySchema },
     handler: walletController.createAccountHandler,
   });
 

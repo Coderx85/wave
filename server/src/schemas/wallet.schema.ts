@@ -13,9 +13,9 @@ export const walletAccountDTO = z.object({
 export const walletTransactionDTO = z.object({
   id: z.string(),
   userId: z.string(),
-  senderAccountId: z.string(),
+  senderAccountNumber: z.string(),
   senderName: z.string(),
-  receiverAccountId: z.string(),
+  receiverAccountNumber: z.string(),
   receiverName: z.string(),
   amount: z.string(),
   status: z.enum(["pending", "success", "failed"]),
@@ -36,12 +36,11 @@ export const createAccountBodySchema = z.object({
   name: z.string(),
   userId: z.string(),
   accountNumber: z.union([z.string(), z.number()]).transform(String),
-  balance: z.number(),
 });
 
 export const depositBodySchema = z.object({
   userId: z.string(),
-  accountId: z.string(),
+  accountNumber: z.string(),
   amount: z.number().positive(),
 });
 
@@ -55,9 +54,9 @@ export const depositResponseSchema = {
 
 export const transferBodySchema = z.object({
   userId: z.string(),
-  senderAccountId: z.string(),
+  senderAccountNumber: z.union([z.string(), z.number()]).transform(String),
   senderName: z.string(),
-  receiverAccountId: z.string(),
+  receiverAccountNumber: z.union([z.string(), z.number()]).transform(String),
   receiverName: z.string(),
   amount: z.number(),
 });

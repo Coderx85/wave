@@ -10,9 +10,11 @@ const { createAccountHandlerMock, getBalanceHandlerMock, queryTransactionsHandle
 vi.mock("./handler", () => ({
   walletController: {
     createAccountHandler: createAccountHandlerMock,
+    getAccountByNumberHandler: vi.fn(),
     getAccountByIdHandler: vi.fn(),
     getUserAccountsHandler: vi.fn(),
     getBalanceHandler: getBalanceHandlerMock,
+    depositHandler: vi.fn(),
     transferHandler: vi.fn(),
     listTransactionsHandler: vi.fn(),
     queryTransactionsHandler: queryTransactionsHandlerMock,

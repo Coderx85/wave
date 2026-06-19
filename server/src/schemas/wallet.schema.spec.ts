@@ -6,7 +6,6 @@ describe("createAccountBodySchema", () => {
     name: "Alice's Checking",
     userId: "user_1",
     accountNumber: 123456789,
-    balance: 1000,
   };
 
   it("accepts valid input", () => {
@@ -35,8 +34,8 @@ describe("createAccountBodySchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("rejects non-numeric balance", () => {
-    const result = schema.createAccountBodySchema.safeParse({ ...validInput, balance: "abc" });
+  it("rejects missing accountNumber", () => {
+    const result = schema.createAccountBodySchema.safeParse({ name: "Test", userId: "user_1" });
     expect(result.success).toBe(false);
   });
 });
@@ -44,7 +43,7 @@ describe("createAccountBodySchema", () => {
 describe("depositBodySchema", () => {
   const validInput = {
     userId: "user_1",
-    accountId: "456",
+    accountNumber: "456",
     amount: 100,
   };
 
@@ -53,10 +52,10 @@ describe("depositBodySchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("returns accountId as string", () => {
+  it("returns accountNumber as string", () => {
     const result = schema.depositBodySchema.parse(validInput);
-    expect(typeof result.accountId).toBe("string");
-    expect(result.accountId).toBe("456");
+    expect(typeof result.accountNumber).toBe("string");
+    expect(result.accountNumber).toBe("456");
   });
 
   it("rejects negative amount", () => {
@@ -70,7 +69,7 @@ describe("depositBodySchema", () => {
   });
 
   it("rejects missing userId", () => {
-    const result = schema.depositBodySchema.safeParse({ accountId: "456", amount: 100 });
+    const result = schema.depositBodySchema.safeParse({ accountNumber: "456", amount: 100 });
     expect(result.success).toBe(false);
   });
 });
@@ -78,9 +77,9 @@ describe("depositBodySchema", () => {
 describe("transferBodySchema", () => {
   const validInput = {
     userId: "user_1",
-    senderAccountId: "123",
+    senderAccountNumber: "123",
     senderName: "Alice",
-    receiverAccountId: "456",
+    receiverAccountNumber: "456",
     receiverName: "Bob",
     amount: 50,
   };
@@ -90,16 +89,16 @@ describe("transferBodySchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("returns senderAccountId as string", () => {
+  it("returns senderAccountNumber as string", () => {
     const result = schema.transferBodySchema.parse(validInput);
-    expect(typeof result.senderAccountId).toBe("string");
-    expect(result.senderAccountId).toBe("123");
+    expect(typeof result.senderAccountNumber).toBe("string");
+    expect(result.senderAccountNumber).toBe("123");
   });
 
-  it("returns receiverAccountId as string", () => {
+  it("returns receiverAccountNumber as string", () => {
     const result = schema.transferBodySchema.parse(validInput);
-    expect(typeof result.receiverAccountId).toBe("string");
-    expect(result.receiverAccountId).toBe("456");
+    expect(typeof result.receiverAccountNumber).toBe("string");
+    expect(result.receiverAccountNumber).toBe("456");
   });
 
   it("rejects missing senderName", () => {
@@ -112,8 +111,8 @@ describe("transferBodySchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects missing receiverAccountId", () => {
-    const result = schema.transferBodySchema.safeParse({ ...validInput, receiverAccountId: undefined });
+  it("rejects missing receiverAccountNumber", () => {
+    const result = schema.transferBodySchema.safeParse({ ...validInput, receiverAccountNumber: undefined });
     expect(result.success).toBe(false);
   });
 });
@@ -262,9 +261,9 @@ describe("walletTransactionDTO", () => {
   const validDTO = {
     id: "txn_1",
     userId: "user_1",
-    senderAccountId: "bank_account_1",
+    senderAccountNumber: "bank_account_1",
     senderName: "Alice",
-    receiverAccountId: "bank_account_2",
+    receiverAccountNumber: "bank_account_2",
     receiverName: "Bob",
     amount: "50.00",
     status: "success",
@@ -327,7 +326,6 @@ describe("createAccountResponseSchema", () => {
       name: "Test",
       userId: "user_1",
       accountNumber: 123,
-      balance: 500,
     });
     expect(bodyResult.success).toBe(true);
     if (bodyResult.success) {

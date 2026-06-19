@@ -55,10 +55,10 @@ export function successResponseSchema<T extends z.ZodTypeAny>(schema: T) {
 }
 
 export function errorResponseSchema() {
-  return {
-    ok: { type: "boolean" },
-    status: { type: "number" },
-    message: { type: "string" },
-    error: { type: "string" },
-  };
+  return z.object({
+    ok: z.literal(false),
+    status: z.number(),
+    message: z.string(),
+    error: z.string(),
+  });
 }

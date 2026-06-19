@@ -131,13 +131,13 @@ export class AccountRepository extends CompositeRepository implements IAccountRe
  * This repository is kept for backward compatibility only.
  */
 export class TBAccountRepository implements IAccountRepository {
-  private tigerBeetle: typeof TBClient = TBClient;
+  private getClient() { return TBClient.getClient(); }
 
   create(account: Omit<IAccountDTO, "createdAt" | "updatedAt">): Promise<IAccountDTO> {
     return tryCatch({
       ctx: async () => {
         const accountId = TB.id();
-        const tbAccount = await this.tigerBeetle.createAccounts([
+        const tbAccount = await this.getClient()!.createAccounts([
           {
             id: accountId,
             flags: TB.AccountFlags.debits_must_not_exceed_credits,
@@ -190,7 +190,7 @@ export class TBAccountRepository implements IAccountRepository {
   findByAccountNumber(accountNumber: TBankAccountNumber): Promise<IAccountDTO | null> {
     return tryCatch({
       ctx: async () => {
-        const [tbAccount] = await this.tigerBeetle.lookupAccounts([accountNumber]);
+        const [tbAccount] = await this.getClient()!.lookupAccounts([BigInt(accountNumber)]);
         if (!tbAccount) return null;
 
         return {
