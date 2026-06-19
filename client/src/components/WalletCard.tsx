@@ -63,11 +63,15 @@ export default function WalletCard({
               {showBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
             <div className="relative z-10">
-              <DropdownMenu>
+                <DropdownMenu>
                 <DropdownMenuTrigger className="flex z-10 items-center justify-center w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white/70 hover:text-white">
                   <MoreVertical className="w-4 h-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => window.location.href = `/account/${account.accountNumber}`}>
+                    View Details
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => window.location.href = "/account/settings"}>
                     Edit
                   </DropdownMenuItem>

@@ -5,6 +5,7 @@ import NotificationPage from "./components/NotificationPage"
 import TransactionsPage from "./pages/TransactionsPage"
 import AccountPage from "./pages/AccountPage"
 import AccountTransactionsPage from "./pages/AccountTransactionsPage"
+import AccountDetailPage from "./pages/AccountDetailPage"
 
 const rootRoute = createRootRoute({
   component: App,
@@ -34,13 +35,26 @@ const accountRoute = createRoute({
   component: AccountPage,
 })
 
+const accountDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/account/$accountNumber",
+  component: AccountDetailPage,
+})
+
 const accountTransactionsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/account/transactions",
   component: AccountTransactionsPage,
 })
 
-const routeTree = rootRoute.addChildren([indexRoute, notificationsRoute, transactionsRoute, accountRoute, accountTransactionsRoute])
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  notificationsRoute,
+  transactionsRoute,
+  accountRoute,
+  accountDetailRoute,
+  accountTransactionsRoute,
+])
 
 const router = createRouter({ routeTree })
 

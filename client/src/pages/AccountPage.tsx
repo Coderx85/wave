@@ -18,6 +18,7 @@ import ProfileSection from "../components/ProfileSection"
 import WalletCardCarousel from "../components/WalletCardCarousel"
 import type { IWalletTransaction, WaveResponse, ITransaction, TBankAccountNumber } from "@/types"
 import { createAccount, fetchAccountData } from "@/actions/account.actions"
+import AddMoney from "../components/AddMoney"
 
 type ApiResponse<T> = WaveResponse<T>
 
@@ -33,12 +34,6 @@ export default function AccountPage() {
   const [creating, setCreating] = useState(false)
   const [createError, setCreateError] = useState<string | null>(null)
   const [accountName, setAccountName] = useState("")
-
-  const [depositAccountNumber, setDepositAccountNumber] = useState<TBankAccountNumber>();
-  const [depositAmount, setDepositAmount] = useState("");
-  const [depositing, setDepositing] = useState(false);
-  const [depositError, setDepositError] = useState<string | null>(null);
-  const [depositSuccess, setDepositSuccess] = useState<IWalletTransaction | null>(null);
 
   const [transferring, setTransferring] = useState(false);
   const [transferError, setTransferError] = useState<string | null>(null);
@@ -80,9 +75,8 @@ export default function AccountPage() {
     if (initialSection === "deposit") {
       const el = document.getElementById("deposit-section")
       if (el) el.scrollIntoView({ behavior: "smooth" })
-      setDepositAccountNumber(accounts.length > 0 ? accounts[0]!.accountNumber : undefined)
     }
-  }, [initialSection, accounts])
+  }, [initialSection])
 
   useEffect(() => {
     if (!receiverNumber.trim() || receiverNumber.length < 8) {
@@ -116,9 +110,7 @@ export default function AccountPage() {
     setCreating(true)
     setCreateError(null)
 
-    const accountNumber = `WAVE-${Array.from({ length: 8 }, () =>
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 36)]
-    ).join("")}` as unknown as TBankAccountNumber;
+    const accountNumber = String(Math.floor(Math.random() * 9_000_000_000_000) + 1_000_000_000_000) as unknown as TBankAccountNumber;
 
     try {
       const res = await createAccount({
@@ -137,36 +129,6 @@ export default function AccountPage() {
       setCreateError(err instanceof Error ? err.message : "Failed to create account")
     } finally {
       setCreating(false)
-    }
-  }
-
-  const handleDeposit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!depositAccountNumber || !depositAmount.trim()) return
-
-    setDepositing(true)
-    setDepositError(null)
-    setDepositSuccess(null)
-
-    try {
-      const res = await fetch("/api/wallet/accounts/" + depositAccountNumber + "/deposit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.id,
-          accountNumber: depositAccountNumber,
-          amount: Number.parseFloat(depositAmount),
-        }),
-      })
-      const json: ApiResponse<IWalletTransaction> = await res.json()
-      if (!json.ok) throw new Error(json.error ?? `HTTP ${res.status}`)
-      setDepositSuccess(json.data)
-      setDepositAmount(json.data.balance.toString())
-      fetchAccounts()
-    } catch (err) {
-      setDepositError(err instanceof Error ? err.message : "Failed to deposit funds")
-    } finally {
-      setDepositing(false)
     }
   }
 
@@ -306,69 +268,7 @@ export default function AccountPage() {
           </CardContent>
         </Card>
 
-        <Card id="deposit-section">
-          <CardHeader>
-            <CardTitle>Add Money</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {depositSuccess ? (
-              <div className="space-y-4">
-                <div className="rounded-lg bg-success/8 p-5 text-center space-y-1">
-                  <p className="text-sm font-semibold text-success">Deposit completed</p>
-                  <p className="text-lg font-mono font-bold text-foreground">
-                    {formatCurrency(depositSuccess.balance)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">{depositSuccess.name}</p>
-                </div>
-                <Button variant="outline" size="sm" className="w-full" onClick={() => setDepositSuccess(null)}>
-                  Deposit again
-                </Button>
-              </div>
-            ) : (
-              <form onSubmit={handleDeposit} className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="deposit-account">Into</Label>
-                    <select
-                      id="deposit-account"
-                      value={depositAccountNumber as unknown as string}
-                      onChange={(e) => setDepositAccountNumber(e.target.value as unknown as TBankAccountNumber)}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                      required
-                    >
-                      <option value="" disabled>Select an account</option>
-                      {accounts.map((acc) => (
-                        <option key={acc.id} value={acc.accountNumber as unknown as number}>
-                          {acc.name} ({acc.accountNumber}) · {formatCurrency(acc.balance)}
-                        </option>
-                      ))}
-                    </select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="deposit-amount">Amount (USD)</Label>
-                  <Input
-                    id="deposit-amount"
-                    type="number"
-                    step="0.01"
-                    min="0.01"
-                    placeholder="0.00"
-                    value={depositAmount}
-                    onChange={(e) => setDepositAmount(e.target.value)}
-                  />
-                </div>
-                {depositError && (
-                  <p className="text-sm text-destructive">{depositError}</p>
-                )}
-                <Button
-                  type="submit"
-                  disabled={!depositAccountNumber || Number(depositAmount) <= 0}
-                  className="w-full"
-                >
-                  Add Money
-                </Button>
-              </form>
-            )}
-          </CardContent>
-        </Card>
+        <AddMoney accounts={accounts} userId={user.id} onDeposit={fetchAccounts} />
 
         <Card>
           <CardHeader>
@@ -414,7 +314,7 @@ export default function AccountPage() {
                   <Label htmlFor="receiver">To (account number)</Label>
                   <Input
                     id="receiver"
-                    placeholder="e.g. WAVE-XXXXXXXX"
+                    placeholder="e.g. 1000000000000"
                     value={receiverNumber}
                     onChange={(e) => setReceiverNumber(e.target.value)}
                   />
@@ -464,7 +364,7 @@ export default function AccountPage() {
         <span>{accounts.length} account{accounts.length !== 1 ? "s" : ""}</span>
       </footer>
 
-      {(depositing || transferring) && (
+      {transferring && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm animate-fade-in">
           <div className="bg-card px-10 py-9 text-center space-y-6 max-w-sm w-full mx-4 rounded-xl shadow-xl">
             <div className="w-10 h-10 mx-auto rounded-full border-2 border-primary/30 flex items-center justify-center">
@@ -472,17 +372,13 @@ export default function AccountPage() {
             </div>
             <div className="space-y-1">
               <p className="text-2xl font-mono font-bold text-foreground tracking-tight">
-                {formatCurrency(depositing ? depositAmount : amount)}
+                {formatCurrency(amount)}
               </p>
               <p className="text-sm text-muted-foreground">
-                {depositing
-                  ? accounts.find((a) => a.accountNumber === depositAccountNumber)?.name ?? "Account"
-                  : `${accounts.find((a) => a.accountNumber === senderAccountNumber)?.name ?? "Sender"} \u2192 ${receiverLookup?.name ?? "Receiver"}`}
+                {`${accounts.find((a) => a.accountNumber === senderAccountNumber)?.name ?? "Sender"} \u2192 ${receiverLookup?.name ?? "Receiver"}`}
               </p>
             </div>
-            <p className="text-xs text-muted-foreground/70">
-              {depositing ? "Processing deposit" : "Processing transfer"}
-            </p>
+            <p className="text-xs text-muted-foreground/70">Processing transfer</p>
           </div>
         </div>
       )}
