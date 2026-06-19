@@ -1,0 +1,42 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "c1051762bcd5",
+  "session_id": "ses_11ffa8005ffefwBEDUm8krhZ7z",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-19T13:42:26.695463795Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "client/bun.lock",
+    "client/package.json",
+    "client/src/components/WalletCard.tsx",
+    "client/src/index.css",
+    "client/src/pages/AccountPage.tsx",
+    "client/src/router.tsx"
+  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "ce5a2c7f3474",
+  "token_usage": {
+    "input_tokens": 67180,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 862592,
+    "output_tokens": 9262,
+    "api_call_count": 18
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-19T13:42:26.674894877Z",
+    "agent_lines": 82,
+    "agent_removed": 115,
+    "human_added": 711,
+    "human_modified": 31,
+    "human_removed": 0,
+    "total_committed": 824,
+    "total_lines_changed": 939,
+    "agent_percentage": 20.979765708200212,
+    "metric_version": 2
+  }
+}
