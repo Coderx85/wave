@@ -1,0 +1,18 @@
+3 Build Errors
+src/components/ui/button.tsx
+error: Could not resolve: "@radix-ui/react-slot". Maybe you need to "bun install"?
+
+import { Slot } from "@radix-ui/react-slot"
+
+src/components/ui/label.tsx
+error: Could not resolve: "@radix-ui/react-label". Maybe you need to "bun install"?
+
+import * as LabelPrimitive from "@radix-ui/react-label"
+
+src/components/ui/dropdown-menu.tsx
+error: Could not resolve: "@radix-ui/react-slot". Maybe you need to "bun install"?
+
+import { Slot } from "@radix-ui/react-slot"
+
+Errors during a build can only be dismissed by fixing them.
+Bun v1.3.14
