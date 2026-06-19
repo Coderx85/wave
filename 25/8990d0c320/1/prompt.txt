@@ -1,0 +1,11 @@
+Explore the notification system in both server/ and client/ directories. I need to understand:
+
+1. What event types / notification types exist (grep for "type" or "eventType" or "notification_type" in notification-related files)
+2. How notifications are created on the server (look at the notification repository and any notification creation code)
+3. What the client NotificationPage looks like (read the full file)
+4. What files are in server/src/modules/notification/ (the full tree)
+5. Is there any existing notification preference / subscription concept?
+6. How does the client router work (read client/src/router.tsx)
+7. Check if there's any existing notification preference table or schema
+
+Return all the relevant code snippets, file paths, and line numbers. Be thorough - I need a complete picture.
