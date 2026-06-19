@@ -293,7 +293,8 @@ export default function AccountDetailPage() {
                       return (
                         <div
                           key={tx.id}
-                          className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-surface-hover"
+                          className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-surface-hover cursor-pointer"
+                          onClick={() => window.location.href = `/transactions/${tx.id}`}
                         >
                           <div className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold bg-secondary text-secondary-foreground">
                             {dir === "in" ? "\u2190" : dir === "self" ? "\u21C4" : "\u2192"}

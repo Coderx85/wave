@@ -16,6 +16,7 @@ interface DataTableProps {
   userAccountIds: Set<string>
   loading?: boolean
   emptyMessage?: string
+  onRowClick?: (tx: ITransaction) => void
 }
 
 const formatBalance = (b: number | string) =>
@@ -26,7 +27,7 @@ const formatDate = (iso: string) =>
 
 type SortDir = "in" | "out" | "self"
 
-export default function DataTable({ data, userAccountIds, loading, emptyMessage }: DataTableProps) {
+export default function DataTable({ data, userAccountIds, loading, emptyMessage, onRowClick }: DataTableProps) {
   const columnHelper = createColumnHelper<ITransaction>()
 
   const getDirection = (tx: ITransaction): SortDir => {
@@ -154,7 +155,11 @@ export default function DataTable({ data, userAccountIds, loading, emptyMessage 
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="transition-colors hover:bg-surface-hover">
+            <tr
+              key={row.id}
+              className={`transition-colors ${onRowClick ? "cursor-pointer hover:bg-surface-hover" : "hover:bg-surface-hover"}`}
+              onClick={() => onRowClick?.(row.original)}
+            >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="px-4 py-3 border-b border-border/30 last:border-0">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

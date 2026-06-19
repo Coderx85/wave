@@ -72,8 +72,9 @@ export default function AccountPage() {
   }, [fetchAccounts])
 
   useEffect(() => {
-    if (initialSection === "deposit") {
-      const el = document.getElementById("deposit-section")
+    if (initialSection === "deposit" || initialSection === "transfer") {
+      const id = initialSection === "deposit" ? "deposit-section" : "transfer-section"
+      const el = document.getElementById(id)
       if (el) el.scrollIntoView({ behavior: "smooth" })
     }
   }, [initialSection])
@@ -270,7 +271,7 @@ export default function AccountPage() {
 
         <AddMoney accounts={accounts} userId={user.id} onDeposit={fetchAccounts} />
 
-        <Card>
+        <Card id="transfer-section">
           <CardHeader>
             <CardTitle>Send Money</CardTitle>
           </CardHeader>

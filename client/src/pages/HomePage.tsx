@@ -148,7 +148,7 @@ export default function HomePage() {
             Add Money
           </Link>
           <Link
-            to="/account"
+            to="/account?section=transfer"
             className="inline-flex items-center justify-center gap-3 rounded-xl bg-surface text-foreground h-14 text-sm font-semibold transition-colors hover:bg-surface-hover border border-border"
           >
             <ArrowUpRight className="size-4" />
@@ -174,6 +174,7 @@ export default function HomePage() {
               userAccountIds={userAccountIds}
               loading={loadingTransactions}
               emptyMessage="No transactions yet. Deposit funds to get started."
+              onRowClick={(tx) => window.location.href = `/transactions/${tx.id}`}
             />
           </CardContent>
         </Card>

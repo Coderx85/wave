@@ -6,6 +6,11 @@ import NotificationPage from "../components/NotificationPage"
 const mockSignOut = vi.fn()
 const fakeUser = { id: "user_1", name: "Test User", email: "test@example.com", emailVerified: true, createdAt: new Date(), updatedAt: new Date() }
 
+vi.mock("@tanstack/react-router", () => ({
+  Link: ({ children, ...props }: any) => <a {...props}>{children}</a>,
+  useRouter: () => ({ navigate: vi.fn() }),
+}))
+
 vi.mock("../lib/auth-client", () => ({
   signIn: { email: vi.fn() },
   signUp: { email: vi.fn() },

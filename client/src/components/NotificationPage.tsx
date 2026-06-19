@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react"
+import { Link } from "@tanstack/react-router"
 import { signOut, useSession } from "../lib/auth-client"
 import { Card, CardContent } from "../components/ui/card"
 import { Button } from "../components/ui/button"
@@ -109,14 +110,32 @@ export default function NotificationPage() {
     }
   }, [fetchInitial, connectSSE])
 
-  const dismissNotification = (id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id))
+  const dismissNotification = async (id: string) => {
+    try {
+      const res = await fetch(`/api/notification/users/${user.id}/notifications/${id}`, {
+        method: "DELETE",
+      })
+      if (res.ok) {
+        setNotifications((prev) => prev.filter((n) => n.id !== id))
+      }
+    } catch {
+      // silently fail
+    }
   }
 
-  const markRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    )
+  const markRead = async (id: string) => {
+    try {
+      const res = await fetch(`/api/notification/users/${user.id}/notifications/${id}/read`, {
+        method: "PATCH",
+      })
+      if (res.ok) {
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+        )
+      }
+    } catch {
+      // silently fail
+    }
   }
 
   const handleSignOut = async () => {
@@ -137,6 +156,12 @@ export default function NotificationPage() {
             {statusLabel(connectionStatus)}
           </Badge>
           <span className="text-sm text-muted-foreground">{user.email}</span>
+          <Link
+            to="/notifications/preferences"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Preferences
+          </Link>
           <Button variant="outline" size="sm" onClick={fetchInitial}>
             Refresh
           </Button>

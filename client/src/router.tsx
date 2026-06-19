@@ -2,7 +2,9 @@ import { createRouter, createRootRoute, createRoute } from "@tanstack/react-rout
 import App from "./App"
 import HomePage from "./pages/HomePage"
 import NotificationPage from "./components/NotificationPage"
+import NotificationPreferencesPage from "./pages/NotificationPreferencesPage"
 import TransactionsPage from "./pages/TransactionsPage"
+import TransactionDetailPage from "./pages/TransactionDetailPage"
 import AccountPage from "./pages/AccountPage"
 import AccountTransactionsPage from "./pages/AccountTransactionsPage"
 import AccountDetailPage from "./pages/AccountDetailPage"
@@ -23,10 +25,22 @@ const notificationsRoute = createRoute({
   component: NotificationPage,
 })
 
+const notificationPreferencesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/notifications/preferences",
+  component: NotificationPreferencesPage,
+})
+
 const transactionsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/transactions",
   component: TransactionsPage,
+})
+
+const transactionDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/transactions/$transactionId",
+  component: TransactionDetailPage,
 })
 
 const accountRoute = createRoute({
@@ -50,7 +64,9 @@ const accountTransactionsRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   notificationsRoute,
+  notificationPreferencesRoute,
   transactionsRoute,
+  transactionDetailRoute,
   accountRoute,
   accountDetailRoute,
   accountTransactionsRoute,
