@@ -1,0 +1,16 @@
+Thoroughly explore the server notification module at /home/coderx85/Projects/Work/.GITHUB/wave/server/src/ related to notifications. I need to understand:
+
+1. Read server/src/routes/api/notification/ - all files
+2. Read server/src/modules/notification/ - all files
+3. Read the notification schema in server/src/schemas/ if it exists
+4. Read the notification database/repository schema (check server/src/modules/database/)
+
+Return the full contents of:
+- All route definition and index files for notifications
+- The notification controller
+- The notification service
+- Any notification schema
+- The notification repository/database schema
+- The NotificationPage component on the client side
+
+I need to understand how notifications work server-side to add mark-read (PATCH) and dismiss (DELETE) endpoints.
