@@ -1,0 +1,15 @@
+Thoroughly audit the client codebase at /home/coderx85/Projects/Work/.GITHUB/wave/client/src/ for completeness against the product vision described in PRODUCT.md. 
+
+Read every source file in the project (pages, components, actions, types, lib, __tests__). Return:
+
+1. A complete inventory of every page route and what features each implements
+2. A complete inventory of every component and what it does
+3. What API actions exist vs what the server supports (check server/src/routes/api/wallet/definition.ts and server/src/modules/wallet/service/wallet-service.interface.ts for all available endpoints)
+4. What's missing:
+   - Are there server endpoints with no client implementation?
+   - Are there obvious gaps in the user flow (e.g., no way to view a single transaction detail, no settings page, no way to dispute a transaction)?
+   - Is error/loading/empty state handling consistent?
+   - Are there features mentioned in PRODUCT.md (notifications, billing, subscriptions) that have no client UI?
+5. Any UX/consistency issues you spot (missing loading states, broken flows, type mismatches, etc.)
+
+Be very thorough - read every file.

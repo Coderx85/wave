@@ -1,0 +1,41 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "258990d0c320",
+  "session_id": "ses_11fa6b4e5ffeIF1i93xa8IaYe6",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-19T16:49:45.311119633Z",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "server/src/lib/tigerbeetle/account.service.ts",
+    "server/src/lib/tigerbeetle/constant.ts",
+    "server/src/modules/wallet/controller/wallet.controller.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "d28166fe82cf",
+  "checkpoint_transcript_start": 14,
+  "transcript_lines_at_start": 14,
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-19T16:49:45.253382007Z",
+    "agent_lines": 119,
+    "agent_removed": 39,
+    "human_added": 672,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 791,
+    "total_lines_changed": 855,
+    "agent_percentage": 18.47953216374269,
+    "metric_version": 2
+  }
+}
