@@ -1,0 +1,23 @@
+I need to understand the codebase to implement an Account Detail page. Please explore thoroughly and return:
+
+1. **Routing**: How are routes set up? Look for @tanstack/react-router configuration, route files, router initialization. Find how existing pages are registered (AccountPage, AccountTransactionsPage, etc.). Look in src/ directory for router.tsx, main.tsx, route tree files, etc.
+
+2. **Existing Account and Transaction Types**: Read the full content of:
+   - client/src/types/account.types.ts
+   - client/src/types/transaction.types.ts
+   - client/src/types/id.types.ts
+   - client/src/types/index.ts
+
+3. **Existing AccountPage.tsx patterns**: Read the full file to understand UI patterns (Card, Button, Label, Input usage), error handling, loading states, data fetching approach, and how they use the session.
+
+4. **AccountTransactionsPage.tsx**: Read the full file to understand how transactions are displayed.
+
+5. **API Actions**: Read the full src/actions/account.actions.ts and src/actions/transaction.actions.ts
+
+6. **Components**: List files in src/components/ directory and read WalletCardCarousel.tsx and ProfileSection.tsx
+
+7. **Client index.ts**: Read the client/index.ts to understand the proxy setup.
+
+8. **Package.json**: Check what dependencies are available (especially UI components, icons, etc.)
+
+Return ALL file contents completely - don't summarize or truncate. I need the full code to understand conventions.
