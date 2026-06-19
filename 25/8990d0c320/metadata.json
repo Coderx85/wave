@@ -3,7 +3,7 @@
   "checkpoint_id": "258990d0c320",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 1,
+  "checkpoints_count": 2,
   "files_touched": [
     "server/src/lib/tigerbeetle/account.service.ts",
     "server/src/lib/tigerbeetle/constant.ts",
@@ -12,6 +12,8 @@
     "server/src/modules/notification/notification-service.ts",
     "server/src/modules/notification/repository/contracts.ts",
     "server/src/modules/notification/repository/index.ts",
+    "server/src/modules/notification/repository/notification-preference.repository.spec.ts",
+    "server/src/modules/notification/repository/notification-preference.repository.ts",
     "server/src/modules/notification/repository/notification.repository.ts",
     "server/src/modules/wallet/controller/wallet.controller.ts",
     "server/src/routes/api/notification/definition.ts",
@@ -45,13 +47,19 @@
       "transcript": "/25/8990d0c320/3/full.jsonl",
       "content_hash": "/25/8990d0c320/3/content_hash.txt",
       "prompt": "/25/8990d0c320/3/prompt.txt"
+    },
+    {
+      "metadata": "/25/8990d0c320/4/metadata.json",
+      "transcript": "/25/8990d0c320/4/full.jsonl",
+      "content_hash": "/25/8990d0c320/4/content_hash.txt",
+      "prompt": "/25/8990d0c320/4/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 73127,
+    "input_tokens": 499282,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 291840,
-    "output_tokens": 9107,
-    "api_call_count": 8
+    "cache_read_tokens": 14203776,
+    "output_tokens": 72269,
+    "api_call_count": 186
   }
 }

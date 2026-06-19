@@ -1,0 +1,80 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "258990d0c320",
+  "session_id": "ses_11ffadd60ffeI1zCxJ3DTa33VG",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-19T16:49:53.186272837Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "server/src/lib/tigerbeetle/account.service.ts",
+    "server/src/lib/tigerbeetle/constant.ts",
+    "server/src/modules/database/schema/notification.repository.ts",
+    "server/src/modules/notification/notification-service.spec.ts",
+    "server/src/modules/notification/notification-service.ts",
+    "server/src/modules/notification/repository/contracts.ts",
+    "server/src/modules/notification/repository/index.ts",
+    "server/src/modules/notification/repository/notification-preference.repository.spec.ts",
+    "server/src/modules/notification/repository/notification-preference.repository.ts",
+    "server/src/modules/notification/repository/notification.repository.ts",
+    "server/src/modules/wallet/controller/wallet.controller.ts",
+    "server/src/routes/api/notification/definition.ts",
+    "server/src/routes/api/notification/handler.ts",
+    "server/src/routes/api/notification/index.spec.ts",
+    "server/src/routes/api/notification/index.ts",
+    "server/src/schemas/notification.schema.spec.ts",
+    "server/src/schemas/notification.schema.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "fc63d25685a2",
+  "token_usage": {
+    "input_tokens": 426155,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 13911936,
+    "output_tokens": 63162,
+    "api_call_count": 178
+  },
+  "session_metrics": {
+    "turn_count": 11
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-19T16:49:53.083918311Z",
+    "agent_lines": 755,
+    "agent_removed": 52,
+    "human_added": 12,
+    "human_modified": 12,
+    "human_removed": 0,
+    "total_committed": 779,
+    "total_lines_changed": 843,
+    "agent_percentage": 95.72953736654804,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 289,
+      "user_lines_removed": 12,
+      "agent_lines_added": 767,
+      "agent_lines_removed": 52,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7,
+        "client/DESIGN.md": 258,
+        "server/src/lib/tigerbeetle/index.ts": 1,
+        "server/src/modules/database/schema/ledger.repository.ts": 4,
+        "server/src/modules/wallet/repository/contracts.ts": 1,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.interface.ts": 3,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts": 7,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.ts": 3,
+        "server/src/modules/wallet/service/wallet-service.ts": 5
+      },
+      "user_removed_per_file": {
+        "server/src/modules/database/schema/ledger.repository.ts": 2,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.interface.ts": 2,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.spec.ts": 5,
+        "server/src/modules/wallet/service/internal/ledger-service/ledger-service.ts": 2,
+        "server/src/modules/wallet/service/wallet-service.ts": 1
+      }
+    }
+  ]
+}

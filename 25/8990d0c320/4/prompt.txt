@@ -1,0 +1,74 @@
+WHat could more implement in the @client/ for my pproduct @client/PRODUCT.md 
+Called the Read tool with the following input: {"filePath":"/home/coderx85/Projects/Work/.GITHUB/wave/client/"}
+<path>/home/coderx85/Projects/Work/.GITHUB/wave/client/</path>
+<type>directory</type>
+<entries>
+.gitignore
+bun.lock
+CLAUDE.md
+dist/
+index.html
+index.ts
+node_modules/
+package.json
+postcss.config.js
+PRODUCT.md
+README.md
+src/
+tailwind.config.ts
+tsconfig.json
+vitest.config.ts
+
+(15 entries)
+</entries>
+Called the Read tool with the following input: {"filePath":"/home/coderx85/Projects/Work/.GITHUB/wave/client/PRODUCT.md"}
+<path>/home/coderx85/Projects/Work/.GITHUB/wave/client/PRODUCT.md</path>
+<type>file</type>
+<content>
+1: # Wave
+2: 
+3: ## Register
+4: 
+5: product
+6: 
+7: ## Users
+8: 
+9: **Primary — End users.** Individuals who receive payment notifications and manage their transaction activity through Wave. They use the product to stay informed about incoming payments, successful transfers, failed transactions, disputes, and account activity in real time. Their context is any device, any time — checking a notification on mobile, reviewing transaction history on desktop.
+10: 
+11: **Secondary — Admin / team users.** Internal or merchant teams who manage the platform, monitor system events, handle disputes, and oversee user activity. Will be scoped in a later phase.
+12: 
+13: ## Product Purpose
+14: 
+15: Wave is a full payment platform — handling transactions, billing, subscriptions, and financial operations — inspired by the reliability of PayPal and the design clarity of Polar.sh. The notification center is one feature within a larger product: it keeps end users informed about their payment activity in real time via live streams and a searchable history.
+16: 
+17: Success looks like: users trust Wave with their money because the interface is as clear and precise as the transactions it reports.
+18: 
+19: ## Brand Personality
+20: 
+21: **Clear. Reliable. Human.**
+22: 
+23: Not friendly at the expense of precision. Not cold at the expense of approachability. Financial tools default to either "playful fintech" or "institutional gray." Wave sits in the third lane: professional but warm, confident but not loud. Communication is direct, every word earns its place, and the interface never obscures what matters.
+24: 
+25: ## Anti-references
+26: 
+27: - **Over-designed SaaS.** No gradient illustrations, no big hero metrics, no excessive animations, no decorative glassmorphism. The design serves the data, not the other way around.
+28: - **Neon / cyberpunk.** The current dark/neon aesthetic is being replaced. No magenta, no cyan glows, no glass cards.
+29: - **Traditional banking UIs.** No stodgy dark-wood-paneled institutional feel. No heavy serifs, no navy-and-gold that whispers "bank branch."
+30: - **PayPal clone.** Inspired by, not copying. No specific blue/yellow palette or layout patterns from PayPal.
+31: 
+32: ## Design Principles
+33: 
+34: **Clear over clever.** Financial communications must be immediately understood. Every notification, every status, every number — the user should grasp it in under two seconds. Decoration that adds even 100ms of parsing time is removed.
+35: 
+36: **Reliable by default.** The interface inspires trust through consistency and precision. Consistent spacing, consistent typography, consistent color semantics. A green indicator always means "everything is fine"; red always means "needs attention." No ambiguity in the financial layer.
+37: 
+38: **Human at scale.** Warmth without sentimentality, personality without noise. Micro-copy that respects the user's time, not jokes. Empty states that guide, not entertain. The product should feel built by people who care about clarity, not by a brand trying to be liked.
+39: 
+40: **Progressive complexity.** The end user sees a simple, focused interface. Power users and admins get deeper controls — but never at the expense of the beginner. Reveal complexity only when the user needs it.
+41: 
+42: ## Accessibility & Inclusion
+43: 
+44: Compliance target WCAG AA at minimum. Financial information must be perceivable, operable, and understandable regardless of ability. Color is never the sole carrier of meaning (status icons + text + color). Reduced motion respected. All interactive elements keyboard-navigable.
+
+(End of file - total 44 lines)
+</content>
