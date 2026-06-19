@@ -3,15 +3,18 @@
   "checkpoint_id": "de66ee054bb5",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 4,
+  "checkpoints_count": 9,
   "files_touched": [
     "client/src/__tests__/NotificationPage.spec.tsx",
+    "client/src/__tests__/NotificationPreferencesPage.spec.tsx",
     "client/src/components/DataTable.tsx",
     "client/src/components/NotificationPage.tsx",
     "client/src/pages/AccountDetailPage.tsx",
     "client/src/pages/AccountPage.tsx",
     "client/src/pages/AccountTransactionsPage.tsx",
     "client/src/pages/HomePage.tsx",
+    "client/src/pages/NotificationPreferencesPage.tsx",
+    "client/src/pages/TransactionDetailPage.tsx",
     "client/src/pages/TransactionsPage.tsx",
     "client/src/router.tsx",
     "client/src/types/transaction.types.ts"
@@ -40,13 +43,19 @@
       "transcript": "/de/66ee054bb5/3/full.jsonl",
       "content_hash": "/de/66ee054bb5/3/content_hash.txt",
       "prompt": "/de/66ee054bb5/3/prompt.txt"
+    },
+    {
+      "metadata": "/de/66ee054bb5/4/metadata.json",
+      "transcript": "/de/66ee054bb5/4/full.jsonl",
+      "content_hash": "/de/66ee054bb5/4/content_hash.txt",
+      "prompt": "/de/66ee054bb5/4/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 228336,
+    "input_tokens": 489506,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 1449344,
-    "output_tokens": 32371,
-    "api_call_count": 43
+    "cache_read_tokens": 12660992,
+    "output_tokens": 80563,
+    "api_call_count": 176
   }
 }

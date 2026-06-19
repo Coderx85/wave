@@ -1,0 +1,117 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "de66ee054bb5",
+  "session_id": "ses_11ffadd60ffeI1zCxJ3DTa33VG",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-19T16:45:06.837815666Z",
+  "branch": "main",
+  "checkpoints_count": 5,
+  "files_touched": [
+    "client/src/__tests__/NotificationPage.spec.tsx",
+    "client/src/__tests__/NotificationPreferencesPage.spec.tsx",
+    "client/src/components/DataTable.tsx",
+    "client/src/components/NotificationPage.tsx",
+    "client/src/pages/AccountDetailPage.tsx",
+    "client/src/pages/AccountPage.tsx",
+    "client/src/pages/AccountTransactionsPage.tsx",
+    "client/src/pages/HomePage.tsx",
+    "client/src/pages/NotificationPreferencesPage.tsx",
+    "client/src/pages/TransactionDetailPage.tsx",
+    "client/src/pages/TransactionsPage.tsx",
+    "client/src/router.tsx",
+    "client/src/types/transaction.types.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "bb7b6ca8ec8c",
+  "checkpoint_transcript_start": 30,
+  "transcript_lines_at_start": 30,
+  "token_usage": {
+    "input_tokens": 261170,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 11211648,
+    "output_tokens": 48192,
+    "api_call_count": 133
+  },
+  "session_metrics": {
+    "turn_count": 11
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-19T16:45:06.759989885Z",
+    "agent_lines": 909,
+    "agent_removed": 99,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 909,
+    "total_lines_changed": 1008,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 126,
+      "user_lines_removed": 39,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7,
+        "server/src/lib/tigerbeetle/account.service.ts": 111,
+        "server/src/lib/tigerbeetle/constant.ts": 6,
+        "server/src/modules/wallet/controller/wallet.controller.ts": 2
+      },
+      "user_removed_per_file": {
+        "server/src/lib/tigerbeetle/account.service.ts": 38,
+        "server/src/lib/tigerbeetle/constant.ts": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 7,
+      "user_lines_removed": 0,
+      "agent_lines_added": 119,
+      "agent_lines_removed": 39,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 7,
+      "user_lines_removed": 0,
+      "agent_lines_added": 875,
+      "agent_lines_removed": 141,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 7,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1674,
+      "agent_lines_removed": 150,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 7,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1675,
+      "agent_lines_removed": 151,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7
+      }
+    }
+  ]
+}
