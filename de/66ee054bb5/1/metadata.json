@@ -1,0 +1,102 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "de66ee054bb5",
+  "session_id": "ses_11f9b29fbffeAAgXJomT6VKajf",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-19T16:44:55.837834008Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "client/src/components/DataTable.tsx",
+    "client/src/components/NotificationPage.tsx",
+    "client/src/pages/AccountDetailPage.tsx",
+    "client/src/pages/AccountPage.tsx",
+    "client/src/pages/AccountTransactionsPage.tsx",
+    "client/src/pages/HomePage.tsx",
+    "client/src/pages/TransactionsPage.tsx",
+    "client/src/router.tsx",
+    "client/src/types/transaction.types.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "9ed0e5624a74",
+  "token_usage": {
+    "input_tokens": 35740,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 145664,
+    "output_tokens": 5839,
+    "api_call_count": 8
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-19T16:44:55.825651013Z",
+    "agent_lines": 0,
+    "agent_removed": 1,
+    "human_added": 158,
+    "human_modified": 98,
+    "human_removed": 0,
+    "total_committed": 174,
+    "total_lines_changed": 257,
+    "agent_percentage": 0.38910505836575876,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 882,
+      "user_lines_removed": 141,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7,
+        "client/src/components/DataTable.tsx": 6,
+        "client/src/components/NotificationPage.tsx": 24,
+        "client/src/pages/AccountDetailPage.tsx": 2,
+        "client/src/pages/AccountPage.tsx": 4,
+        "client/src/pages/AccountTransactionsPage.tsx": 175,
+        "client/src/pages/HomePage.tsx": 2,
+        "client/src/pages/TransactionDetailPage.tsx": 225,
+        "client/src/pages/TransactionsPage.tsx": 175,
+        "client/src/router.tsx": 8,
+        "client/src/types/transaction.types.ts": 11,
+        "server/src/lib/tigerbeetle/account.service.ts": 111,
+        "server/src/lib/tigerbeetle/constant.ts": 6,
+        "server/src/modules/database/schema/notification.repository.ts": 2,
+        "server/src/modules/notification/repository/contracts.ts": 3,
+        "server/src/modules/notification/repository/notification.repository.ts": 21,
+        "server/src/modules/wallet/controller/wallet.controller.ts": 2,
+        "server/src/routes/api/notification/definition.ts": 17,
+        "server/src/routes/api/notification/handler.ts": 47,
+        "server/src/routes/api/notification/index.ts": 10,
+        "server/src/schemas/notification.schema.ts": 24
+      },
+      "user_removed_per_file": {
+        "client/src/components/DataTable.tsx": 1,
+        "client/src/components/NotificationPage.tsx": 6,
+        "client/src/pages/AccountDetailPage.tsx": 1,
+        "client/src/pages/AccountPage.tsx": 3,
+        "client/src/pages/AccountTransactionsPage.tsx": 43,
+        "client/src/pages/HomePage.tsx": 1,
+        "client/src/pages/TransactionsPage.tsx": 42,
+        "client/src/types/transaction.types.ts": 1,
+        "server/src/lib/tigerbeetle/account.service.ts": 38,
+        "server/src/lib/tigerbeetle/constant.ts": 1,
+        "server/src/modules/database/schema/notification.repository.ts": 1,
+        "server/src/routes/api/notification/handler.ts": 1,
+        "server/src/routes/api/notification/index.ts": 2
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 7,
+      "user_lines_removed": 0,
+      "agent_lines_added": 875,
+      "agent_lines_removed": 141,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7
+      }
+    }
+  ]
+}
