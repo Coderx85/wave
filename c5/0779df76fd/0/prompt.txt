@@ -1,0 +1,15 @@
+Explore the /home/coderx85/Projects/Work/.GITHUB/wave/client/ directory thoroughly. I need to understand:
+1. The overall structure and architecture
+2. What the app does (read PRODUCT.md, CLAUDE.md, README.md)
+3. All source files in src/ directory
+4. How state management works
+5. What "Add Money" functionality might refer to - search for related terms like "add money", "deposit", "addMoney", "balance", "money", "transaction"
+6. Check the server directory too at /home/coderx85/Projects/Work/.GITHUB/wave/ for any related API endpoints
+
+Return:
+- Full directory listing of src/
+- Contents of key files related to money/balance/transactions
+- Contents of PRODUCT.md
+- Any API routes related to money
+- Any existing components or pages related to money operations
+- The state management approach used
