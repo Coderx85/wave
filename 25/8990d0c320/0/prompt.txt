@@ -1,0 +1,19 @@
+Explore the frontend design system in /home/coderx85/Projects/Work/.GITHUB/wave/client/. I need a thorough understanding of:
+
+1. **CSS variables / design tokens**: Search for `:root`, `--*:` (Tailwind tokens), `oklch`, CSS custom properties. Check `src/styles.css`, `src/index.css`, and any CSS/Tailwind config files.
+
+2. **Tailwind config**: Read `tailwind.config.js` or `tailwind.config.ts` if it exists.
+
+3. **Theme system**: Check for any theme provider, dark mode toggle, or CSS class-based theming.
+
+4. **Layout patterns**: What's the app shell? Read `src/App.tsx` and any layout components. How does navigation work? What is the overall page structure?
+
+5. **Component code**: Read `src/components/ui/button.tsx`, `src/components/ui/card.tsx`, `src/components/ui/badge.tsx` for patterns of how components are styled.
+
+6. **Typography**: What fonts are used? Any font imports? Search for `font-family`, `@import url`, `@font-face`.
+
+7. **Existing design reference**: Is there a `DESIGN.md` anywhere? Any style guide docs?
+
+8. **The overall visual character**: Read 2-3 page components to understand the current look (e.g., `src/pages/HomePage.tsx`, `src/pages/TransactionsPage.tsx`).
+
+Return ALL file contents, paths, and line numbers. Be very thorough - I need the complete picture of the current visual system.
