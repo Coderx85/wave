@@ -1,0 +1,51 @@
+Read and analyze these files for UI inconsistencies. Compare each file against the project's DESIGN.md rules and against each other. Focus on:
+
+1. **Button variants** - Are buttons using consistent variants (primary/outline/ghost/destructive)? Any hardcoded styling?
+2. **Card padding** - Is it always `p-6` (`p-6` in Tailwind) per the design system?
+3. **Typography** - Are text sizes matching (headline=text-xl/title=text-lg/body=text-sm/label=text-xs)?
+4. **Loading states** - Skeleton pattern consistent?
+5. **Empty states** - Text-only centered `text-muted-foreground`?
+6. **Error states** - Consistent retry pattern?
+7. **Page layout** - PageHeader + main + PageFooter?
+8. **Monetary amounts** - Always `font-mono font-semibold`?
+9. **Color hardcoding** - Any raw hex/oklch values instead of CSS vars (bg-background, text-muted-foreground, etc)?
+10. **Form patterns** - Consistent submit button disable logic, success/error display?
+11. **Border + shadow** - Any elements using both border AND box-shadow (banned per DESIGN.md)?
+12. **Radii** - Cards must be rounded-xl (12px), buttons rounded-md (6px), badges rounded-full
+
+Files to check:
+- client/src/pages/HomePage.tsx
+- client/src/pages/TransactionsPage.tsx
+- client/src/pages/TransactionDetailPage.tsx
+- client/src/pages/AccountPage.tsx
+- client/src/pages/AccountDetailPage.tsx
+- client/src/pages/AccountTransactionsPage.tsx
+- client/src/pages/AccountSettingsPage.tsx
+- client/src/pages/SearchPage.tsx
+- client/src/pages/NotificationPreferencesPage.tsx
+- client/src/components/NotificationPage.tsx
+- client/src/components/ActivityTimeline.tsx
+- client/src/components/AddMoney.tsx
+- client/src/components/WalletCard.tsx
+- client/src/components/WalletCardCarousel.tsx
+- client/src/components/ProfileSection.tsx
+- client/src/components/DataTable.tsx
+- client/src/components/ui/page-header.tsx
+- client/src/components/ui/page-footer.tsx
+- client/src/components/ui/processing-overlay.tsx
+- client/src/components/ui/transaction-success.tsx
+- client/src/components/ui/select.tsx
+- client/src/components/ui/button.tsx
+- client/src/components/ui/badge.tsx
+- client/src/components/ui/skeleton.tsx
+- client/src/components/ui/input.tsx
+- client/src/components/ui/card.tsx
+- client/src/styles.css
+
+Return a categorized list of specific inconsistencies found, with file paths and line numbers. Group by:
+- **Critical (P0)**: Violations of DESIGN.md hard rules (e.g., border+shadow together, wrong radii, hardcoded color values, missing loading/error/empty states)
+- **High (P1)**: Pattern breaks across pages (e.g., one page uses variant="primary", another hardcodes bg-primary class; card padding varies)
+- **Medium (P2)**: Styling drift (e.g., slightly different spacing, missing hover states, inconsistent text sizing)
+- **Low (P3)**: Polish (e.g., transitions, focus rings, minor alignment)
+
+Be thorough -- read every file completely.
