@@ -1,0 +1,12 @@
+Explore the project at /home/coderx85/Projects/Work/.GITHUB/wave to understand its full structure for a Vercel deployment. I need to know:
+
+1. Full directory tree (top 3 levels)
+2. Read the root package.json (if any) and client/package.json
+3. Read any vercel.json or vercel config files if they exist
+4. Read the client/index.ts (the Bun.serve() entry point)
+5. Read the backend/ directory structure and its package.json
+6. Check if there's a tsconfig.json at root or in client/
+7. Check if there's a next.config or any build configuration
+8. Read any README or CONTEXT.md at the project root
+
+Return ALL file contents verbatim. This is critical for understanding the deployment architecture.
