@@ -1,0 +1,13 @@
+Explore the Wave payment app's client and server code to understand existing search/query capabilities:
+
+1. In client/src/pages/TransactionsPage.tsx: find the search input, filter buttons, and query logic. Return the relevant line numbers and code snippets.
+
+2. In client/src/actions/transaction.actions.ts: show the full `queryTransactions` function signature, parameters, and the API endpoint it calls.
+
+3. In server/src/: find the implementation of the queryTransactions endpoint handler. What query parameters does it support? What does it search by? Return file path, line numbers, and the handler code.
+
+4. Check if there's any search endpoint for notifications or accounts (grep for "search", "query", "filter" in server/src/routes/).
+
+5. In client/src/types/ — show the full type definitions for ITransaction, IWalletTransaction, and the notification type.
+
+Return all findings with file paths and line numbers.
