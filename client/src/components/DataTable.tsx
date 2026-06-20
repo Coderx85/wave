@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-table"
 import { Badge } from "./ui/badge"
 import { Skeleton } from "./ui/skeleton"
+import { formatCurrency } from "../lib/utils"
 import type { ITransaction } from "@/types"
 
 interface DataTableProps {
@@ -18,9 +19,6 @@ interface DataTableProps {
   emptyMessage?: string
   onRowClick?: (tx: ITransaction) => void
 }
-
-const formatBalance = (b: number | string) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(Number(b))
 
 const formatDate = (iso: string) =>
   new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(iso))
@@ -80,7 +78,7 @@ export default function DataTable({ data, userAccountIds, loading, emptyMessage,
             <span className={`text-sm font-mono font-semibold whitespace-nowrap ${
               dir === "in" ? "text-success" : dir === "out" ? "text-foreground" : "text-foreground"
             }`}>
-              {dir === "in" ? "+" : dir === "out" ? "\u2212" : ""}{formatBalance(tx.amount)}
+              {dir === "in" ? "+" : dir === "out" ? "\u2212" : ""}{formatCurrency(tx.amount)}
             </span>
           )
         },

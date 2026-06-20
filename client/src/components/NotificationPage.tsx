@@ -5,6 +5,8 @@ import { Card, CardContent } from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
 import { Skeleton } from "../components/ui/skeleton"
+import PageHeader from "./ui/page-header"
+import PageFooter from "./ui/page-footer"
 
 interface Notification {
   id: string
@@ -144,32 +146,34 @@ export default function NotificationPage() {
 
   return (
     <>
-      <header className="flex items-center justify-between flex-wrap gap-3 px-8 py-5 border-b border-border">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">Notifications</h1>
-        <div className="flex items-center gap-3">
-          <Badge variant={statusVariant(connectionStatus)}>
-            <span className={`mr-1.5 h-1.5 w-1.5 rounded-full inline-block ${
-              connectionStatus === "connected" ? "bg-current" :
-              connectionStatus === "disconnected" ? "bg-current" :
-              "bg-current animate-a-spin"
-            }`} />
-            {statusLabel(connectionStatus)}
-          </Badge>
-          <span className="text-sm text-muted-foreground">{user.email}</span>
-          <Link
-            to="/notifications/preferences"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Preferences
-          </Link>
-          <Button variant="outline" size="sm" onClick={fetchInitial}>
-            Refresh
-          </Button>
-          <Button variant="ghost" size="sm" onClick={handleSignOut}>
-            Sign Out
-          </Button>
-        </div>
-      </header>
+      <PageHeader
+        title="Notifications"
+        email={user.email}
+        actions={
+          <>
+            <Badge variant={statusVariant(connectionStatus)}>
+              <span className={`mr-1.5 h-1.5 w-1.5 rounded-full inline-block ${
+                connectionStatus === "connected" ? "bg-current" :
+                connectionStatus === "disconnected" ? "bg-current" :
+                "bg-current animate-a-spin"
+              }`} />
+              {statusLabel(connectionStatus)}
+            </Badge>
+            <Link
+              to="/notifications/preferences"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Preferences
+            </Link>
+            <Button variant="outline" size="sm" onClick={fetchInitial}>
+              Refresh
+            </Button>
+            <Button variant="ghost" size="sm" onClick={handleSignOut}>
+              Sign Out
+            </Button>
+          </>
+        }
+      />
 
       <main className="flex-1 mx-auto w-full max-w-2xl px-8 py-6">
         {loading && (
@@ -194,7 +198,7 @@ export default function NotificationPage() {
 
         {!loading && !error && notifications.length === 0 && (
           <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
-            <h2 className="text-base font-semibold text-muted-foreground">No notifications</h2>
+            <h2 className="text-sm font-semibold text-muted-foreground">No notifications</h2>
             <p className="text-sm text-muted-foreground/60">
               New notifications will appear here in real time.
             </p>
@@ -255,10 +259,10 @@ export default function NotificationPage() {
         )}
       </main>
 
-      <footer className="flex justify-between items-center px-8 py-4 text-sm text-muted-foreground/70 border-t border-border">
-        <span>Wave Notification Center</span>
-        <span>{notifications.length} notifications</span>
-      </footer>
+      <PageFooter
+        left="Wave Notification Center"
+        right={<span>{notifications.length} notifications</span>}
+      />
     </>
   )
 }

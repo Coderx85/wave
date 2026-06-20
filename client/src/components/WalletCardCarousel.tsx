@@ -23,7 +23,7 @@ export default function WalletCardCarousel({
   const next = () => setCurrent((c) => Math.min(accounts.length - 1, c + 1))
 
   return (
-    <div>
+    <div className="w-full">
       <div className="overflow-hidden rounded-xl">
         <div
           className="flex transition-transform duration-300 ease-out motion-reduce:transition-none"
@@ -43,7 +43,7 @@ export default function WalletCardCarousel({
             type="button"
             onClick={prev}
             disabled={current === 0}
-            className="flex items-center justify-center w-8 h-8 rounded-full border border-border bg-background hover:bg-muted transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            className="flex items-center justify-center w-8 h-8 rounded-md border border-border bg-background hover:bg-muted transition-colors disabled:opacity-30 disabled:pointer-events-none"
             aria-label="Previous account"
           >
             <ChevronLeft className="w-4 h-4 text-foreground" />
@@ -69,7 +69,7 @@ export default function WalletCardCarousel({
             type="button"
             onClick={next}
             disabled={current === accounts.length - 1}
-            className="flex items-center justify-center w-8 h-8 rounded-full border border-border bg-background hover:bg-muted transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            className="flex items-center justify-center w-8 h-8 rounded-md border border-border bg-background hover:bg-muted transition-colors disabled:opacity-30 disabled:pointer-events-none"
             aria-label="Next account"
           >
             <ChevronRight className="w-4 h-4 text-foreground" />

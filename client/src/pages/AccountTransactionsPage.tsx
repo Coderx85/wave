@@ -14,14 +14,14 @@ import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
 import { Badge } from "../components/ui/badge"
 import { Skeleton } from "../components/ui/skeleton"
+import PageHeader from "../components/ui/page-header"
+import PageFooter from "../components/ui/page-footer"
 import { fetchTransactionsAction } from "@/actions/transaction.actions"
 import type { ITransaction, IWalletTransaction, WaveResponse } from "@/types"
 import { fetchAccountTransactionsAction } from "@/actions/account.actions"
+import { formatCurrency } from "@/lib/utils"
 
 type Filter = "all" | "success" | "failed" | "pending"
-
-const formatBalance = (balance: number) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(balance)
 
 const formatDate = (iso: string) =>
   new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(iso))
@@ -100,7 +100,7 @@ export default function AccountTransactionsPage() {
             <span className={`text-sm font-mono font-semibold whitespace-nowrap ${
               dir === "in" ? "text-success" : "text-foreground"
             }`}>
-              {dir === "in" ? "+" : dir === "out" ? "\u2212" : ""}{formatBalance(Number(tx.amount))}
+              {dir === "in" ? "+" : dir === "out" ? "\u2212" : ""}{formatCurrency(tx.amount)}
             </span>
           )
         },
@@ -215,8 +215,10 @@ export default function AccountTransactionsPage() {
 
   return (
     <>
-      <header className="flex items-center justify-between flex-wrap gap-3 px-8 py-5 border-b border-border">
-        <div className="flex items-center gap-3">
+      <PageHeader
+        title="Transactions"
+        email={user.email}
+        beforeTitle={
           <a
             href="/account"
             className="inline-flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
@@ -224,12 +226,8 @@ export default function AccountTransactionsPage() {
           >
             <ArrowLeft className="size-4" />
           </a>
-          <h1 className="text-xl font-semibold tracking-tight text-foreground">Transactions</h1>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-muted-foreground">{user.email}</span>
-        </div>
-      </header>
+        }
+      />
 
       <main className="flex-1 mx-auto w-full max-w-4xl px-8 py-8 space-y-6">
         <div className="flex flex-wrap items-center gap-2">
@@ -413,10 +411,11 @@ export default function AccountTransactionsPage() {
         </Card>
       </main>
 
-      <footer className="flex justify-between items-center px-8 py-4 text-sm text-muted-foreground/70 border-t border-border">
-        <span>Wave Payment Platform</span>
-        <span>{filtered.length} transaction{filtered.length !== 1 ? "s" : ""}</span>
-      </footer>
+      <PageFooter
+        right={
+          <span>{filtered.length} transaction{filtered.length !== 1 ? "s" : ""}</span>
+        }
+      />
     </>
   )
 }

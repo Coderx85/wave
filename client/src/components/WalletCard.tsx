@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Eye, EyeOff, MoreVertical } from "lucide-react"
-import { cn } from "../lib/utils"
+import { cn, formatCurrency } from "../lib/utils"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -15,10 +15,6 @@ interface WalletCardAccount {
   name: string
   accountNumber: TBankAccountNumber
   balance: number
-}
-
-function formatBalance(b: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(b)
 }
 
 function maskNumber(num: string) {
@@ -42,15 +38,15 @@ export default function WalletCard({
   const [showBalance, setShowBalance] = useState(true)
 
   return (
-    <div className="group relative w-full aspect-[1.586/1] rounded-xl bg-gradient-to-br from-[oklch(0.35_0.15_165)] to-[oklch(0.22_0.12_165)] overflow-hidden shadow-lg shadow-black/20 transition-transform duration-500 ease-out hover:[transform:perspective(1200px)_rotateY(-3deg)_rotateX(1deg)] motion-reduce:hover:transform-none select-none">
+    <div className="group relative w-full aspect-[1.586/1] rounded-xl bg-gradient-to-br from-[var(--wallet-card-from)] to-[var(--wallet-card-to)] overflow-hidden shadow-lg shadow-black/20 transition-transform duration-500 ease-out hover:[transform:perspective(1200px)_rotateY(-3deg)_rotateX(1deg)] motion-reduce:hover:transform-none select-none">
       <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-white/[0.02] to-transparent pointer-events-none transition-opacity duration-700 group-hover:opacity-[0.15] motion-reduce:transition-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(1_0_0_/_0.04),transparent_60%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--wallet-card-shine),transparent_60%)] pointer-events-none" />
 
       <div className="relative z-10 flex flex-col justify-between h-full p-5 sm:p-6">
         <div className="flex items-start justify-between">
-          <div className="w-10 h-7 rounded-[4px] bg-gradient-to-br from-[oklch(0.85_0.12_85)] to-[oklch(0.7_0.15_85)] shadow-inner flex items-center justify-center">
-            <div className="w-6 h-4 rounded-[2px] border border-[oklch(0.6_0.1_85_/_0.5)] flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full border border-[oklch(0.6_0.1_85_/_0.4)]" />
+          <div className="w-10 h-7 rounded-[4px] bg-gradient-to-br from-[var(--wallet-chip-from)] to-[var(--wallet-chip-to)] shadow-inner flex items-center justify-center">
+            <div className="w-6 h-4 rounded-[2px] border border-[var(--wallet-chip-border)] flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full border border-[var(--wallet-chip-dot)]" />
             </div>
           </div>
           <div className="flex items-center gap-1">
@@ -91,12 +87,12 @@ export default function WalletCard({
           </p>
           <p
             className={cn(
-              "mt-1 text-2xl sm:text-3xl font-semibold font-mono tracking-tight transition-all duration-300",
+              "mt-1 text-2xl font-semibold font-mono tracking-tight transition-all duration-300",
               !showBalance && "blur-lg select-none"
             )}
             aria-hidden={!showBalance}
           >
-            {formatBalance(account.balance)}
+            {formatCurrency(account.balance)}
           </p>
         </div>
 

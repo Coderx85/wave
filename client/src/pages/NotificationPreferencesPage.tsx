@@ -3,6 +3,8 @@ import { useSession } from "../lib/auth-client"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import { Skeleton } from "../components/ui/skeleton"
+import PageHeader from "../components/ui/page-header"
+import PageFooter from "../components/ui/page-footer"
 
 interface NotificationPreference {
   userId: string
@@ -78,10 +80,10 @@ export default function NotificationPreferencesPage() {
 
   return (
     <>
-      <header className="flex items-center justify-between px-8 py-5 border-b border-border">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">Notification Preferences</h1>
-        <span className="text-sm text-muted-foreground">{user.email}</span>
-      </header>
+      <PageHeader
+        title="Notification Preferences"
+        email={user.email}
+      />
 
       <main className="flex-1 mx-auto w-full max-w-2xl px-8 py-6">
         {loading && (
@@ -106,7 +108,7 @@ export default function NotificationPreferencesPage() {
               const enabled = pref?.enabled ?? true
               return (
                 <Card key={eventType}>
-                  <CardContent className="flex items-center justify-between py-4 px-5">
+                  <CardContent className="flex items-center justify-between p-6">
                     <div className="space-y-0.5">
                       <p className="text-sm font-medium text-foreground">{EVENT_LABELS[eventType]}</p>
                       <p className="text-xs text-muted-foreground">{EVENT_DESCRIPTIONS[eventType]}</p>
@@ -137,10 +139,10 @@ export default function NotificationPreferencesPage() {
         )}
       </main>
 
-      <footer className="flex justify-between items-center px-8 py-4 text-sm text-muted-foreground/70 border-t border-border">
-        <span>Wave Notification Center</span>
-        <span>Preferences</span>
-      </footer>
+      <PageFooter
+        left="Wave Notification Center"
+        right={<span>Preferences</span>}
+      />
     </>
   )
 }

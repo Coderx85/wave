@@ -86,7 +86,7 @@ const DropdownMenuContent = React.forwardRef<
         else if (ref) ref.current = node
       }}
       className={cn(
-        "z-50 min-w-[10rem] overflow-hidden rounded-md border border-border bg-card text-card-foreground shadow-md animate-in fade-in-0 zoom-in-95 absolute right-0 top-full mt-1",
+        "z-50 min-w-[10rem] overflow-hidden rounded-md border border-border bg-card text-card-foreground animate-in fade-in-0 zoom-in-95 absolute right-0 top-full mt-1",
         className
       )}
       {...props}

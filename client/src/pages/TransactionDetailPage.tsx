@@ -4,13 +4,14 @@ import { ArrowLeft } from "lucide-react"
 import { useSession } from "../lib/auth-client"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Badge } from "../components/ui/badge"
+import { Button } from "../components/ui/button"
 import { Skeleton } from "../components/ui/skeleton"
+import PageHeader from "../components/ui/page-header"
+import PageFooter from "../components/ui/page-footer"
 import { fetchTransactionsAction } from "@/actions/transaction.actions"
 import { getLedgerEntries } from "@/actions/account.actions"
 import type { ITransaction, ILedgerEntry } from "@/types"
-
-const formatBalance = (b: number | string) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(Number(b))
+import { formatCurrency } from "@/lib/utils"
 
 const formatDate = (iso: string) =>
   new Intl.DateTimeFormat("en-US", {
@@ -89,15 +90,17 @@ export default function TransactionDetailPage() {
 
   const detailRow = (label: string, value: string) => (
     <div className="flex items-baseline justify-between gap-4 py-2 border-b border-border/30 last:border-0">
-      <span className="text-sm text-muted-foreground shrink-0">{label}</span>
+      <span className="text-xs text-muted-foreground shrink-0">{label}</span>
       <span className="text-sm font-medium text-foreground text-right font-mono break-all">{value}</span>
     </div>
   )
 
   return (
     <>
-      <header className="flex items-center justify-between flex-wrap gap-3 px-8 py-5 border-b border-border">
-        <div className="flex items-center gap-3">
+      <PageHeader
+        title={loading ? <Skeleton className="h-6 w-40" /> : "Transaction Details"}
+        email={user.email}
+        beforeTitle={
           <Link
             to="/transactions"
             className="inline-flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
@@ -105,12 +108,8 @@ export default function TransactionDetailPage() {
           >
             <ArrowLeft className="size-4" />
           </Link>
-          <h1 className="text-xl font-semibold tracking-tight text-foreground truncate max-w-[300px]">
-            {loading ? <Skeleton className="h-6 w-40" /> : "Transaction Details"}
-          </h1>
-        </div>
-        <span className="text-sm text-muted-foreground">{user.email}</span>
-      </header>
+        }
+      />
 
       <main className="flex-1 mx-auto w-full max-w-2xl px-8 py-8 space-y-6">
         {loading && (
@@ -129,7 +128,7 @@ export default function TransactionDetailPage() {
           <div className="flex flex-col items-center gap-3 py-10 text-center">
             <p className="text-sm text-muted-foreground">{error}</p>
             <Link to="/transactions">
-              <span className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground h-9 px-4 text-sm font-medium">Back to Transactions</span>
+              <Button variant="default" size="sm">Back to Transactions</Button>
             </Link>
           </div>
         )}
@@ -141,11 +140,11 @@ export default function TransactionDetailPage() {
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Amount</p>
-                    <p className={`text-3xl font-semibold font-mono tracking-tight ${
+                    <p className={`text-2xl font-semibold font-mono tracking-tight ${
                       dir === "in" ? "text-success" : "text-foreground"
                     }`}>
                       {dir === "in" ? "+" : dir === "out" ? "\u2212" : ""}
-                      {formatBalance(transaction.amount)}
+                      {formatCurrency(transaction.amount)}
                     </p>
                   </div>
                   <Badge
@@ -205,7 +204,7 @@ export default function TransactionDetailPage() {
                           }`} />
                           <span className="text-sm font-medium text-foreground capitalize">{entry.entryType}</span>
                         </div>
-                        <span className="text-sm font-mono text-foreground">{formatBalance(entry.amount)}</span>
+                        <span className="text-sm font-mono font-semibold text-foreground">{formatCurrency(entry.amount)}</span>
                       </div>
                     ))}
                   </div>
@@ -216,10 +215,9 @@ export default function TransactionDetailPage() {
         )}
       </main>
 
-      <footer className="flex justify-between items-center px-8 py-4 text-sm text-muted-foreground/70 border-t border-border">
-        <span>Wave Payment Platform</span>
-        {transaction && <span>ID: {transaction.id.slice(0, 8)}&hellip;</span>}
-      </footer>
+      <PageFooter
+        right={transaction && <span>ID: {transaction.id.slice(0, 8)}&hellip;</span>}
+      />
     </>
   )
 }

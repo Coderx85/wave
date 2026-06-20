@@ -29,6 +29,13 @@
   --ink-muted: oklch(0.48 0.012 160);
   --accent-hover: oklch(0.48 0.18 165);
   --accent-subtle: oklch(0.92 0.04 160);
+  --wallet-card-from: oklch(0.35 0.15 165);
+  --wallet-card-to: oklch(0.22 0.12 165);
+  --wallet-card-shine: oklch(1 0 0 / 0.04);
+  --wallet-chip-from: oklch(0.85 0.12 85);
+  --wallet-chip-to: oklch(0.7 0.15 85);
+  --wallet-chip-border: oklch(0.6 0.1 85 / 0.5);
+  --wallet-chip-dot: oklch(0.6 0.1 85 / 0.4);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -59,6 +66,13 @@
     --ink-muted: oklch(0.55 0.012 160);
     --accent-hover: oklch(0.48 0.18 165);
     --accent-subtle: oklch(0.14 0.04 160);
+  --wallet-card-from: oklch(0.25 0.12 165);
+  --wallet-card-to: oklch(0.15 0.1 165);
+  --wallet-card-shine: oklch(1 0 0 / 0.06);
+  --wallet-chip-from: oklch(0.75 0.1 85);
+  --wallet-chip-to: oklch(0.6 0.12 85);
+  --wallet-chip-border: oklch(0.5 0.08 85 / 0.5);
+  --wallet-chip-dot: oklch(0.5 0.08 85 / 0.4);
   }
 }
 
@@ -100,6 +114,7 @@
     outline-offset: 2px;
   }
 }
+
 
 
 

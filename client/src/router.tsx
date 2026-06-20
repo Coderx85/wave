@@ -8,6 +8,8 @@ import TransactionDetailPage from "./pages/TransactionDetailPage"
 import AccountPage from "./pages/AccountPage"
 import AccountTransactionsPage from "./pages/AccountTransactionsPage"
 import AccountDetailPage from "./pages/AccountDetailPage"
+import AccountSettingsPage from "./pages/AccountSettingsPage"
+import SearchPage from "./pages/SearchPage"
 
 const rootRoute = createRootRoute({
   component: App,
@@ -61,6 +63,18 @@ const accountTransactionsRoute = createRoute({
   component: AccountTransactionsPage,
 })
 
+const accountSettingsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/account/settings",
+  component: AccountSettingsPage,
+})
+
+const searchRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/search",
+  component: SearchPage,
+})
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   notificationsRoute,
@@ -70,6 +84,8 @@ const routeTree = rootRoute.addChildren([
   accountRoute,
   accountDetailRoute,
   accountTransactionsRoute,
+  accountSettingsRoute,
+  searchRoute,
 ])
 
 const router = createRouter({ routeTree })

@@ -8,7 +8,7 @@
     "tw:watch": "tailwindcss -i src/styles.css -o src/index.css --watch",
     "typecheck": "tsc --noEmit",
     "dev": "bun --hot index.ts",
-    "build": "bun run tw && bun build src/main.tsx --outdir dist --target browser --minify",
+    "build": "bun run tw && bun build index.html --outdir dist --target browser --minify && sed -i '/impeccable-live/d;/localhost:8400/d' dist/index.html",
     "start": "NODE_ENV=production bun index.ts",
     "test": "vitest run",
     "test:watch": "vitest"
