@@ -1,0 +1,9 @@
+Explore the backend server code in /home/coderx85/Projects/Work/.GITHUB/wave/server/ to find:
+
+1. All API endpoints related to users, profiles, or settings (GET/PUT/PATCH /api/users/*, /api/profile/*, etc.)
+2. The auth/login/session endpoints and user management 
+3. Any user-related database schema (Prisma, Drizzle, or raw SQL) — what fields does a user have?
+4. Any existing profile/settings functionality
+5. The notification preferences endpoint (since that's a related settings page)
+
+Search thoroughly — grep for "user", "profile", "settings", "preferences" in the server routes, controllers, and schema files. Return file paths, line numbers, and relevant code snippets for each finding.
