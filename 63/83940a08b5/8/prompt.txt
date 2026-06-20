@@ -1,0 +1,18 @@
+Search the codebase at /home/coderx85/Projects/Work/.GITHUB/wave/client/src for code redundancy. Look for:
+
+1. Duplicate CSS rules / overlapping selectors in styles.css
+2. Unused imports in .tsx/.ts files
+3. Repeated component patterns that could be DRY'd up
+4. Dead code (unused variables, commented code, unreachable code)
+5. Redundant Tailwind classes (classes duplicated or conflicting)
+6. Copied/pasted logic blocks that differ only slightly
+
+Check these files specifically:
+- client/src/styles.css (recently added .profile-card-entrance CSS - check for overlap with .card-header-accent)
+- client/src/components/ProfileSection.tsx
+- client/src/components/AddMoney.tsx
+- client/src/components/ui/card.tsx
+- client/src/pages/AccountPage.tsx
+- client/src/lib/utils.ts
+
+Return a bullet list of the specific redundancies you find with file paths and line numbers. Be concise - just list what's redundant, don't explain how to fix it.
