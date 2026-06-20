@@ -1,0 +1,8 @@
+Thoroughly explore the Wave payment app's frontend in /home/coderx85/Projects/Work/.GITHUB/wave/client/src/ to build a complete inventory of:
+
+1. **Router configuration** — find the router file (likely `router.tsx` or similar). List every route path, its component, and any params or search params it defines.
+2. **Every page component** — in `pages/`, `components/`, or wherever pages live. For each, list: file path, what it renders (1-2 sentence summary), what data it fetches (APIs/actions), and any notable UX gaps (missing empty states, no loading skeleton, error handling).
+3. **Shared components** — in `components/ui/` and any top-level `components/`. List every component and its purpose.
+4. **API/action layer** — in `actions/` and any `api/` or service files. List every endpoint/action and what it returns.
+
+Return the complete inventory as structured text. Be thorough — include file paths and line numbers for key exports.
