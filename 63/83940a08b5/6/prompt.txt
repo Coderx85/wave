@@ -1,0 +1,13 @@
+In /home/coderx85/Projects/Work/.GITHUB/wave/client/src, search the following files for their `<header` and `<footer` sections. For each file, tell me the exact content between `<header` and `</header>`, and between `<footer` and `</footer>`. Include line numbers.
+
+Files to check:
+- client/src/pages/AccountPage.tsx
+- client/src/pages/AccountDetailPage.tsx
+- client/src/pages/AccountTransactionsPage.tsx
+- client/src/pages/TransactionsPage.tsx
+- client/src/pages/TransactionDetailPage.tsx
+- client/src/pages/HomePage.tsx
+- client/src/components/NotificationPage.tsx
+- client/src/pages/NotificationPreferencesPage.tsx
+
+Return the exact line content for each header and footer block.
