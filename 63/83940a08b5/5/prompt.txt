@@ -1,0 +1,70 @@
+Apply the shared PageHeader and PageFooter components to all pages in /home/coderx85/Projects/Work/.GITHUB/wave/client/src/pages/ and components/ that still have raw header/footer markup.
+
+The components are at:
+- `../components/ui/page-header` (or `../../components/ui/page-header` depending on depth)
+- `../components/ui/page-footer`
+
+PageHeader props:
+```
+title: ReactNode (the h1 content)
+email: string (user.email)
+beforeTitle?: ReactNode (optional, for back buttons)
+actions?: ReactNode (optional, right-side content besides email)
+```
+
+PageFooter props:
+```
+left?: ReactNode (defaults to "Wave Payment Platform")
+right?: ReactNode
+```
+
+Files to update (add imports, replace header/footer):
+
+1. `client/src/pages/AccountDetailPage.tsx`
+   - Header: has back Link to "/account" with ArrowLeft icon + dynamic pageTitle + DropdownMenu (Edit, All Transactions)
+   - Footer: transaction count right
+   - Import from `"../components/ui/page-header"` and `"../components/ui/page-footer"`
+
+2. `client/src/pages/AccountTransactionsPage.tsx`
+   - Header: has back `<a href="/account">` with ArrowLeft + "Transactions" + email only
+   - Footer: transaction count right
+   - Import from `"../../components/ui/page-header"` and `"../../components/ui/page-footer"`
+
+3. `client/src/pages/TransactionsPage.tsx`
+   - Header: "Transactions" + email + Sign Out button
+   - Footer: transaction count
+   - Import from `"../components/ui/page-header"` and `"../components/ui/page-footer"`
+
+4. `client/src/pages/TransactionDetailPage.tsx`
+   - Header: back Link to "/transactions" with ArrowLeft + "Transaction Details" + email (no actions div wrapper)
+   - Footer: transaction ID right
+   - Import from `"../components/ui/page-header"` and `"../components/ui/page-footer"`
+
+5. `client/src/pages/HomePage.tsx`
+   - Header: "Dashboard" + email + Sign Out button
+   - Footer: account count
+   - Import from `"../components/ui/page-header"` and `"../components/ui/page-footer"`
+
+6. `client/src/components/NotificationPage.tsx`
+   - Header: "Notifications" + connection status badge + email + Preferences link + Refresh + Sign Out
+   - Footer: left="Wave Notification Center", right={notification count}
+   - Import from `"./ui/page-header"` and `"./ui/page-footer"`
+
+7. `client/src/pages/NotificationPreferencesPage.tsx`
+   - Header: "Notification Preferences" + email (simple, no actions)
+   - Footer: left="Wave Notification Center", right="Preferences"
+   - Import from `"../components/ui/page-header"` and `"../components/ui/page-footer"`
+
+Also fix any `<DropdownMenuTrigger>` that uses raw classes like `className="h-9 w-9 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground"` - replace with `<DropdownMenuTrigger asChild><Button variant="outline" size="icon">...</Button></DropdownMenuTrigger>`. Import Button if needed.
+
+For each file, ONLY change:
+1. Add the imports
+2. Replace the `<header>...</header>` block with `<PageHeader ... />`
+3. Replace the `<footer>...</footer>` block with `<PageFooter ... />`
+4. Fix DropdownMenuTrigger if applicable
+
+Keep all other code exactly as-is. Do NOT change anything else in the files.
+
+Before editing, read each file to see the current state. Write the actual code, don't leave placeholders.
+
+Return a brief summary of what you changed.
