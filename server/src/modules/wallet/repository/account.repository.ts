@@ -169,7 +169,7 @@ export class TBAccountRepository implements IAccountRepository {
             throw new Error("")
           }
 
-          throw new Error(`Failed to create account in TigerBeetle: ${TB.CreateAccountStatus[tbAccount[0].status]}`);
+          throw new Error(`Failed to create account in TigerBeetle: ${TB.CreateAccountStatusName[tbAccount[0].status] ?? tbAccount[0].status}`);
         };
 
         const acc = tbAccount[0];
