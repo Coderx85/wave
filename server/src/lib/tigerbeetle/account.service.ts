@@ -95,7 +95,7 @@ export class TigerBeetleAccountService implements IAccountRepository {
 
       const result = results[0];
       if (result.status !== TB.CreateTransferStatus.created) {
-        console.warn(`[TigerBeetle] Transfer failed: ${TB.CreateTransferStatus[result.status]}`);
+        console.warn(`[TigerBeetle] Transfer failed: ${TB.CreateTransferStatusName[result.status] ?? result.status}`);
         return;
       }
 
@@ -140,7 +140,7 @@ export class TigerBeetleAccountService implements IAccountRepository {
       const result = results[0];
 
       if (result.status !== TB.CreateAccountStatus.created) {
-        console.warn(`[TigerBeetle] Account create status: ${TB.CreateAccountStatus[result.status]}`);
+        console.warn(`[TigerBeetle] Account create status: ${TB.CreateAccountStatusName[result.status] ?? result.status}`);
         return;
       }
 
