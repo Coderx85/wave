@@ -3,17 +3,38 @@ services:
     build: .
     ports:
       - "3000:3000"
-      - "3001:3001"
-    volumes:
-      - .:/app
+    env_file:
+      - src/.env.development
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@localhost:5432/wave
-    command: npm run dev
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/wave_db
+      KAFKA_BROKER_URL: redpanda:29092
+      CACHE_HOST: dragonfly
+      CACHE_PORT: 6379
+    command: node --import tsx src/index.ts
     depends_on:
       database:
         condition: service_healthy
+      redpanda:
+        condition: service_healthy
+      dragonfly:
+        condition: service_healthy
 
-  database: 
+  transfer-service:
+    build: ./transfer-service
+    ports:
+      - "3001:3001"
+    environment:
+      TB_HOST: tigerbeetle
+      TB_PORT: 4343
+      TB_CLUSTER_ID: 1
+      LEDGER_CODE: 85
+      CURRENCY_CODE: 356
+      RUST_LOG: transfer_service=debug,tower_http=debug
+    depends_on:
+      tigerbeetle:
+        condition: service_started
+
+  database:
     image: postgres:18-alpine
     environment:
       POSTGRES_USER: postgres
@@ -29,9 +50,54 @@ services:
       timeout: 5s
       retries: 5
 
-networks:
-  default:
-    driver: bridge
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: redpanda
+    command:
+      - redpanda
+      - start
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+      - --node-id
+      - "1"
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      REDPANDA_AUTO_CREATE_TOPICS_ENABLED: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster info"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dragonfly:
+    image: dragonflydb/dragonfly:latest
+    container_name: dragonfly
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-h", "localhost", "-p", "6379", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  tigerbeetle:
+    image: ghcr.io/tigerbeetle/tigerbeetle:latest
+    container_name: tigerbeetle
+    command:
+      - start
+      - --addresses=0.0.0.0:4343
+      - --development
+      - /data/tigerbeetle
+    ports:
+      - "4343:4343"
+    volumes:
+      - tigerbeetle_data:/data
+    privileged: true
 
 volumes:
   postgres_data:
+  tigerbeetle_data:

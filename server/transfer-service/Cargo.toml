@@ -1,0 +1,43 @@
+[package]
+name = "transfer-service"
+version = "0.1.0"
+edition = "2021"
+description = "High-performance transfer engine for Wave payment platform"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# TigerBeetle client
+cn-tigerbeetle = "0.1"
+
+# Random IDs
+fastrand = "2"
+
+# HTTP server
+axum = "0.7"
+tower = "0.5"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# UUID for idempotency
+uuid = { version = "1", features = ["v4"] }
+
+# Configuration
+dotenvy = "0.15"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
