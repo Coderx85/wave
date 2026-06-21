@@ -1,0 +1,17 @@
+I need to understand the existing wallet/TigerBeetle integration patterns in the wave/server codebase at /home/coderx85/Projects/Work/.GITHUB/wave/server/. This is a READ-ONLY research task. Do NOT write any code.
+
+Search for and read these key files:
+1. Any files related to TigerBeetle client/service (search for "tigerbeetle" in filenames and content)
+2. Any files related to wallet service (search for "wallet" in filenames)
+3. The main config/environment files to understand how services are configured
+4. Any existing service client patterns (how does this codebase call external microservices?)
+
+For each file found, read it fully and report back:
+- The file path
+- Key interfaces/types used
+- How TigerBeetle client is initialized and used
+- How the wallet service calls TigerBeetle
+- What configuration patterns are used (env vars, config objects)
+- Any service client patterns for calling external HTTP services
+
+Be thorough - read every relevant file completely. This is critical for understanding the existing architecture.
