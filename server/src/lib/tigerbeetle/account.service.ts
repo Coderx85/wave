@@ -14,6 +14,7 @@ function hashUserId(userId: string): bigint {
 const userIdReverseMap = new Map<bigint, string>();
 
 export class TigerBeetleAccountService implements IAccountRepository {
+  private readonly client = TBClient;
   private readonly accountRepository: IAccountRepository = new AccountRepository();
 
   private async ensureVaultAccount(): Promise<void> {
