@@ -3,9 +3,10 @@
   "checkpoint_id": "df0a833b082d",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 3,
+  "checkpoints_count": 35,
   "files_touched": [
     "server/src/modules/wallet/repository/contracts.ts",
+    "server/src/modules/wallet/repository/idempotency.repository.ts",
     "server/src/modules/wallet/service/wallet-service.spec.ts",
     "server/src/modules/wallet/service/wallet-service.ts"
   ],
@@ -27,13 +28,19 @@
       "transcript": "/df/0a833b082d/2/full.jsonl",
       "content_hash": "/df/0a833b082d/2/content_hash.txt",
       "prompt": "/df/0a833b082d/2/prompt.txt"
+    },
+    {
+      "metadata": "/df/0a833b082d/3/metadata.json",
+      "transcript": "/df/0a833b082d/3/full.jsonl",
+      "content_hash": "/df/0a833b082d/3/content_hash.txt",
+      "prompt": "/df/0a833b082d/3/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 170717,
+    "input_tokens": 1648513,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 1908992,
-    "output_tokens": 26035,
-    "api_call_count": 51
+    "cache_read_tokens": 42796160,
+    "output_tokens": 200690,
+    "api_call_count": 551
   }
 }
