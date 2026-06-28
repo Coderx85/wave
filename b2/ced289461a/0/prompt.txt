@@ -1,0 +1,6 @@
+Search the frontend code in /home/coderx85/Projects/Work/.GITHUB/wave/wave-main/ for code related to the transfer functionality. Look for:
+1. Files that call the transfer API endpoint (POST /transfers or similar)
+2. How they handle the "FAILED_TO_TRANSFER_FUNDS" error response
+3. What data they send in the transfer request
+
+Return the relevant file paths, line numbers, and code snippets that show how transfers are made from the frontend and how errors are handled.
