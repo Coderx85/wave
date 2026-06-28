@@ -1,0 +1,25 @@
+I need to understand the Wave backend architecture for creating a performance/benchmark page. Explore these areas and report back with findings:
+
+1. **Transaction flow**: How does a transfer/transaction work end-to-end? Find the transfer route handler, the service layer, and how it interacts with TigerBeetle. I need to understand the full request lifecycle.
+
+2. **Backend structure**: Find the server entry point, how routes are registered, and what the module/service/repository pattern looks like.
+
+3. **Existing performance patterns**: Are there any existing benchmark, health check, or status endpoints?
+
+4. **Database setup**: How is the Postgres connection configured? How is TigerBeetle connected?
+
+5. **Existing pages/routes on the frontend**: What router setup is used (TanStack Router)? How are routes defined? I need to add a new `/performance` route.
+
+6. **Types**: Find the ITransaction, IWalletAccount, and any related types.
+
+Search in:
+- `/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/server/src/`
+- `/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/client/src/`
+
+Report back:
+- File paths and key code snippets for each finding
+- The transfer endpoint handler code
+- The transfer service/module code  
+- The TigerBeetle client setup
+- The TanStack Router route tree definition
+- Any existing types for transactions
