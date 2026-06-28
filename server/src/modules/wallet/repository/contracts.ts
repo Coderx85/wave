@@ -69,6 +69,25 @@ export interface ILedgerRepository {
   delete(entryId: TLedgerEntryId): Promise<void>;
 }
 
+// ── Idempotency ─────────────────────────────────────
+export interface IIdempotencyRecord {
+  key: string;
+  operation: "transaction" | "balance_update" | "account_creation";
+  status: "pending" | "completed" | "failed";
+  result?: unknown;
+  error?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  expiresAt: Date;
+}
+
+export interface IIdempotencyRepository {
+  findByKey(key: string): Promise<IIdempotencyRecord | null>;
+  create(record: IIdempotencyRecord): Promise<IIdempotencyRecord | null>;
+  updateStatus(key: string, status: IIdempotencyRecord["status"], result?: unknown, error?: string): Promise<void>;
+  deleteExpired(): Promise<number>;
+}
+
 // ── Outbox ──────────────────────────────────────────
 export interface IOutboxEntry {
   id: string;

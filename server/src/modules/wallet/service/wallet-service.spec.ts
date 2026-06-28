@@ -31,7 +31,7 @@ import type {
   IAccount,
   ILedger,
 } from "./internal";
-import type { IAccountRepository, ITransactionRepository, ILedgerRepository } from "../repository";
+import type { IAccountRepository, ITransactionRepository, ILedgerRepository, IIdempotencyRepository } from "../repository";
 
 type MockedRepo<T> = {
   [K in keyof T]: ReturnType<typeof vi.fn>;
@@ -72,6 +72,15 @@ function createMockLedgerRepo(): MockedRepo<ILedgerRepository> {
   };
 }
 
+function createMockIdempotencyRepo(): MockedRepo<IIdempotencyRepository> {
+  return {
+    findByKey: vi.fn(),
+    create: vi.fn(),
+    updateStatus: vi.fn(),
+    deleteExpired: vi.fn(),
+  };
+}
+
 // ─── Test Suite ─────────────────────────────────────────────────────
 
 describe("WalletService (Deep Module)", () => {
@@ -79,6 +88,7 @@ describe("WalletService (Deep Module)", () => {
   let accountRepo: ReturnType<typeof createMockAccountRepo>;
   let transactionRepo: ReturnType<typeof createMockTransactionRepo>;
   let ledgerRepo: ReturnType<typeof createMockLedgerRepo>;
+  let idempotencyRepo: ReturnType<typeof createMockIdempotencyRepo>;
 
   const mockAccount = {
     name: "Savings Account",
@@ -89,15 +99,28 @@ describe("WalletService (Deep Module)", () => {
     updatedAt: null,
   };
 
+  const mockIdempotencyRecord = {
+    key: "test-key",
+    operation: "transaction" as const,
+    status: "pending" as const,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    expiresAt: new Date(Date.now() + 86400000),
+  };
+
   beforeEach(() => {
     accountRepo = createMockAccountRepo();
     transactionRepo = createMockTransactionRepo();
     ledgerRepo = createMockLedgerRepo();
+    idempotencyRepo = createMockIdempotencyRepo();
+    idempotencyRepo.findByKey.mockResolvedValue(null);
+    idempotencyRepo.create.mockResolvedValue(mockIdempotencyRecord);
     // Mocks don't fully match the repository interfaces for TS — cast to satisfy the constructor
     service = new WalletService(
       accountRepo as unknown as IAccountRepository,
       transactionRepo as unknown as ITransactionRepository,
       ledgerRepo as unknown as ILedgerRepository,
+      idempotencyRepo as unknown as IIdempotencyRepository,
     );
   });
 
@@ -380,6 +403,70 @@ describe("WalletService (Deep Module)", () => {
       transactionRepo.save.mockRejectedValueOnce(new Error("Save failed"));
 
       await expect(service.transfer(transferInput)).rejects.toThrow();
+    });
+
+    it("should return cached result when idempotency key is completed", async () => {
+      // Simulates what is stored in JSONB — BigInt fields serialized as strings
+      const cachedTx = {
+        id: "tx_cached" as any,
+        amount: "100000",
+        userId: "user_123" as any,
+        senderAccountNumber: "1111111111",
+        senderName: "Alice",
+        receiverAccountNumber: "2222222222",
+        receiverName: "Bob",
+        status: "success" as const,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      idempotencyRepo.create.mockResolvedValue(null); // simulate concurrent conflict
+      idempotencyRepo.findByKey.mockResolvedValue({
+        key: "test-key",
+        operation: "transaction" as const,
+        status: "completed" as const,
+        result: cachedTx,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        expiresAt: new Date(),
+      });
+
+      const result = await service.transfer({ ...transferInput, idempotencyKey: "test-key" });
+
+      expect(result).toEqual({
+        ...cachedTx,
+        amount: BigInt(100000),
+        senderAccountNumber: BigInt("1111111111"),
+        receiverAccountNumber: BigInt("2222222222"),
+      });
+      expect(idempotencyRepo.findByKey).toHaveBeenCalledWith("test-key");
+      expect(accountRepo.adjustBalance).not.toHaveBeenCalled();
+    });
+
+    it("should throw when idempotency key is pending", async () => {
+      idempotencyRepo.create.mockResolvedValue(null); // simulate concurrent conflict
+      idempotencyRepo.findByKey.mockResolvedValue({
+        key: "test-key",
+        operation: "transaction" as const,
+        status: "pending" as const,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        expiresAt: new Date(),
+      });
+
+      await expect(service.transfer({ ...transferInput, idempotencyKey: "test-key" })).rejects.toThrow("Concurrent transfer in progress");
+    });
+
+    it("should update idempotency record to failed when transfer fails", async () => {
+      accountRepo.adjustBalance.mockRejectedValueOnce(new Error("Insufficient funds"));
+
+      await expect(service.transfer(transferInput)).rejects.toThrow();
+
+      expect(idempotencyRepo.updateStatus).toHaveBeenCalledWith(
+        expect.any(String),
+        "failed",
+        undefined,
+        expect.any(String),
+      );
     });
   });
 

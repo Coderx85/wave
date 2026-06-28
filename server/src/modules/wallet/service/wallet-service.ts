@@ -19,23 +19,27 @@ import {
   type ITransactionRepository,
   LedgerRepository,
   type ILedgerRepository,
+  IdempotencyRepository,
+  type IIdempotencyRepository,
 } from "../repository";
-import { IdempotencyManager } from "../utils";
 import { TigerBeetleAccountService, VAULT_ACCOUNT_ID } from "@/lib/tigerbeetle";
 
 export class WalletService implements IWalletService {
   private readonly accountRepo: IAccountRepository;
   private readonly transactionRepo: ITransactionRepository;
   private readonly ledgerRepo: ILedgerRepository;
+  private readonly idempotencyRepo: IIdempotencyRepository;
 
   constructor(
     accountRepo?: IAccountRepository,
     transactionRepo?: ITransactionRepository,
     ledgerRepo?: ILedgerRepository,
+    idempotencyRepo?: IIdempotencyRepository,
   ) {
     this.accountRepo = accountRepo ?? new TigerBeetleAccountService();
     this.transactionRepo = transactionRepo ?? new TransactionRepository();
     this.ledgerRepo = ledgerRepo ?? new LedgerRepository();
+    this.idempotencyRepo = idempotencyRepo ?? new IdempotencyRepository();
   }
 
   createAccount(account: CreateAccountInput): Promise<IAccount> {
@@ -139,58 +143,88 @@ export class WalletService implements IWalletService {
 
   async transfer(input: TransferInput): Promise<ITransaction> {
     const amountInCents = Math.round(input.amount * 100);
+    const idempotencyKey = input.idempotencyKey ?? `txn_${ID.TransactionId()}`;
 
-    // Idempotency guard — prevent duplicate transactions
-    const _idempotencyKey = IdempotencyManager.generateTransactionKey(
-      input.senderAccountNumber.toString(),
-      input.receiverAccountNumber.toString(),
-      amountInCents,
-    );
+    const created = await this.idempotencyRepo.create({
+      key: idempotencyKey,
+      operation: "transaction",
+      status: "pending",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+
+    if (!created) {
+      const existing = await this.idempotencyRepo.findByKey(idempotencyKey);
+      if (existing?.status === "completed") {
+        const cachedResult = existing.result as Record<string, unknown>;
+        return {
+          ...cachedResult,
+          amount: BigInt(cachedResult.amount as string),
+          senderAccountNumber: BigInt(cachedResult.senderAccountNumber as string) as TBankAccountNumber,
+          receiverAccountNumber: BigInt(cachedResult.receiverAccountNumber as string) as TBankAccountNumber,
+        } as ITransaction;
+      }
+      throw new Error("Concurrent transfer in progress for the same idempotency key");
+    }
 
     return tryCatch({
       ctx: async () => {
-        // Step 1 — Debit sender and credit receiver atomically per account
-        await this.accountRepo.adjustBalance(input.senderAccountNumber, -input.amount);
-        await this.accountRepo.adjustBalance(input.receiverAccountNumber, input.amount);
+        try {
+          // Step 1 — Debit sender and credit receiver atomically per account
+          await this.accountRepo.adjustBalance(input.senderAccountNumber, -input.amount);
+          await this.accountRepo.adjustBalance(input.receiverAccountNumber, input.amount);
 
-        // Step 2 — Create transaction record
-        const transaction: ITransaction = {
-          id: ID.TransactionId(),
-          ...input,
-          amount: BigInt(amountInCents),
-          status: "pending",
-          updatedAt: null,
-        };
+          // Step 2 — Create transaction record
+          const transaction: ITransaction = {
+            id: ID.TransactionId(),
+            ...input,
+            amount: BigInt(amountInCents),
+            status: "pending",
+            updatedAt: null,
+          };
 
-        await this.transactionRepo.save({
-          ...transaction,
-        });
+          await this.transactionRepo.save({
+            ...transaction,
+          });
 
-        // Step 3 — Record ledger entries (double-entry bookkeeping)
-        await Promise.all([
-          this.ledgerRepo.create({
-            transactionId: transaction.id,
-            accountNumber: input.senderAccountNumber,
-            amount: amountInCents,
-            entryType: "debit",
-          }),
-          this.ledgerRepo.create({
-            transactionId: transaction.id,
-            accountNumber: input.receiverAccountNumber,
-            amount: amountInCents,
-            entryType: "credit",
-          }),
-        ]);
+          // Step 3 — Record ledger entries (double-entry bookkeeping)
+          await Promise.all([
+            this.ledgerRepo.create({
+              transactionId: transaction.id,
+              accountNumber: input.senderAccountNumber,
+              amount: amountInCents,
+              entryType: "debit",
+            }),
+            this.ledgerRepo.create({
+              transactionId: transaction.id,
+              accountNumber: input.receiverAccountNumber,
+              amount: amountInCents,
+              entryType: "credit",
+            }),
+          ]);
 
-        // Step 4 — Update transaction status to success
-        const updatedTransaction = await this.transactionRepo.update({
-          ...transaction,
-          status: "success",
-          updatedAt: new Date(),
-        });
-        
-        
-        return updatedTransaction;
+          // Step 4 — Update transaction status to success
+          const updatedTransaction = await this.transactionRepo.update({
+            ...transaction,
+            status: "success",
+            updatedAt: new Date(),
+          });
+
+          const serializableResult = {
+            ...updatedTransaction,
+            amount: updatedTransaction.amount.toString(),
+            senderAccountNumber: updatedTransaction.senderAccountNumber.toString(),
+            receiverAccountNumber: updatedTransaction.receiverAccountNumber.toString(),
+          };
+
+          await this.idempotencyRepo.updateStatus(idempotencyKey, "completed", serializableResult);
+
+          return updatedTransaction;
+        } catch (err) {
+          await this.idempotencyRepo.updateStatus(idempotencyKey, "failed", undefined, (err as Error).message);
+          throw err;
+        }
       },
       errorMessage: "FAILED_TO_TRANSFER",
     });
