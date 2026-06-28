@@ -3,7 +3,7 @@
   "checkpoint_id": "b2ced289461a",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 1,
+  "checkpoints_count": 5,
   "files_touched": [
     "client/README.md",
     "client/bun.lock",
@@ -11,21 +11,39 @@
     "client/src/App.tsx",
     "client/src/__tests__/NotificationPage.spec.tsx",
     "client/src/__tests__/NotificationPreferencesPage.spec.tsx",
+    "client/src/actions/account.actions.ts",
+    "client/src/actions/transaction.actions.ts",
     "client/src/components/AddMoney.tsx",
     "client/src/components/DataTable.tsx",
     "client/src/components/NotificationPage.tsx",
+    "client/src/lib/__tests__/direction.spec.ts",
+    "client/src/lib/__tests__/queryClient.spec.ts",
+    "client/src/lib/direction.ts",
+    "client/src/lib/queries/__tests__/accounts.spec.tsx",
+    "client/src/lib/queries/__tests__/ledger.spec.tsx",
+    "client/src/lib/queries/__tests__/notificationPrefs.spec.tsx",
+    "client/src/lib/queries/__tests__/notifications.spec.tsx",
+    "client/src/lib/queries/__tests__/transactions.spec.tsx",
+    "client/src/lib/queries/accounts.ts",
+    "client/src/lib/queries/ledger.ts",
+    "client/src/lib/queries/notificationPrefs.ts",
+    "client/src/lib/queries/notifications.ts",
+    "client/src/lib/queries/transactions.ts",
+    "client/src/lib/queryClient.ts",
     "client/src/main.tsx",
     "client/src/pages/AccountDetailPage.tsx",
     "client/src/pages/AccountPage.tsx",
     "client/src/pages/AccountTransactionsPage.tsx",
     "client/src/pages/HomePage.tsx",
     "client/src/pages/NotificationPreferencesPage.tsx",
+    "client/src/pages/PerformancePage.tsx",
     "client/src/pages/SearchPage.tsx",
     "client/src/pages/TransactionDetailPage.tsx",
     "client/src/pages/TransactionsPage.tsx",
     "client/src/router.tsx",
     "client/vitest.config.ts",
     "server/CONTEXT.md",
+    "server/README.md",
     "server/package.json",
     "server/src/index.ts",
     "server/src/modules/database/schema/index.ts",
@@ -39,6 +57,10 @@
     "server/src/modules/wallet/service/internal/transaction-service/transaction-service.spec.ts",
     "server/src/modules/wallet/service/wallet-service.interface.ts",
     "server/src/routes/api/notification/index.spec.ts",
+    "server/src/routes/api/performance/definition.ts",
+    "server/src/routes/api/performance/handler.ts",
+    "server/src/routes/api/performance/index.spec.ts",
+    "server/src/routes/api/performance/index.ts",
     "server/src/schemas/notification.schema.ts"
   ],
   "sessions": [
@@ -59,13 +81,19 @@
       "transcript": "/b2/ced289461a/2/full.jsonl",
       "content_hash": "/b2/ced289461a/2/content_hash.txt",
       "prompt": "/b2/ced289461a/2/prompt.txt"
+    },
+    {
+      "metadata": "/b2/ced289461a/3/metadata.json",
+      "transcript": "/b2/ced289461a/3/full.jsonl",
+      "content_hash": "/b2/ced289461a/3/content_hash.txt",
+      "prompt": "/b2/ced289461a/3/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 25257,
+    "input_tokens": 748577,
     "cache_creation_tokens": 0,
     "cache_read_tokens": 104704,
-    "output_tokens": 4123,
-    "api_call_count": 7
+    "output_tokens": 8132,
+    "api_call_count": 40
   }
 }

@@ -1,0 +1,43 @@
+[18:49:03.155] INFO (87512): incoming request
+    reqId: "req-1t"
+    req: {
+      "method": "POST",
+      "url": "/api/performance/benchmark/sse",
+      "host": "localhost:5173",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 53462
+    }
+[18:49:03.157] ERROR (87512): request.server.address is not a function
+    reqId: "req-1t"
+    req: {
+      "method": "POST",
+      "url": "/api/performance/benchmark/sse",
+      "host": "localhost:5173",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 53462
+    }
+    res: {
+      "statusCode": 500
+    }
+    err: {
+      "type": "TypeError",
+      "message": "request.server.address is not a function",
+      "stack":
+          TypeError: request.server.address is not a function
+              at Object.benchmarkSSEHandler (/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/server/src/routes/api/performance/handler.ts:350:40)
+              at preHandlerCallbackInner (/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/server/node_modules/.pnpm/fastify@5.8.4/node_modules/fastify/lib/handle-request.js:168:24)
+              at preHandlerCallback (/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/server/node_modules/.pnpm/fastify@5.8.4/node_modules/fastify/lib/handle-request.js:134:5)
+              at validationCompleted (/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/server/node_modules/.pnpm/fastify@5.8.4/node_modules/fastify/lib/handle-request.js:124:5)
+              at preValidationCallback (/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/server/node_modules/.pnpm/fastify@5.8.4/node_modules/fastify/lib/handle-request.js:101:5)
+              at handler (/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/server/node_modules/.pnpm/fastify@5.8.4/node_modules/fastify/lib/handle-request.js:78:7)
+              at onDone (/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/server/node_modules/.pnpm/fastify@5.8.4/node_modules/fastify/lib/content-type-parser.js:229:5)
+              at AsyncResource.runInAsyncScope (node:async_hooks:226:14)
+              at bound (node:async_hooks:257:16)
+              at Parser.defaultJsonParser [as fn] (/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/server/node_modules/.pnpm/fastify@5.8.4/node_modules/fastify/lib/content-type-parser.js:317:7)
+    }
+[18:49:03.159] INFO (87512): request completed
+    reqId: "req-1t"
+    res: {
+      "statusCode": 500
+    }
+    responseTime: 3.2480660006403923
