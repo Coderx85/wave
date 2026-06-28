@@ -1,0 +1,31 @@
+I need to understand the full infrastructure stack of the Wave application to suggest comprehensive benchmarks. Explore these areas and report back with detailed findings:
+
+1. **Cache layer**: Find the CacheFactory, Redis setup, and CompositeRepository pattern. How does caching work? What's cached? How is cache invalidation handled?
+
+2. **Kafka RPC layer**: Find the kafka module, how messages are produced/consumed, and what the RPC pattern looks like. What events flow through Kafka?
+
+3. **Outbox pattern**: Find the outbox repository and how it publishes events after DB transactions. What's the flow?
+
+4. **Notification system**: Find the notification module — how are notifications created, sent (email), and streamed (SSE)? What's the full notification pipeline?
+
+5. **Deposit flow**: How does a deposit work end-to-end? Find the deposit handler, service, and how it interacts with TigerBeetle.
+
+6. **Account creation flow**: How does account creation work? Does it create TigerBeetle accounts too?
+
+7. **Query operations**: Find the queryTransactions handler and how it queries the database. What indexes exist?
+
+8. **SSE streaming**: How does the SSE notification stream work? Find the SSE plugin setup.
+
+9. **Idempotency**: Find the IdempotencyManager and how it prevents duplicate transactions.
+
+10. **Database schema**: Find the full Drizzle schema — all tables, columns, indexes, and relations.
+
+Search in:
+- `/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/server/src/`
+- `/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/transfer-service/src/`
+
+For each area, report:
+- File paths and key code snippets
+- The full request/data flow
+- Any performance-relevant details (batching, connection pooling, etc.)
+- What could be meaningfully benchmarked
