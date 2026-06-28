@@ -1,9 +1,11 @@
 {
   "cli_version": "0.7.5",
   "checkpoint_id": "b2ced289461a",
+  "session_id": "ses_0f04b32bfffeL8G7NDLa2VUcZJ",
   "strategy": "manual-commit",
+  "created_at": "2026-06-28T20:23:18.908339474Z",
   "branch": "main",
-  "checkpoints_count": 1,
+  "checkpoints_count": 0,
   "files_touched": [
     "client/README.md",
     "client/bun.lock",
@@ -27,7 +29,6 @@
     "client/vitest.config.ts",
     "server/CONTEXT.md",
     "server/package.json",
-    "server/src/index.ts",
     "server/src/modules/database/schema/index.ts",
     "server/src/modules/database/schema/notification.repository.ts",
     "server/src/modules/notification/notification-service.spec.ts",
@@ -36,30 +37,33 @@
     "server/src/modules/notification/repository/notification.repository.ts",
     "server/src/modules/wallet/repository/index.ts",
     "server/src/modules/wallet/service/index.ts",
-    "server/src/modules/wallet/service/internal/transaction-service/transaction-service.spec.ts",
-    "server/src/modules/wallet/service/wallet-service.interface.ts",
-    "server/src/routes/api/notification/index.spec.ts",
-    "server/src/schemas/notification.schema.ts"
+    "server/src/modules/wallet/service/wallet-service.interface.ts"
   ],
-  "sessions": [
-    {
-      "metadata": "/b2/ced289461a/0/metadata.json",
-      "transcript": "/b2/ced289461a/0/full.jsonl",
-      "content_hash": "/b2/ced289461a/0/content_hash.txt",
-      "prompt": "/b2/ced289461a/0/prompt.txt"
-    },
-    {
-      "metadata": "/b2/ced289461a/1/metadata.json",
-      "transcript": "/b2/ced289461a/1/full.jsonl",
-      "content_hash": "/b2/ced289461a/1/content_hash.txt",
-      "prompt": "/b2/ced289461a/1/prompt.txt"
-    }
-  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "d083107bf473",
+  "checkpoint_transcript_start": 29,
+  "transcript_lines_at_start": 29,
   "token_usage": {
-    "input_tokens": 25257,
+    "input_tokens": 0,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 104704,
-    "output_tokens": 4123,
-    "api_call_count": 7
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-28T20:23:18.897997602Z",
+    "agent_lines": 824,
+    "agent_removed": 949,
+    "human_added": 5066,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 5890,
+    "total_lines_changed": 7923,
+    "agent_percentage": 22.377887163953048,
+    "metric_version": 2
   }
 }
