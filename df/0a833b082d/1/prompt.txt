@@ -1,0 +1,15 @@
+Research the codebase at /home/coderx85/Projects/Work/.GITHUB/wave/wave-main/server/src to find gaps that match issues in CONTEXT.md:
+
+1. **Wallet Account**: CONTEXT.md says `accountNumber` is branded as `TAccountId`. Search the codebase for how the account number type is defined and used. Is it `TAccountId` or `TBankAccountNumber`? It needs to be reconciled if still using TBankAccountNumber.
+
+2. **Two-Process Architecture**: CONTEXT.md says NotificationConsumer is a standalone process in `notification-service.ts`. Check if the notification consumer is actually a standalone entry point or part of the main server. Is there a way to run it independently? Does the OutboxReplayService need to be started somewhere?
+
+3. **Event Flow**: The flow shows TransactionModule → outbox → Kafka → NotificationService. Check if NotificationService changes (retry/DLQ) are complete and check if the service is actually listening to Kafka events.
+
+4. **TransactionModule Unit Test failures**: Check what the 9 pre-existing test failures are in `transaction-service.spec.ts`. Read the failing test names and understand why they fail.
+
+5. **notification/index.spec.ts failures**: Check what 4 pre-existing failures exist there.
+
+6. **OutboxReplayService integration**: Search for where background services/jobs are started in the app (main entry points, bootstrap files). Is there a pattern for starting replay loops?
+
+Please provide detailed findings on each of these 6 points, including file paths and line numbers.
