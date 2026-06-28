@@ -1,0 +1,29 @@
+Thoroughly explore the Wave server codebase to understand these specific areas related to issues in CONTEXT.md:
+
+1. **Notification retry/DLQ**: Look at `server/src/` for notification service, notification consumer, outbox processing. Find:
+   - How failed notification sends are handled
+   - Whether any retry mechanism exists
+   - Where dead-letter queue would be added
+   - The kafka event consumption flow
+
+2. **Idempotency**: Find `IdempotencyManager.generateTransactionKey` and trace:
+   - Where idempotency key generation exists
+   - Where the transfer flow happens (likely wallet service or transaction creation)
+   - Why idempotency is "not wired in"
+   - What the transfer endpoint looks like
+
+3. **Deprecated auth modules**: Find:
+   - `AuthModule` and `modules/user/` references
+   - What exactly is deprecated
+   - Whether `better-auth` is fully set up or partially migrated
+
+4. **Outbox replay**: Find:
+   - The outbox table schema
+   - How outbox entries are created
+   - How they're published to Kafka
+   - What happens on failure
+   - Any replay mechanism
+
+5. **Transfer service**: Look at `server/src/modules/wallet/service/wallet-service.ts` or similar for the transfer method that would need idempotency wiring.
+
+Return ALL relevant file paths, function names, line numbers, and current behavior details. Be very thorough — read every relevant file end to end.

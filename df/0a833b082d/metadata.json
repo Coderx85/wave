@@ -3,7 +3,7 @@
   "checkpoint_id": "df0a833b082d",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 2,
+  "checkpoints_count": 3,
   "files_touched": [
     "server/src/modules/wallet/repository/contracts.ts",
     "server/src/modules/wallet/service/wallet-service.spec.ts",
@@ -21,13 +21,19 @@
       "transcript": "/df/0a833b082d/1/full.jsonl",
       "content_hash": "/df/0a833b082d/1/content_hash.txt",
       "prompt": "/df/0a833b082d/1/prompt.txt"
+    },
+    {
+      "metadata": "/df/0a833b082d/2/metadata.json",
+      "transcript": "/df/0a833b082d/2/full.jsonl",
+      "content_hash": "/df/0a833b082d/2/content_hash.txt",
+      "prompt": "/df/0a833b082d/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 84232,
+    "input_tokens": 170717,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 1157248,
-    "output_tokens": 14628,
-    "api_call_count": 35
+    "cache_read_tokens": 1908992,
+    "output_tokens": 26035,
+    "api_call_count": 51
   }
 }
