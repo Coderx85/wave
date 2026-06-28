@@ -1,0 +1,71 @@
+I need you to migrate 7 files to use React Query hooks. The hooks are already created at:
+- `@/lib/queries/accounts` — exports `useAccounts(userId)`, `useCreateAccount(userId)`, `useDeposit(userId)`, `useAccountByNumber(num)`
+- `@/lib/queries/transactions` — exports `useTransactions(userId)`, `useTransfer(userId)`
+- `@/lib/queries/ledger` — exports `useLedgerEntries(txId)`
+- `@/lib/queries/notifications` — exports `useNotifications(userId, limit?)`, `useDismissNotification(userId)`, `useMarkNotificationRead(userId)`
+- `@/lib/queries/notificationPrefs` — exports `useNotificationPrefs(userId)`, `useTogglePreference(userId)`
+- `@/lib/direction` — exports `getDirection(tx, userAccountNumbers: Set<string>)` returning `"in" | "out" | "self"`
+
+All hooks return standard React Query results: `{ data, isLoading, isError, error, refetch }` for queries, and `{ mutate, mutateAsync, isPending, data, error }` for mutations.
+
+Here are the migration rules:
+1. Replace inline fetch() + useState/useCallback/useEffect patterns with hook calls
+2. Replace `fetchTransactionsAction` and `fetchAccountData` imports with hook calls
+3. Replace local `getDirection` implementations with the shared one from `@/lib/direction`
+4. The shared `getDirection` takes `(tx, userAccountNumbers: Set<string>)` — build the Set from `accounts.map(a => String(a.accountNumber))`
+5. Remove unused imports (useState, useEffect, useCallback where no longer needed, old action imports)
+6. Keep UI state (filter, search, pagination, sorting) as local useState — those don't belong in queries
+7. For mutations, use `mutate` for fire-and-forget, `mutateAsync` when you need await
+8. After mutations that affect lists, the hooks already invalidate the cache — no manual refetch needed
+
+Files to migrate:
+
+1. `/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/client/src/pages/TransactionsPage.tsx`
+   - Replace `fetchTransactionsAction` with `useTransactions(user.id)` 
+   - Replace inline fetch for accounts with `useAccounts(user.id)`
+   - Replace local `getDirection` with shared one
+   - Remove `accountsLoaded` state — React Query handles this
+   - Remove `StandardResponse` and `WalletAccount` interfaces — use types from hooks
+   - Keep all UI state (filter, searchQuery, dateFrom, dateTo, pageIndex, pageSize, sorting)
+
+2. `/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/client/src/pages/AccountDetailPage.tsx`
+   - Replace `fetchAccountData` with `useAccounts(user.id)`
+   - Replace `fetchTransactionsAction` with `useTransactions(user.id)`
+   - Replace local `getDirection` with shared one (currently uses route param — use `getDirection(tx, new Set([accountNumberParam]))`)
+   - Remove Direction type — import from `@/lib/direction`
+
+3. `/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/client/src/pages/AccountTransactionsPage.tsx`
+   - Replace `fetchTransactionsAction` with `useTransactions(user.id)`
+   - Replace `fetchAccountTransactionsAction` (which was fetching transactions, not accounts!) with `useAccounts(user.id)` — this fixes the bug
+   - Replace local `getDirection` with shared one
+   - Keep all UI state
+
+4. `/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/client/src/pages/TransactionDetailPage.tsx`
+   - Replace `fetchTransactionsAction` with `useTransactions(user.id)` then find the tx by ID from the data
+   - Replace `getLedgerEntries` with `useLedgerEntries(transactionId)`
+   - Replace inline fetch for accounts with `useAccounts(user.id)` — build Set from accountNumbers
+   - Replace local `getDirection` with shared one
+   - The ledger query should only be enabled when transaction is found
+
+5. `/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/client/src/pages/AccountPage.tsx`
+   - Replace `fetchAccountData` with `useAccounts(user.id)`
+   - Replace `createAccount` with `useCreateAccount(user.id)`
+   - Replace inline transfer fetch with `useTransfer(user.id)`
+   - Keep the debounced receiver lookup as inline logic (it's UI-specific)
+   - Keep deposit handling via the AddMoney component (it handles its own)
+   - For createAccount mutation: `createAccount.mutate({ name, accountNumber, balance }, { onSuccess: ..., onError: ... })`
+   - For transfer mutation: `transfer.mutate({ senderAccountNumber, senderName, receiverAccountNumber, receiverName, amount }, { onSuccess: ..., onError: ... })`
+
+6. `/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/client/src/pages/NotificationPreferencesPage.tsx`
+   - Replace inline fetch with `useNotificationPrefs(user.id)`
+   - Replace inline toggle with `useTogglePreference(user.id)`
+   - Remove all manual fetch/toggle logic
+
+7. `/home/coderx85/Projects/Work/.GITHUB/wave/wave-main/client/src/components/DataTable.tsx`
+   - Replace local `getDirection` with shared one from `@/lib/direction`
+   - Change prop from `userAccountIds: Set<string>` to `userAccountNumbers: Set<string>` (the shared function uses account numbers, not IDs)
+   - Import `getDirection` from `@/lib/direction`
+
+For each file, read it first, then write the migrated version. Make sure to preserve all existing UI/JSX exactly — only change the data fetching and state management parts.
+
+After writing all files, verify the changes are correct by reading each one back.

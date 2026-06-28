@@ -1,0 +1,94 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "b2ced289461a",
+  "session_id": "ses_107a4fcbaffewOwSh8gElGUBF9",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-28T20:23:25.392102046Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "client/bun.lock",
+    "client/package.json",
+    "client/src/components/DataTable.tsx",
+    "client/src/main.tsx",
+    "client/src/pages/AccountDetailPage.tsx",
+    "client/src/pages/AccountPage.tsx",
+    "client/src/pages/AccountTransactionsPage.tsx",
+    "client/src/pages/HomePage.tsx",
+    "client/src/pages/NotificationPreferencesPage.tsx",
+    "client/src/pages/SearchPage.tsx",
+    "client/src/pages/TransactionDetailPage.tsx",
+    "client/src/pages/TransactionsPage.tsx"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.5-free",
+  "turn_id": "473508919cc3",
+  "token_usage": {
+    "input_tokens": 84396,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 763072,
+    "output_tokens": 17615,
+    "api_call_count": 16
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-28T20:23:25.374261015Z",
+    "agent_lines": 138,
+    "agent_removed": 483,
+    "human_added": 4305,
+    "human_modified": 106,
+    "human_removed": 0,
+    "total_committed": 4549,
+    "total_lines_changed": 6471,
+    "agent_percentage": 9.596662030598054,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 1124,
+      "user_lines_removed": 106,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7,
+        "client/bun.lock": 5,
+        "client/package.json": 1,
+        "client/src/lib/__tests__/direction.spec.ts": 85,
+        "client/src/lib/__tests__/queryClient.spec.ts": 62,
+        "client/src/lib/direction.ts": 27,
+        "client/src/lib/queries/__tests__/accounts.spec.tsx": 120,
+        "client/src/lib/queries/__tests__/ledger.spec.tsx": 56,
+        "client/src/lib/queries/__tests__/notificationPrefs.spec.tsx": 116,
+        "client/src/lib/queries/__tests__/notifications.spec.tsx": 176,
+        "client/src/lib/queries/__tests__/transactions.spec.tsx": 100,
+        "client/src/lib/queries/accounts.ts": 72,
+        "client/src/lib/queries/ledger.ts": 20,
+        "client/src/lib/queries/notificationPrefs.ts": 75,
+        "client/src/lib/queries/notifications.ts": 99,
+        "client/src/lib/queries/transactions.ts": 54,
+        "client/src/lib/queryClient.ts": 24,
+        "client/src/main.tsx": 7,
+        "client/src/pages/HomePage.tsx": 8,
+        "client/src/pages/SearchPage.tsx": 10
+      },
+      "user_removed_per_file": {
+        "client/src/main.tsx": 1,
+        "client/src/pages/HomePage.tsx": 45,
+        "client/src/pages/SearchPage.tsx": 60
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 7,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1287,
+      "agent_lines_removed": 589,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7
+      }
+    }
+  ]
+}
