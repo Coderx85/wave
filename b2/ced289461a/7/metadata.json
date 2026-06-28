@@ -1,9 +1,11 @@
 {
   "cli_version": "0.7.5",
   "checkpoint_id": "b2ced289461a",
+  "session_id": "ses_10a768004ffeHAmBUOMS9czhcG",
   "strategy": "manual-commit",
+  "created_at": "2026-06-28T20:23:35.590784031Z",
   "branch": "main",
-  "checkpoints_count": 10,
+  "checkpoints_count": 2,
   "files_touched": [
     "client/README.md",
     "client/bun.lock",
@@ -84,61 +86,51 @@
     "server/src/routes/api/performance/index.ts",
     "server/src/schemas/notification.schema.ts"
   ],
-  "sessions": [
-    {
-      "metadata": "/b2/ced289461a/0/metadata.json",
-      "transcript": "/b2/ced289461a/0/full.jsonl",
-      "content_hash": "/b2/ced289461a/0/content_hash.txt",
-      "prompt": "/b2/ced289461a/0/prompt.txt"
-    },
-    {
-      "metadata": "/b2/ced289461a/1/metadata.json",
-      "transcript": "/b2/ced289461a/1/full.jsonl",
-      "content_hash": "/b2/ced289461a/1/content_hash.txt",
-      "prompt": "/b2/ced289461a/1/prompt.txt"
-    },
-    {
-      "metadata": "/b2/ced289461a/2/metadata.json",
-      "transcript": "/b2/ced289461a/2/full.jsonl",
-      "content_hash": "/b2/ced289461a/2/content_hash.txt",
-      "prompt": "/b2/ced289461a/2/prompt.txt"
-    },
-    {
-      "metadata": "/b2/ced289461a/3/metadata.json",
-      "transcript": "/b2/ced289461a/3/full.jsonl",
-      "content_hash": "/b2/ced289461a/3/content_hash.txt",
-      "prompt": "/b2/ced289461a/3/prompt.txt"
-    },
-    {
-      "metadata": "/b2/ced289461a/4/metadata.json",
-      "transcript": "/b2/ced289461a/4/full.jsonl",
-      "content_hash": "/b2/ced289461a/4/content_hash.txt",
-      "prompt": "/b2/ced289461a/4/prompt.txt"
-    },
-    {
-      "metadata": "/b2/ced289461a/5/metadata.json",
-      "transcript": "/b2/ced289461a/5/full.jsonl",
-      "content_hash": "/b2/ced289461a/5/content_hash.txt",
-      "prompt": "/b2/ced289461a/5/prompt.txt"
-    },
-    {
-      "metadata": "/b2/ced289461a/6/metadata.json",
-      "transcript": "/b2/ced289461a/6/full.jsonl",
-      "content_hash": "/b2/ced289461a/6/content_hash.txt",
-      "prompt": "/b2/ced289461a/6/prompt.txt"
-    },
-    {
-      "metadata": "/b2/ced289461a/7/metadata.json",
-      "transcript": "/b2/ced289461a/7/full.jsonl",
-      "content_hash": "/b2/ced289461a/7/content_hash.txt",
-      "prompt": "/b2/ced289461a/7/prompt.txt"
-    }
-  ],
+  "agent": "OpenCode",
+  "model": "big-pickle",
+  "turn_id": "22c8d98dc889",
   "token_usage": {
-    "input_tokens": 2445707,
+    "input_tokens": 1478498,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 42953728,
-    "output_tokens": 221474,
-    "api_call_count": 583
-  }
+    "cache_read_tokens": 41368448,
+    "output_tokens": 175122,
+    "api_call_count": 504
+  },
+  "session_metrics": {
+    "turn_count": 38
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-28T20:23:35.440434029Z",
+    "agent_lines": 5886,
+    "agent_removed": 2029,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 4,
+    "total_committed": 5886,
+    "total_lines_changed": 7923,
+    "agent_percentage": 99.89902814590434,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 7,
+      "user_lines_removed": 4,
+      "agent_lines_added": 5890,
+      "agent_lines_removed": 2029,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 7
+      },
+      "user_removed_per_file": {
+        "server/.gitignore": 4
+      }
+    }
+  ]
 }
