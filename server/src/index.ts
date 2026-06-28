@@ -4,6 +4,7 @@ import { type FastifyServerOptions } from "fastify";
 import { fromNodeHeaders } from "better-auth/node";
 import { auth } from "./lib/auth";
 import { initializeKafkaRPC } from "./modules/kafka";
+import { OutboxReplayService } from "./modules/wallet/service/outbox-replay.service";
 
 const PORT = config.port;
 
@@ -24,6 +25,10 @@ const opt: FastifyServerOptions = {
 
 // Initialize Kafka RPC before building the server
 await initializeKafkaRPC();
+
+// Start background outbox replay loop for unpublished transaction events
+const outboxReplay = new OutboxReplayService();
+outboxReplay.startReplayLoop();
 
 const app = await buildServer(opt);
 

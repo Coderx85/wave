@@ -8,7 +8,7 @@ export const notificationDTO = z.object({
   email: z.string(),
   subject: z.string(),
   message: z.string(),
-  status: z.enum(["pending", "sent", "failed"]),
+  status: z.enum(["pending", "sent", "failed", "dead_letter"]),
   read: z.boolean(),
   sentAt: z.coerce.date().nullable(),
   createdAt: z.coerce.date(),

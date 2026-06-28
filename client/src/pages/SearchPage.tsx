@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo, useRef } from "react"
+import { useState, useMemo, useRef, useEffect } from "react"
 import { Search, X } from "lucide-react"
 import { signOut, useSession } from "../lib/auth-client"
 import { Button } from "../components/ui/button"
@@ -7,8 +7,10 @@ import { Badge } from "../components/ui/badge"
 import { Skeleton } from "../components/ui/skeleton"
 import PageHeader from "../components/ui/page-header"
 import PageFooter from "../components/ui/page-footer"
+import { useAccounts } from "@/lib/queries/accounts"
+import { useTransactions } from "@/lib/queries/transactions"
+import { useNotifications } from "@/lib/queries/notifications"
 import { formatCurrency } from "@/lib/utils"
-import type { IWalletTransaction, WaveResponse, ITransaction, TBankAccountNumber } from "@/types"
 
 type ResourceType = "transaction" | "account" | "notification"
 
@@ -21,15 +23,6 @@ interface SearchResult {
   amount?: string
   timestamp: string
   status?: string
-}
-
-interface RawNotification {
-  id: string
-  title: string
-  message: string
-  type: "info" | "warning" | "error"
-  timestamp: string
-  read: boolean
 }
 
 const TABS: { key: ResourceType | "all"; label: string }[] = [
@@ -77,45 +70,11 @@ export default function SearchPage() {
   const [activeTab, setActiveTab] = useState<ResourceType | "all">("all")
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const [transactions, setTransactions] = useState<ITransaction[]>([])
-  const [accounts, setAccounts] = useState<IWalletTransaction[]>([])
-  const [notifications, setNotifications] = useState<RawNotification[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { data: transactions = [], isLoading: txLoading } = useTransactions(user.id)
+  const { data: accounts = [], isLoading: acctLoading } = useAccounts(user.id)
+  const { data: notifications = [], isLoading: notifLoading } = useNotifications(user.id, 100)
 
-  const fetchAll = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const [txRes, acctRes, notifRes] = await Promise.all([
-        fetch(`/api/wallet/users/${user.id}/transactions`),
-        fetch(`/api/wallet/users/${user.id}/accounts`),
-        fetch(`/api/notification/users/${user.id}/notifications?limit=100`),
-      ])
-
-      const [txJson, acctJson, notifJson]: [
-        WaveResponse<ITransaction[]>,
-        WaveResponse<IWalletTransaction[]>,
-        { ok: boolean; data?: RawNotification[] }
-      ] = await Promise.all([
-        txRes.json(),
-        acctRes.json(),
-        notifRes.json(),
-      ])
-
-      if (txJson.ok) setTransactions(txJson.data)
-      if (acctJson.ok) setAccounts(acctJson.data)
-      if (notifJson.ok) setNotifications(notifJson.data ?? [])
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load data")
-    } finally {
-      setLoading(false)
-    }
-  }, [user.id])
-
-  useEffect(() => {
-    fetchAll()
-  }, [fetchAll])
+  const loading = txLoading || acctLoading || notifLoading
 
   useEffect(() => {
     inputRef.current?.focus()
@@ -255,16 +214,7 @@ export default function SearchPage() {
           </div>
         )}
 
-        {error && !loading && (
-          <div className="flex flex-col items-center gap-3 py-16 text-center">
-            <p className="text-sm text-muted-foreground">{error}</p>
-            <Button variant="outline" size="sm" onClick={fetchAll}>
-              Retry
-            </Button>
-          </div>
-        )}
-
-        {!loading && !error && query && (
+        {!loading && query && (
           <>
             <div className="flex flex-wrap items-center gap-2">
               {TABS.map((tab) => {
@@ -327,7 +277,7 @@ export default function SearchPage() {
           </>
         )}
 
-        {!loading && !error && !query && (
+        {!loading && !query && (
           <div className="flex flex-col items-center gap-2 py-16 text-center">
             <p className="text-sm text-muted-foreground">
               Search across your transactions, accounts, and notifications

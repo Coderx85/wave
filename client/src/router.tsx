@@ -10,6 +10,7 @@ import AccountTransactionsPage from "./pages/AccountTransactionsPage"
 import AccountDetailPage from "./pages/AccountDetailPage"
 import AccountSettingsPage from "./pages/AccountSettingsPage"
 import SearchPage from "./pages/SearchPage"
+import PerformancePage from "./pages/PerformancePage"
 
 const rootRoute = createRootRoute({
   component: App,
@@ -75,6 +76,12 @@ const searchRoute = createRoute({
   component: SearchPage,
 })
 
+const performanceRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/performance",
+  component: PerformancePage,
+})
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   notificationsRoute,
@@ -86,6 +93,7 @@ const routeTree = rootRoute.addChildren([
   accountTransactionsRoute,
   accountSettingsRoute,
   searchRoute,
+  performanceRoute,
 ])
 
 const router = createRouter({ routeTree })

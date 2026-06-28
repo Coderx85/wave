@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from "react"
+import { useState, useMemo } from "react"
 import { useParams, Link } from "@tanstack/react-router"
 import { ArrowLeft, Eye, EyeOff, MoreVertical } from "lucide-react"
 import { useSession } from "../lib/auth-client"
@@ -20,9 +20,10 @@ import {
 } from "../components/ui/dropdown-menu"
 import PageHeader from "../components/ui/page-header"
 import PageFooter from "../components/ui/page-footer"
-import { fetchAccountData } from "@/actions/account.actions"
-import { fetchTransactionsAction } from "@/actions/transaction.actions"
-import type { IWalletTransaction, ITransaction, WaveResponse } from "@/types"
+import { useAccounts } from "@/lib/queries/accounts"
+import { useTransactions } from "@/lib/queries/transactions"
+import { getDirection } from "@/lib/direction"
+import type { ITransaction } from "@/types"
 import { formatCurrency } from "@/lib/utils"
 
 const formatDate = (iso: string) =>
@@ -34,19 +35,18 @@ const formatDate = (iso: string) =>
     minute: "2-digit",
   }).format(new Date(iso))
 
-type Direction = "in" | "out" | "self"
-
 export default function AccountDetailPage() {
   const { data: session } = useSession()
   const user = session!.user
   const params = useParams({ from: "/account/$accountNumber" })
   const accountNumberParam = params.accountNumber
 
-  const [accounts, setAccounts] = useState<IWalletTransaction[]>([])
-  const [transactions, setTransactions] = useState<ITransaction[]>([])
-  const [loading, setLoading] = useState(true)
-  const [transactionsLoading, setTransactionsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const accountsQuery = useAccounts(user.id)
+  const txQuery = useTransactions(user.id)
+
+  const accounts = useMemo(() => accountsQuery.data ?? [], [accountsQuery.data])
+  const transactions = useMemo(() => txQuery.data ?? [], [txQuery.data])
+
   const [showBalance, setShowBalance] = useState(true)
 
   const account = useMemo(
@@ -54,17 +54,7 @@ export default function AccountDetailPage() {
     [accounts, accountNumberParam],
   )
 
-  const getDirection = useCallback(
-    (tx: ITransaction): Direction => {
-      const txSender = String(tx.senderAccountNumber)
-      const txReceiver = String(tx.receiverAccountNumber)
-      if (txSender === txReceiver) return "self"
-      if (txReceiver === accountNumberParam) return "in"
-      if (txSender === accountNumberParam) return "out"
-      return "out"
-    },
-    [accountNumberParam],
-  )
+  const userAccountNumbers = useMemo(() => new Set([accountNumberParam]), [accountNumberParam])
 
   const accountTransactions = useMemo(
     () =>
@@ -78,51 +68,12 @@ export default function AccountDetailPage() {
 
   const recentTransactions = useMemo(() => accountTransactions.slice(0, 10), [accountTransactions])
 
-  const fetchAccounts = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const res = await fetchAccountData(user.id)
-      if (!res.ok) {
-        setError(res.error ?? "Failed to load account")
-        return
-      }
-      setAccounts(res.data)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load account")
-    } finally {
-      setLoading(false)
-    }
-  }, [user.id])
-
-  const fetchTransactions = useCallback(async () => {
-    setTransactionsLoading(true)
-    try {
-      const res = await fetchTransactionsAction(user.id)
-      if (res.ok) {
-        const sorted = (res.data ?? []).sort(
-          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        )
-        setTransactions(sorted)
-      }
-    } catch {
-      // silently fail for transactions
-    } finally {
-      setTransactionsLoading(false)
-    }
-  }, [user.id])
-
-  useEffect(() => {
-    fetchAccounts()
-    fetchTransactions()
-  }, [fetchAccounts, fetchTransactions])
-
   const pageTitle = account?.name ?? "Account Details"
 
   return (
     <>
       <PageHeader
-        title={loading ? <Skeleton className="h-6 w-40" /> : pageTitle}
+        title={accountsQuery.isLoading ? <Skeleton className="h-6 w-40" /> : pageTitle}
         email={user.email}
         beforeTitle={
           <Link
@@ -154,16 +105,16 @@ export default function AccountDetailPage() {
       />
 
           <main className="flex-1 mx-auto w-full max-w-2xl px-8 py-8 space-y-6">
-            {error && !loading && (
+            {accountsQuery.isError && (
               <div className="flex flex-col items-center gap-3 py-10 text-center">
-                <p className="text-sm text-muted-foreground">{error}</p>
-                <Button variant="outline" size="sm" onClick={fetchAccounts}>
+                <p className="text-sm text-muted-foreground">{accountsQuery.error?.message ?? "Failed to load account"}</p>
+                <Button variant="outline" size="sm" onClick={() => accountsQuery.refetch()}>
                   Retry
                 </Button>
               </div>
             )}
 
-            {loading && (
+            {accountsQuery.isLoading && (
               <Card>
                 <CardContent className="p-6 space-y-4">
                   <Skeleton className="h-4 w-24" />
@@ -174,7 +125,7 @@ export default function AccountDetailPage() {
               </Card>
             )}
 
-            {!loading && !error && account && (
+            {!accountsQuery.isLoading && !accountsQuery.isError && account && (
               <>
                 <Card>
                   <CardContent className="p-6 space-y-5">
@@ -263,7 +214,7 @@ export default function AccountDetailPage() {
                     </Link>
                   </CardHeader>
                   <CardContent className="p-0">
-                    {transactionsLoading && (
+                    {txQuery.isLoading && (
                       <div className="space-y-3 p-6">
                         {Array.from({ length: 4 }).map((_, i) => (
                           <Skeleton key={i} className="h-12 w-full rounded-md" />
@@ -271,7 +222,7 @@ export default function AccountDetailPage() {
                       </div>
                     )}
 
-                    {!transactionsLoading && recentTransactions.length === 0 && (
+                    {!txQuery.isLoading && recentTransactions.length === 0 && (
                       <div className="py-10 text-center px-6">
                         <p className="text-sm text-muted-foreground">
                           No transactions yet for this account.
@@ -279,10 +230,10 @@ export default function AccountDetailPage() {
                       </div>
                     )}
 
-                    {!transactionsLoading && recentTransactions.length > 0 && (
+                    {!txQuery.isLoading && recentTransactions.length > 0 && (
                       <div className="divide-y divide-border/30">
                         {recentTransactions.map((tx) => {
-                          const dir = getDirection(tx)
+                          const dir = getDirection(tx, userAccountNumbers)
                           const amount = Number(tx.amount)
                           return (
                             <div
@@ -337,7 +288,7 @@ export default function AccountDetailPage() {
               </>
             )}
 
-            {!loading && !error && !account && (
+            {!accountsQuery.isLoading && !accountsQuery.isError && !account && (
               <div className="flex flex-col items-center gap-3 py-10 text-center">
                 <p className="text-sm text-muted-foreground">Account not found.</p>
                 <Link to="/account">

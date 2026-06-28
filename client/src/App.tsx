@@ -13,6 +13,7 @@ const navItems = [
   { to: "/notifications", label: "Notifications" },
   { to: "/transactions", label: "Transactions" },
   { to: "/account", label: "Account" },
+  { to: "/performance", label: "Performance" },
 ] as const
 
 export default function App() {

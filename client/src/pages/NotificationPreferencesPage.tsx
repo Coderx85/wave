@@ -1,16 +1,10 @@
-import { useEffect, useState, useCallback } from "react"
 import { useSession } from "../lib/auth-client"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import { Skeleton } from "../components/ui/skeleton"
 import PageHeader from "../components/ui/page-header"
 import PageFooter from "../components/ui/page-footer"
-
-interface NotificationPreference {
-  userId: string
-  eventType: "deposit" | "transfer_incoming" | "transfer_outgoing"
-  enabled: boolean
-}
+import { useNotificationPrefs, useTogglePreference } from "@/lib/queries/notificationPrefs"
 
 const EVENT_LABELS: Record<string, string> = {
   deposit: "Deposits",
@@ -27,54 +21,11 @@ const EVENT_DESCRIPTIONS: Record<string, string> = {
 export default function NotificationPreferencesPage() {
   const { data: session } = useSession()
   const user = session!.user
-  const [preferences, setPreferences] = useState<NotificationPreference[]>([])
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
-  const fetchPreferences = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const res = await fetch(`/api/notification/users/${user.id}/notification-preferences`)
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const json = await res.json()
-      setPreferences(json.data ?? [])
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load preferences")
-    } finally {
-      setLoading(false)
-    }
-  }, [user.id])
+  const prefsQuery = useNotificationPrefs(user.id)
+  const toggleMutation = useTogglePreference(user.id)
 
-  useEffect(() => {
-    fetchPreferences()
-  }, [fetchPreferences])
-
-  const togglePreference = async (eventType: string, currentEnabled: boolean) => {
-    setSaving(eventType)
-    try {
-      const res = await fetch(`/api/notification/users/${user.id}/notification-preferences`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ eventType, enabled: !currentEnabled }),
-      })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const json = await res.json()
-      setPreferences((prev) => {
-        const existing = prev.find((p) => p.eventType === eventType)
-        if (existing) {
-          return prev.map((p) => (p.eventType === eventType ? json.data : p))
-        }
-        return [...prev, json.data]
-      })
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update preference")
-    } finally {
-      setSaving(null)
-    }
-  }
-
+  const preferences = prefsQuery.data ?? []
   const allEventTypes = ["deposit", "transfer_incoming", "transfer_outgoing"]
   const preferenceMap = new Map(preferences.map((p) => [p.eventType, p]))
 
@@ -86,7 +37,7 @@ export default function NotificationPreferencesPage() {
       />
 
       <main className="flex-1 mx-auto w-full max-w-2xl px-8 py-6">
-        {loading && (
+        {prefsQuery.isLoading && (
           <div className="flex flex-col gap-3">
             {Array.from({ length: 3 }).map((_, i) => (
               <Skeleton key={i} className="h-20 w-full rounded-lg" />
@@ -94,14 +45,14 @@ export default function NotificationPreferencesPage() {
           </div>
         )}
 
-        {error && !loading && (
+        {prefsQuery.isError && (
           <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
-            <p className="text-muted-foreground">{error}</p>
-            <Button variant="outline" onClick={fetchPreferences}>Retry</Button>
+            <p className="text-muted-foreground">{prefsQuery.error?.message ?? "Failed to load preferences"}</p>
+            <Button variant="outline" onClick={() => prefsQuery.refetch()}>Retry</Button>
           </div>
         )}
 
-        {!loading && !error && (
+        {!prefsQuery.isLoading && !prefsQuery.isError && (
           <div className="flex flex-col gap-2">
             {allEventTypes.map((eventType) => {
               const pref = preferenceMap.get(eventType)
@@ -117,10 +68,10 @@ export default function NotificationPreferencesPage() {
                       type="button"
                       role="switch"
                       aria-checked={enabled}
-                      disabled={saving === eventType}
-                      onClick={() => togglePreference(eventType, enabled)}
+                      disabled={toggleMutation.isPending}
+                      onClick={() => toggleMutation.mutate({ eventType, enabled: !enabled })}
                       className={`relative h-6 w-11 rounded-full transition-colors ${
-                        saving === eventType ? "opacity-50 pointer-events-none" : ""
+                        toggleMutation.isPending ? "opacity-50 pointer-events-none" : ""
                       } ${
                         enabled ? "bg-primary" : "bg-input"
                       }`}

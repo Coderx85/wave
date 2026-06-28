@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react"
 import { Link } from "@tanstack/react-router"
+import { useQueryClient } from "@tanstack/react-query"
 import { signOut, useSession } from "../lib/auth-client"
 import { Card, CardContent } from "../components/ui/card"
 import { Button } from "../components/ui/button"
@@ -7,23 +8,13 @@ import { Badge } from "../components/ui/badge"
 import { Skeleton } from "../components/ui/skeleton"
 import PageHeader from "./ui/page-header"
 import PageFooter from "./ui/page-footer"
-
-interface Notification {
-  id: string
-  title: string
-  message: string
-  type: "info" | "warning" | "error"
-  timestamp: string
-  read: boolean
-}
-
-interface StandardResponse<T> {
-  ok: boolean
-  status: number
-  message: string
-  data?: T
-  error?: string
-}
+import {
+  useNotifications,
+  useDismissNotification,
+  useMarkNotificationRead,
+  notificationKeys,
+  type Notification,
+} from "../lib/queries/notifications"
 
 function statusVariant(status: string): "default" | "secondary" | "destructive" {
   if (status === "connected") return "default"
@@ -40,28 +31,17 @@ function statusLabel(status: string): string {
 export default function NotificationPage() {
   const { data: session } = useSession()
   const user = session!.user
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient()
+
+  const notificationsQuery = useNotifications(user.id)
+  const dismissMutation = useDismissNotification(user.id)
+  const markReadMutation = useMarkNotificationRead(user.id)
+
+  const notifications = notificationsQuery.data ?? []
+
   const [connectionStatus, setConnectionStatus] = useState<"connected" | "disconnected" | "connecting">("connecting")
   const eventSourceRef = useRef<EventSource | null>(null)
   const retryCountRef = useRef(0)
-
-  const fetchInitial = useCallback(async () => {
-    try {
-      setLoading(true)
-      const response = await fetch(`/api/notification/users/${user.id}/notifications?limit=50`)
-      if (!response.ok) throw new Error(`HTTP ${response.status}`)
-      const json: StandardResponse<Notification[]> = await response.json()
-      setNotifications(json.data ?? [])
-      setError(null)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load")
-      setNotifications([])
-    } finally {
-      setLoading(false)
-    }
-  }, [user.id])
 
   const connectSSE = useCallback(() => {
     if (eventSourceRef.current) {
@@ -82,11 +62,15 @@ export default function NotificationPage() {
         const parsed = JSON.parse(event.data)
         const items: Notification[] = parsed.result ?? parsed.data ?? []
         if (items.length > 0) {
-          setNotifications((prev) => {
-            const existing = new Set(prev.map((n) => n.id))
-            const newItems = items.filter((n) => !existing.has(n.id))
-            return [...newItems, ...prev].slice(0, 50)
-          })
+          // Optimistically merge SSE items into the cache
+          queryClient.setQueryData<Notification[]>(
+            notificationKeys.user(user.id),
+            (old) => {
+              const existing = new Set((old ?? []).map((n) => n.id))
+              const newItems = items.filter((n) => !existing.has(n.id))
+              return [...newItems, ...(old ?? [])].slice(0, 50)
+            },
+          )
         }
       } catch {
         // ping or parse error - ignore
@@ -102,43 +86,14 @@ export default function NotificationPage() {
       retryCountRef.current += 1
       setTimeout(connectSSE, delay)
     }
-  }, [user.id])
+  }, [user.id, queryClient])
 
   useEffect(() => {
-    fetchInitial()
     connectSSE()
     return () => {
       if (eventSourceRef.current) eventSourceRef.current.close()
     }
-  }, [fetchInitial, connectSSE])
-
-  const dismissNotification = async (id: string) => {
-    try {
-      const res = await fetch(`/api/notification/users/${user.id}/notifications/${id}`, {
-        method: "DELETE",
-      })
-      if (res.ok) {
-        setNotifications((prev) => prev.filter((n) => n.id !== id))
-      }
-    } catch {
-      // silently fail
-    }
-  }
-
-  const markRead = async (id: string) => {
-    try {
-      const res = await fetch(`/api/notification/users/${user.id}/notifications/${id}/read`, {
-        method: "PATCH",
-      })
-      if (res.ok) {
-        setNotifications((prev) =>
-          prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-        )
-      }
-    } catch {
-      // silently fail
-    }
-  }
+  }, [connectSSE])
 
   const handleSignOut = async () => {
     await signOut()
@@ -165,7 +120,7 @@ export default function NotificationPage() {
             >
               Preferences
             </Link>
-            <Button variant="outline" size="sm" onClick={fetchInitial}>
+            <Button variant="outline" size="sm" onClick={() => notificationsQuery.refetch()}>
               Refresh
             </Button>
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
@@ -176,7 +131,7 @@ export default function NotificationPage() {
       />
 
       <main className="flex-1 mx-auto w-full max-w-2xl px-8 py-6">
-        {loading && (
+        {notificationsQuery.isLoading && (
           <div className="flex flex-col gap-2">
             {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} data-testid="skeleton-card" className="h-20 w-full rounded-lg" />
@@ -184,19 +139,19 @@ export default function NotificationPage() {
           </div>
         )}
 
-        {error && !loading && (
+        {notificationsQuery.isError && !notificationsQuery.isLoading && (
           <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10 border-2 border-destructive/30 text-destructive text-lg font-bold">
               !
             </div>
-            <p className="text-muted-foreground">{error}</p>
-            <Button variant="outline" onClick={fetchInitial}>
+            <p className="text-muted-foreground">{notificationsQuery.error?.message ?? "Failed to load"}</p>
+            <Button variant="outline" onClick={() => notificationsQuery.refetch()}>
               Retry
             </Button>
           </div>
         )}
 
-        {!loading && !error && notifications.length === 0 && (
+        {!notificationsQuery.isLoading && !notificationsQuery.isError && notifications.length === 0 && (
           <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
             <h2 className="text-sm font-semibold text-muted-foreground">No notifications</h2>
             <p className="text-sm text-muted-foreground/60">
@@ -205,7 +160,7 @@ export default function NotificationPage() {
           </div>
         )}
 
-        {!loading && !error && notifications.length > 0 && (
+        {!notificationsQuery.isLoading && !notificationsQuery.isError && notifications.length > 0 && (
           <div className="flex flex-col gap-2">
             {notifications.map((n) => (
               <div
@@ -243,11 +198,11 @@ export default function NotificationPage() {
                     </p>
                     <div className="flex gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       {!n.read && (
-                        <Button variant="ghost" size="xs" onClick={() => markRead(n.id)}>
+                        <Button variant="ghost" size="xs" onClick={() => markReadMutation.mutate(n.id)}>
                           Mark read
                         </Button>
                       )}
-                      <Button variant="ghost" size="xs" onClick={() => dismissNotification(n.id)}>
+                      <Button variant="ghost" size="xs" onClick={() => dismissMutation.mutate(n.id)}>
                         Dismiss
                       </Button>
                     </div>

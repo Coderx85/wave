@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from "react"
+import { useState, useMemo, useEffect } from "react"
 import {
   useReactTable,
   getCoreRowModel,
@@ -16,27 +16,11 @@ import { Badge } from "../components/ui/badge"
 import { Skeleton } from "../components/ui/skeleton"
 import PageHeader from "../components/ui/page-header"
 import PageFooter from "../components/ui/page-footer"
-import { fetchTransactionsAction } from "@/actions/transaction.actions";
+import { useAccounts } from "@/lib/queries/accounts"
+import { useTransactions } from "@/lib/queries/transactions"
+import { getDirection } from "@/lib/direction"
 import type { ITransaction } from "@/types"
 import { formatCurrency } from "@/lib/utils"
-
-interface WalletAccount {
-  id: string
-  name: string
-  userId: string
-  accountNumber: string
-  balance: number
-  createdAt: string
-  updatedAt: string | null
-}
-
-interface StandardResponse<T = unknown> {
-  ok: boolean
-  status: number
-  message: string
-  data?: T
-  error?: string
-}
 
 type Filter = "all" | "success" | "failed" | "pending"
 
@@ -46,11 +30,13 @@ const formatDate = (iso: string) =>
 export default function TransactionsPage() {
   const { data: session } = useSession()
   const user = session!.user
-  const [transactions, setTransactions] = useState<ITransaction[]>([])
-  const [accounts, setAccounts] = useState<WalletAccount[]>([])
-  const [accountsLoaded, setAccountsLoaded] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+
+  const txQuery = useTransactions(user.id)
+  const accountsQuery = useAccounts(user.id)
+
+  const transactions = useMemo(() => txQuery.data ?? [], [txQuery.data])
+  const accounts = useMemo(() => accountsQuery.data ?? [], [accountsQuery.data])
+
   const [filter, setFilter] = useState<Filter>("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [dateFrom, setDateFrom] = useState("")
@@ -61,16 +47,7 @@ export default function TransactionsPage() {
 
   const columnHelper = createColumnHelper<ITransaction>()
 
-  const userAccountIds = useMemo(() => new Set(accounts.map((a) => a.id)), [accounts])
-
-  const getDirection = useCallback(
-    (tx: ITransaction): "in" | "out" | "self" => {
-      if (tx.senderName === tx.receiverName) return "self"
-      if (userAccountIds.has(tx.receiverAccountNumber.toString()) && !userAccountIds.has(tx.senderAccountNumber.toString())) return "in"
-      return "out"
-    },
-    [userAccountIds],
-  )
+  const userAccountNumbers = useMemo(() => new Set(accounts.map((a) => String(a.accountNumber))), [accounts])
 
   const columns = useMemo(
     () => [
@@ -86,7 +63,7 @@ export default function TransactionsPage() {
         id: "direction",
         header: "",
         cell: ({ row }) => {
-          const dir = getDirection(row.original)
+          const dir = getDirection(row.original, userAccountNumbers)
           return (
             <div className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold bg-secondary text-secondary-foreground">
               {dir === "in" ? "\u2190" : dir === "self" ? "\u21C4" : "\u2192"}
@@ -98,7 +75,7 @@ export default function TransactionsPage() {
         header: "Counterparty",
         cell: (info) => {
           const tx = info.row.original
-          const dir = getDirection(tx)
+          const dir = getDirection(tx, userAccountNumbers)
           const label = dir === "self" ? "Deposit" : dir === "in" ? `From ${tx.senderName}` : `To ${tx.receiverName}`
           return (
             <div className="min-w-0">
@@ -111,7 +88,7 @@ export default function TransactionsPage() {
         header: "Amount",
         cell: (info) => {
           const tx = info.row.original
-          const dir = getDirection(tx)
+          const dir = getDirection(tx, userAccountNumbers)
           return (
             <span className={`text-sm font-mono font-semibold whitespace-nowrap ${
               dir === "in" ? "text-success" : "text-foreground"
@@ -133,7 +110,7 @@ export default function TransactionsPage() {
         ),
       }),
     ],
-    [columnHelper, getDirection],
+    [columnHelper, userAccountNumbers],
   )
 
   const filtered = useMemo(() => {
@@ -185,46 +162,6 @@ export default function TransactionsPage() {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   })
-
-  const fetchTransactions = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await fetchTransactionsAction(user.id);
-      if (!res.ok) throw new Error(res.error ?? `HTTP ${res.status}`)
-      const sorted = (res.data ?? []).sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )
-      setTransactions(sorted)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load transactions")
-      setTransactions([])
-    } finally {
-      setLoading(false)
-    }
-  }, [user.id])
-
-  const fetchAccounts = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/wallet/users/${user.id}/accounts`)
-      if (res.ok) {
-        const json: StandardResponse<WalletAccount[]> = await res.json()
-        setAccounts(json.data ?? [])
-      }
-    } catch {
-      setAccounts([])
-    } finally {
-      setAccountsLoaded(true)
-    }
-  }, [user.id])
-
-  useEffect(() => {
-    fetchAccounts()
-  }, [fetchAccounts])
-
-  useEffect(() => {
-    if (accountsLoaded) fetchTransactions()
-  }, [user.id, accountsLoaded])
 
   const handleSignOut = async () => {
     await signOut()
@@ -292,7 +229,7 @@ export default function TransactionsPage() {
             <span className="text-xs text-muted-foreground">{filtered.length} total</span>
           </CardHeader>
           <CardContent className="p-0">
-            {loading && (
+            {txQuery.isLoading && (
               <div className="space-y-3 p-6">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Skeleton key={i} className="h-12 w-full rounded-md" />
@@ -300,16 +237,16 @@ export default function TransactionsPage() {
               </div>
             )}
 
-            {error && !loading && (
+            {txQuery.isError && (
               <div className="flex flex-col items-center gap-3 py-10 text-center px-6">
-                <p className="text-sm text-muted-foreground">{error}</p>
-                <Button variant="outline" size="sm" onClick={fetchTransactions}>
+                <p className="text-sm text-muted-foreground">{txQuery.error?.message ?? "Failed to load transactions"}</p>
+                <Button variant="outline" size="sm" onClick={() => txQuery.refetch()}>
                   Retry
                 </Button>
               </div>
             )}
 
-            {!loading && !error && filtered.length === 0 && (
+            {!txQuery.isLoading && !txQuery.isError && filtered.length === 0 && (
               <div className="py-10 text-center px-6">
                 <p className="text-sm text-muted-foreground">
                   {transactions.length === 0
@@ -319,7 +256,7 @@ export default function TransactionsPage() {
               </div>
             )}
 
-            {!loading && !error && filtered.length > 0 && (
+            {!txQuery.isLoading && !txQuery.isError && filtered.length > 0 && (
               <>
                 <div className="overflow-x-auto">
                   <table className="w-full">

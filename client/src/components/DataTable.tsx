@@ -10,11 +10,12 @@ import {
 import { Badge } from "./ui/badge"
 import { Skeleton } from "./ui/skeleton"
 import { formatCurrency } from "../lib/utils"
+import { getDirection } from "@/lib/direction"
 import type { ITransaction } from "@/types"
 
 interface DataTableProps {
   data: ITransaction[]
-  userAccountIds: Set<string>
+  userAccountNumbers: Set<string>
   loading?: boolean
   emptyMessage?: string
   onRowClick?: (tx: ITransaction) => void
@@ -23,16 +24,8 @@ interface DataTableProps {
 const formatDate = (iso: string) =>
   new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(iso))
 
-type SortDir = "in" | "out" | "self"
-
-export default function DataTable({ data, userAccountIds, loading, emptyMessage, onRowClick }: DataTableProps) {
+export default function DataTable({ data, userAccountNumbers, loading, emptyMessage, onRowClick }: DataTableProps) {
   const columnHelper = createColumnHelper<ITransaction>()
-
-  const getDirection = (tx: ITransaction): SortDir => {
-    if (tx.senderName === tx.receiverName) return "self"
-    if (userAccountIds.has(tx.receiverAccountNumber.toString()) && !userAccountIds.has(tx.senderAccountNumber.toString())) return "in"
-    return "out"
-  }
 
   const columns = useMemo(
     () => [
@@ -48,7 +41,7 @@ export default function DataTable({ data, userAccountIds, loading, emptyMessage,
         id: "direction",
         header: "",
         cell: ({ row }) => {
-          const dir = getDirection(row.original)
+          const dir = getDirection(row.original, userAccountNumbers)
           return (
             <div className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold bg-secondary text-secondary-foreground">
               {dir === "in" ? "\u2190" : dir === "self" ? "\u21C4" : "\u2192"}
@@ -60,7 +53,7 @@ export default function DataTable({ data, userAccountIds, loading, emptyMessage,
         header: "Counterparty",
         cell: (info) => {
           const tx = info.row.original
-          const dir = getDirection(tx)
+          const dir = getDirection(tx, userAccountNumbers)
           const label = dir === "self" ? "Deposit" : dir === "in" ? `From ${tx.senderName}` : `To ${tx.receiverName}`
           return (
             <div className="min-w-0">
@@ -73,7 +66,7 @@ export default function DataTable({ data, userAccountIds, loading, emptyMessage,
         header: "Amount",
         cell: (info) => {
           const tx = info.row.original
-          const dir = getDirection(tx)
+          const dir = getDirection(tx, userAccountNumbers)
           return (
             <span className={`text-sm font-mono font-semibold whitespace-nowrap ${
               dir === "in" ? "text-success" : dir === "out" ? "text-foreground" : "text-foreground"
@@ -95,7 +88,7 @@ export default function DataTable({ data, userAccountIds, loading, emptyMessage,
         ),
       }),
     ],
-    [userAccountIds],
+    [columnHelper, userAccountNumbers],
   )
 
   const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }])
@@ -170,5 +163,3 @@ export default function DataTable({ data, userAccountIds, loading, emptyMessage,
     </div>
   )
 }
-
-

@@ -5,7 +5,7 @@ import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { Select } from "./ui/select"
 import { formatCurrency } from "@/lib/utils"
-import { deposit } from "@/actions/account.actions"
+import { useDeposit } from "@/lib/queries/accounts"
 import type { IWalletTransaction, TBankAccountNumber } from "@/types"
 import TransactionSuccess from "./ui/transaction-success"
 import ProcessingOverlay from "./ui/processing-overlay"
@@ -23,33 +23,24 @@ export default function AddMoney({
     accounts.length > 0 ? accounts[0]!.accountNumber : undefined,
   )
   const [amount, setAmount] = useState("")
-  const [depositing, setDepositing] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<IWalletTransaction | null>(null)
+
+  const depositMutation = useDeposit(userId)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!accountNumber || !amount.trim()) return
 
-    setDepositing(true)
-    setError(null)
-    setSuccess(null)
-
-    try {
-      const res = await deposit({
-        userId,
-        accountNumber,
-        amount: Number.parseFloat(amount),
-      })
-      if (!res.ok) throw new Error(res.error ?? "Failed to deposit funds")
-      setSuccess(res.data)
-      setAmount(res.data.balance.toString())
-      onDeposit?.()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to deposit funds")
-    } finally {
-      setDepositing(false)
-    }
+    depositMutation.mutate(
+      { accountNumber, amount: Number.parseFloat(amount) },
+      {
+        onSuccess: (res) => {
+          setSuccess(res)
+          setAmount(res.balance.toString())
+          onDeposit?.()
+        },
+      },
+    )
   }
 
   return (
@@ -96,21 +87,21 @@ export default function AddMoney({
                 onChange={(e) => setAmount(e.target.value)}
               />
             </div>
-            {error && (
-              <p className="text-sm text-destructive">{error}</p>
+            {depositMutation.isError && (
+              <p className="text-sm text-destructive">{depositMutation.error?.message ?? "Failed to deposit funds"}</p>
             )}
             <Button
               type="submit"
-              disabled={!accountNumber}
+              disabled={!accountNumber || depositMutation.isPending}
               className="w-full"
             >
-              {depositing ? "Processing..." : "Add Money"}
+              {depositMutation.isPending ? "Processing..." : "Add Money"}
             </Button>
           </form>
         )}
       </CardContent>
 
-      {depositing && (
+      {depositMutation.isPending && (
         <ProcessingOverlay
           amount={formatCurrency(amount)}
           description={accounts.find((a) => a.accountNumber === accountNumber)?.name ?? "Account"}

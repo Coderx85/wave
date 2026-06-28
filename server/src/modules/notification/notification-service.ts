@@ -8,7 +8,8 @@ import type {
 import type { IEmailSender } from "./email-sender";
 import type { INotificationConsumer } from "./consumer";
 import type { INotificationStream } from "./stream";
-import type { ITransactionEvent } from "@/modules/kafka";
+import type { IKafkaService, ITransactionEvent } from "@/modules/kafka";
+import { KafkaService } from "@/modules/kafka";
 import { Logger } from "@/lib/logger";
 import { db } from "@/modules/database/client";
 import { users } from "@/modules/database/schema";
@@ -16,14 +17,18 @@ import { eq } from "drizzle-orm";
 
 const logger = Logger("NotificationService");
 
+const MAX_RETRIES = 3;
+const RETRY_INTERVAL_MS = 60_000;
+
 export class NotificationService {
   private consumer: INotificationConsumer;
   private emailSender: IEmailSender;
   private notificationRepository: INotificationRepository;
   private stream: INotificationStream;
   private preferenceRepository: INotificationPreferenceRepository;
+  private kafkaService: IKafkaService;
+  private replayTimer: ReturnType<typeof setInterval> | null = null;
 
-  // userLookup: optional injection to resolve user email by id (for tests)
   constructor(
     consumer: INotificationConsumer = new NotificationConsumer(),
     emailSender: IEmailSender = new EmailSender(),
@@ -31,28 +36,28 @@ export class NotificationService {
     stream: INotificationStream = notificationStream,
     private readonly userLookup?: (userId: string) => Promise<{ email: string } | null>,
     preferenceRepository?: INotificationPreferenceRepository,
+    kafkaService?: IKafkaService,
   ) {
     this.consumer = consumer;
     this.emailSender = emailSender;
     this.notificationRepository = notificationRepository;
     this.stream = stream;
     this.preferenceRepository = preferenceRepository ?? new NotificationPreferenceRepository();
+    this.kafkaService = kafkaService ?? new KafkaService();
   }
 
   async start(): Promise<void> {
     try {
       logger.info("Starting notification service...");
 
-      // Initialize email sender
       await this.emailSender.initialize();
-
-      // Connect to Kafka
       await this.consumer.connect();
 
-      // Start consuming messages
       await this.consumer.startConsuming(async (event) => {
         await this.handleTransactionEvent(event);
       });
+
+      this.startReplayLoop();
 
       logger.info("Notification service started successfully");
     } catch (error) {
@@ -63,6 +68,7 @@ export class NotificationService {
 
   async stop(): Promise<void> {
     try {
+      this.stopReplayLoop();
       await this.consumer.disconnect();
       await this.emailSender.close();
       logger.info("Notification service stopped");
@@ -72,9 +78,46 @@ export class NotificationService {
     }
   }
 
+  private startReplayLoop(): void {
+    if (this.replayTimer) return;
+    logger.info(`Starting notification retry replay loop (every ${RETRY_INTERVAL_MS}ms)`);
+    this.replayTimer = setInterval(() => {
+      this.replayFailedNotifications().catch((err) => {
+        logger.error("Error in notification replay loop", err);
+      });
+    }, RETRY_INTERVAL_MS);
+  }
+
+  private stopReplayLoop(): void {
+    if (this.replayTimer) {
+      clearInterval(this.replayTimer);
+      this.replayTimer = null;
+    }
+  }
+
+  private async replayFailedNotifications(): Promise<void> {
+    const failed = await this.notificationRepository.findFailedForRetry(MAX_RETRIES);
+    if (failed.length === 0) return;
+
+    logger.info(`Replaying ${failed.length} failed notifications`);
+
+    for (const notification of failed) {
+      try {
+        await this.attemptSend(
+          notification.id,
+          notification.email,
+          notification.transactionId,
+          "",
+        );
+        logger.info(`Retry succeeded for notification ${notification.id}`);
+      } catch {
+        logger.warn(`Retry failed for notification ${notification.id}, will retry later`);
+      }
+    }
+  }
+
   private async handleTransactionEvent(event: ITransactionEvent): Promise<void> {
     try {
-      // Resolve user email. Allow injecting a mock lookup for tests.
       let userEmail: string | null = null;
       if (this.userLookup) {
         const u = await this.userLookup(event.userId as string);
@@ -107,7 +150,6 @@ export class NotificationService {
         return;
       }
 
-      // Create notification in database
       const notification = await this.notificationRepository.create({
         transactionId: event.transactionId,
         userId: event.userId,
@@ -117,69 +159,90 @@ export class NotificationService {
         status: "pending",
         read: false,
         sentAt: null,
+        retryCount: 0,
+        lastRetryAt: null,
+        errorMessage: null,
       });
+
       this.stream.publish({
         type: "notification.created",
         notification,
       });
 
-      // Send email
-      try {
-        await this.emailSender.sendTransactionNotification(
-          userEmail,
-          event.senderName,
-          event.receiverName,
-          event.amount,
-          event.transactionId
-        );
-
-        // Mark notification as sent
-        await this.notificationRepository.updateStatus(
-          notification.id,
-          "sent",
-          new Date()
-        );
-        const sentAt = new Date();
-        this.stream.publish({
-          type: "notification.updated",
-          notification: {
-            ...notification,
-            status: "sent",
-            sentAt,
-            updatedAt: sentAt,
-          },
-        });
-
-        logger.info(
-          `Notification sent for transaction ${event.transactionId} to ${userEmail}`
-        );
-      } catch (emailError) {
-        // Mark notification as failed
-        await this.notificationRepository.updateStatus(
-          notification.id,
-          "failed"
-        );
-        const updatedAt = new Date();
-        this.stream.publish({
-          type: "notification.updated",
-          notification: {
-            ...notification,
-            status: "failed",
-            updatedAt,
-          },
-        });
-
-        logger.error(
-          `Failed to send notification email for transaction ${event.transactionId}`,
-          emailError
-        );
-      }
+      await this.attemptSend(
+        notification.id,
+        userEmail,
+        event.transactionId,
+        event.senderName,
+      );
     } catch (error) {
       logger.error(
         `Error handling transaction event ${event.transactionId}`,
-        error
+        error,
       );
-      // Don't throw - let consumer continue processing
+    }
+  }
+
+  private async attemptSend(
+    notificationId: string,
+    userEmail: string,
+    transactionId: string,
+    _senderName: string,
+  ): Promise<void> {
+    try {
+      await this.emailSender.sendTransactionNotification(
+        userEmail,
+        _senderName,
+        "",
+        "",
+        transactionId,
+      );
+
+      await this.notificationRepository.updateStatus(notificationId, "sent", new Date());
+      const sentAt = new Date();
+      this.stream.publish({
+        type: "notification.updated",
+        notification: {
+          id: notificationId,
+          status: "sent",
+          sentAt,
+          updatedAt: sentAt,
+        } as any,
+      });
+
+      logger.info(`Notification sent for transaction ${transactionId} to ${userEmail}`);
+    } catch (emailError) {
+      const now = new Date();
+      const errMsg = emailError instanceof Error ? emailError.message : String(emailError);
+
+      const notification = await this.notificationRepository.findByTransactionId(transactionId);
+      const currentRetryCount = notification ? notification.retryCount : 0;
+      const newRetryCount = currentRetryCount + 1;
+
+      await this.notificationRepository.updateStatus(notificationId, "failed");
+      await this.notificationRepository.updateRetryState(notificationId, newRetryCount, now, errMsg);
+
+      if (newRetryCount >= MAX_RETRIES) {
+        await this.notificationRepository.updateStatus(notificationId, "dead_letter");
+
+        logger.error(
+          `Notification ${notificationId} moved to dead letter after ${MAX_RETRIES} failed attempts`,
+        );
+      } else {
+        logger.error(
+          `Failed to send notification (attempt ${newRetryCount}/${MAX_RETRIES}) for transaction ${transactionId}`,
+          emailError,
+        );
+      }
+
+      this.stream.publish({
+        type: "notification.updated",
+        notification: {
+          id: notificationId,
+          status: newRetryCount >= MAX_RETRIES ? "dead_letter" : "failed",
+          updatedAt: now,
+        } as any,
+      });
     }
   }
 }

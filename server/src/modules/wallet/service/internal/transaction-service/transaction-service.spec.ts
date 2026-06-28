@@ -78,6 +78,10 @@ describe("TransactionModule", () => {
     createdAt: new Date("2024-01-01T00:00:00.000Z"),
   };
 
+  function createMockAccountRepo() {
+    return { adjustBalance: adjustBalanceMock };
+  }
+
   beforeEach(() => {
     vi.clearAllMocks();
     calculateNewBalanceMock.mockResolvedValue(BigInt(10000));
@@ -87,7 +91,7 @@ describe("TransactionModule", () => {
     outboxCreateMock.mockResolvedValue(undefined);
     markAsPublishedMock.mockResolvedValue(undefined);
     kafkaPublishMock.mockResolvedValue(undefined);
-    transactionModule = new TransactionModule();
+    transactionModule = new TransactionModule(undefined, createMockAccountRepo() as any);
   });
 
   afterEach(() => {

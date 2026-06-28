@@ -51,6 +51,13 @@ describe('NotificationService - Integration Tests', () => {
         updatedAt: new Date(),
       }),
       updateStatus: vi.fn().mockResolvedValue(undefined),
+      updateRetryState: vi.fn().mockResolvedValue(undefined),
+      findFailedForRetry: vi.fn().mockResolvedValue([]),
+      findByTransactionId: vi.fn().mockResolvedValue({
+        id: 'notification_123',
+        transactionId: 'transaction_test_123',
+        retryCount: 0,
+      }),
     };
 
     notificationService = new NotificationService(
@@ -134,6 +141,9 @@ describe('NotificationService - Integration Tests', () => {
       const failingRepository = {
         create: vi.fn().mockRejectedValue(new Error('Database error')),
         updateStatus: vi.fn().mockResolvedValue(undefined),
+        updateRetryState: vi.fn().mockResolvedValue(undefined),
+        findFailedForRetry: vi.fn().mockResolvedValue([]),
+        findByTransactionId: vi.fn().mockResolvedValue(null),
       };
 
       let messageCallback: any = null;

@@ -1,11 +1,13 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 
-const { listNotificationsHandlerMock, streamNotificationsHandlerMock, getPreferencesHandlerMock, updatePreferenceHandlerMock } = vi.hoisted(() => ({
+const { listNotificationsHandlerMock, streamNotificationsHandlerMock, getPreferencesHandlerMock, updatePreferenceHandlerMock, markReadHandlerMock, dismissHandlerMock } = vi.hoisted(() => ({
   listNotificationsHandlerMock: vi.fn(),
   streamNotificationsHandlerMock: vi.fn(),
   getPreferencesHandlerMock: vi.fn(),
   updatePreferenceHandlerMock: vi.fn(),
+  markReadHandlerMock: vi.fn(),
+  dismissHandlerMock: vi.fn(),
 }));
 
 vi.mock("./handler", () => ({
@@ -14,6 +16,8 @@ vi.mock("./handler", () => ({
     streamNotificationsHandler: streamNotificationsHandlerMock,
     getPreferencesHandler: getPreferencesHandlerMock,
     updatePreferenceHandler: updatePreferenceHandlerMock,
+    markReadHandler: markReadHandlerMock,
+    dismissHandler: dismissHandlerMock,
   },
 }));
 

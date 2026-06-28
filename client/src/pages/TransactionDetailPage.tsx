@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useMemo } from "react"
 import { useParams, Link } from "@tanstack/react-router"
 import { ArrowLeft } from "lucide-react"
 import { useSession } from "../lib/auth-client"
@@ -8,9 +8,10 @@ import { Button } from "../components/ui/button"
 import { Skeleton } from "../components/ui/skeleton"
 import PageHeader from "../components/ui/page-header"
 import PageFooter from "../components/ui/page-footer"
-import { fetchTransactionsAction } from "@/actions/transaction.actions"
-import { getLedgerEntries } from "@/actions/account.actions"
-import type { ITransaction, ILedgerEntry } from "@/types"
+import { useAccounts } from "@/lib/queries/accounts"
+import { useTransactions } from "@/lib/queries/transactions"
+import { useLedgerEntries } from "@/lib/queries/ledger"
+import { getDirection } from "@/lib/direction"
 import { formatCurrency } from "@/lib/utils"
 
 const formatDate = (iso: string) =>
@@ -22,71 +23,32 @@ const formatDate = (iso: string) =>
     minute: "2-digit",
   }).format(new Date(iso))
 
-type Direction = "in" | "out" | "self"
-
 export default function TransactionDetailPage() {
   const { data: session } = useSession()
   const user = session!.user
   const params = useParams({ from: "/transactions/$transactionId" })
   const transactionId = params.transactionId
 
-  const [transaction, setTransaction] = useState<ITransaction | null>(null)
-  const [accounts, setAccounts] = useState<Set<string>>(new Set())
-  const [ledger, setLedger] = useState<ILedgerEntry[]>([])
-  const [loading, setLoading] = useState(true)
-  const [ledgerLoading, setLedgerLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const txQuery = useTransactions(user.id)
+  const accountsQuery = useAccounts(user.id)
 
-  const getDirection = (tx: ITransaction): Direction => {
-    if (tx.senderName === tx.receiverName) return "self"
-    const senderIn = accounts.has(tx.senderAccountNumber.toString())
-    const receiverIn = accounts.has(tx.receiverAccountNumber.toString())
-    if (receiverIn && !senderIn) return "in"
-    return "out"
-  }
+  const transactions = useMemo(() => txQuery.data ?? [], [txQuery.data])
+  const accounts = useMemo(() => accountsQuery.data ?? [], [accountsQuery.data])
 
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true)
-      setError(null)
-      try {
-        const [txRes, accRes] = await Promise.all([
-          fetchTransactionsAction(user.id),
-          fetch("/api/wallet/users/" + user.id + "/accounts"),
-        ])
+  const transaction = useMemo(
+    () => transactions.find((tx) => tx.id === transactionId) ?? null,
+    [transactions, transactionId],
+  )
 
-        const accJson = await accRes.json()
-        const accountIds = new Set<string>()
-        if (accJson.ok && Array.isArray(accJson.data)) {
-          accJson.data.forEach((a: { id: string }) => accountIds.add(a.id))
-        }
-        setAccounts(accountIds)
+  const userAccountNumbers = useMemo(() => new Set(accounts.map((a) => String(a.accountNumber))), [accounts])
 
-        if (!txRes.ok) throw new Error(txRes.error ?? "Failed to load transaction")
-        const found = (txRes.data ?? []).find((tx) => tx.id === transactionId)
-        if (!found) throw new Error("Transaction not found")
-        setTransaction(found)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load transaction")
-      } finally {
-        setLoading(false)
-      }
-    }
-    load()
-  }, [user.id, transactionId])
+  const ledgerQuery = useLedgerEntries(transactionId)
+  const ledger = useMemo(() => ledgerQuery.data ?? [], [ledgerQuery.data])
 
-  useEffect(() => {
-    if (!transaction) return
-    setLedgerLoading(true)
-    getLedgerEntries(transactionId)
-      .then((res) => {
-        if (res.ok) setLedger(res.data ?? [])
-      })
-      .catch(() => {})
-      .finally(() => setLedgerLoading(false))
-  }, [transaction, transactionId])
+  const dir = transaction ? getDirection(transaction, userAccountNumbers) : null
 
-  const dir = transaction ? getDirection(transaction) : null
+  const loading = txQuery.isLoading || accountsQuery.isLoading
+  const error = txQuery.error ?? accountsQuery.error
 
   const detailRow = (label: string, value: string) => (
     <div className="flex items-baseline justify-between gap-4 py-2 border-b border-border/30 last:border-0">
@@ -126,7 +88,7 @@ export default function TransactionDetailPage() {
 
         {error && !loading && (
           <div className="flex flex-col items-center gap-3 py-10 text-center">
-            <p className="text-sm text-muted-foreground">{error}</p>
+            <p className="text-sm text-muted-foreground">{error.message ?? "Failed to load transaction"}</p>
             <Link to="/transactions">
               <Button variant="default" size="sm">Back to Transactions</Button>
             </Link>
@@ -182,19 +144,19 @@ export default function TransactionDetailPage() {
                 <CardTitle className="text-sm font-medium">Ledger Entries</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                {ledgerLoading && (
+                {ledgerQuery.isLoading && (
                   <div className="space-y-3 p-6">
                     {Array.from({ length: 2 }).map((_, i) => (
                       <Skeleton key={i} className="h-10 w-full rounded-md" />
                     ))}
                   </div>
                 )}
-                {!ledgerLoading && ledger.length === 0 && (
+                {!ledgerQuery.isLoading && ledger.length === 0 && (
                   <div className="py-8 text-center px-6">
                     <p className="text-sm text-muted-foreground">No ledger entries available.</p>
                   </div>
                 )}
-                {!ledgerLoading && ledger.length > 0 && (
+                {!ledgerQuery.isLoading && ledger.length > 0 && (
                   <div className="divide-y divide-border/30">
                     {ledger.map((entry) => (
                       <div key={entry.id} className="flex items-center justify-between px-6 py-3.5">

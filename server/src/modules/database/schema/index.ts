@@ -9,3 +9,5 @@ export * from "./transaction-outbox.repository";
 export * from "./notification.repository";
 
 export * from "./ledger.repository";
+
+export * from "./idempotency-records.repository";

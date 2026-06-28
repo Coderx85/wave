@@ -15,6 +15,7 @@ export type CreateAccountInput = Omit<IAccount, "createdAt" | "updatedAt">;
 
 export type TransferInput = Omit<ITransaction, "id" | "status" | "amount"> & {
   amount: number;
+  idempotencyKey?: string;
 };
 
 export type DepositInput = {

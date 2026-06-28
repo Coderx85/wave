@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from "react"
+import { useMemo } from "react"
 import { Link } from "@tanstack/react-router"
 import { Plus, ArrowUpRight } from "lucide-react"
 import { signOut, useSession } from "../lib/auth-client"
@@ -7,56 +7,19 @@ import PageHeader from "../components/ui/page-header"
 import PageFooter from "../components/ui/page-footer"
 import SectionCards from "../components/SectionCards"
 import ActivityTimeline from "../components/ActivityTimeline"
-import type { IWalletTransaction, WaveResponse, ITransaction } from "@/types"
+import { useAccounts } from "@/lib/queries/accounts"
+import { useTransactions } from "@/lib/queries/transactions"
+import { getDirection } from "@/lib/direction"
 import { formatCurrency } from "@/lib/utils"
 
 export default function HomePage() {
   const { data: session } = useSession()
   const user = session!.user
-  const [accounts, setAccounts] = useState<IWalletTransaction[]>([])
-  const [transactions, setTransactions] = useState<ITransaction[]>([])
-  const [loadingAccounts, setLoadingAccounts] = useState(true)
-  const [loadingTransactions, setLoadingTransactions] = useState(true)
+
+  const { data: accounts = [], isLoading: loadingAccounts } = useAccounts(user.id)
+  const { data: transactions = [], isLoading: loadingTransactions, refetch: refetchTransactions } = useTransactions(user.id)
 
   const userAccountNumbers = useMemo(() => new Set(accounts.map((a) => String(a.accountNumber))), [accounts])
-
-  const fetchAccounts = useCallback(async () => {
-    setLoadingAccounts(true)
-    try {
-      const res = await fetch(`/api/wallet/users/${user.id}/accounts`)
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const json: WaveResponse<IWalletTransaction[]> = await res.json()
-      setAccounts(json.ok ? json.data : [])
-    } catch {
-      setAccounts([])
-    } finally {
-      setLoadingAccounts(false)
-    }
-  }, [user.id])
-
-  const fetchTransactions = useCallback(async () => {
-    setLoadingTransactions(true)
-    try {
-      const res = await fetch(`/api/wallet/users/${user.id}/transactions`)
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const json: WaveResponse<ITransaction[]> = await res.json()
-      if (json.ok) {
-        const sorted = json.data.sort(
-          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
-        setTransactions(sorted)
-      }
-    } catch {
-      setTransactions([])
-    } finally {
-      setLoadingTransactions(false)
-    }
-  }, [user.id])
-
-  useEffect(() => {
-    fetchAccounts()
-    fetchTransactions()
-  }, [fetchAccounts, fetchTransactions])
 
   const totalBalance = accounts.reduce((sum, a) => sum + a.balance, 0)
 
@@ -147,7 +110,7 @@ export default function HomePage() {
             userAccountNumbers={userAccountNumbers}
             loading={loadingTransactions}
             error={null}
-            onRetry={fetchTransactions}
+            onRetry={() => refetchTransactions()}
           />
         </div>
       </main>

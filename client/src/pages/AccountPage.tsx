@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useSearch } from "@tanstack/react-router"
 import { MoreVertical } from "lucide-react"
 import { signOut, useSession } from "../lib/auth-client"
@@ -18,8 +18,9 @@ import {
 import ProfileSection from "../components/ProfileSection"
 import WalletCardCarousel from "../components/WalletCardCarousel"
 import { formatCurrency } from "@/lib/utils"
-import type { IWalletTransaction, WaveResponse, ITransaction, TBankAccountNumber } from "@/types"
-import { createAccount, fetchAccountData } from "@/actions/account.actions"
+import type { IWalletTransaction, ITransaction, TBankAccountNumber } from "@/types"
+import { useAccounts, useCreateAccount } from "@/lib/queries/accounts"
+import { useTransfer } from "@/lib/queries/transactions"
 import AddMoney from "../components/AddMoney"
 import TransactionSuccess from "../components/ui/transaction-success"
 import ProcessingOverlay from "../components/ui/processing-overlay"
@@ -32,47 +33,19 @@ export default function AccountPage() {
   const search = useSearch({ strict: false }) as { section?: string }
   const initialSection = search.section ?? null
 
-  const [accounts, setAccounts] = useState<IWalletTransaction[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [creating, setCreating] = useState(false)
-  const [createError, setCreateError] = useState<string | null>(null)
+  const accountsQuery = useAccounts(user.id)
+  const createAccountMutation = useCreateAccount(user.id)
+  const transferMutation = useTransfer(user.id)
+
+  const accounts = useMemo(() => accountsQuery.data ?? [], [accountsQuery.data])
+
   const [accountName, setAccountName] = useState("")
 
-  const [transferring, setTransferring] = useState(false);
-  const [transferError, setTransferError] = useState<string | null>(null);
-  const [transferSuccess, setTransferSuccess] = useState<ITransaction | null>(null);
-  const [senderAccountNumber, setSenderAccountNumber] = useState<TBankAccountNumber>();
+  const [senderAccountNumber, setSenderAccountNumber] = useState<TBankAccountNumber>()
   const [receiverNumber, setReceiverNumber] = useState("")
   const [amount, setAmount] = useState("")
   const [receiverLookup, setReceiverLookup] = useState<{ name: string; accountNumber: TBankAccountNumber } | null>(null)
   const [lookingUp, setLookingUp] = useState(false)
-
-  const fetchAccounts = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      
-      const res = await fetchAccountData(user.id);
-      if(!res.ok) {
-        setAccounts([])
-        setError(res.message || "Failed to load accounts")
-        
-        return;
-      }
-
-      setAccounts(res.data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load accounts")
-      setAccounts([])
-    } finally {
-      setLoading(false);
-    }
-  }, [user.id])
-
-  useEffect(() => {
-    fetchAccounts()
-  }, [fetchAccounts])
 
   useEffect(() => {
     if (initialSection === "deposit" || initialSection === "transfer") {
@@ -91,7 +64,7 @@ export default function AccountPage() {
       setLookingUp(true)
       try {
         const res = await fetch(`/api/wallet/accounts/by-number/${encodeURIComponent(receiverNumber.trim())}`)
-        const json: WaveResponse<IWalletTransaction> = await res.json()
+        const json = await res.json()
         if (json.ok) {
           setReceiverLookup({
             accountNumber: json.data.accountNumber,
@@ -107,74 +80,46 @@ export default function AccountPage() {
     return () => clearTimeout(timer)
   }, [receiverNumber])
 
-  const handleCreateAccount = async (e: React.FormEvent) => {
+  const handleCreateAccount = (e: React.FormEvent) => {
     e.preventDefault()
     if (!accountName.trim()) return
 
-    setCreating(true)
-    setCreateError(null)
+    const accountNumber = String(Math.floor(Math.random() * 9_000_000_000_000) + 1_000_000_000_000) as unknown as TBankAccountNumber
 
-    const accountNumber = String(Math.floor(Math.random() * 9_000_000_000_000) + 1_000_000_000_000) as unknown as TBankAccountNumber;
-
-    try {
-      const res = await createAccount({
-        userId: user.id,
-        name: accountName.trim(),
-        accountNumber,
-        balance: 0,
-      });
-
-      if (!res.ok) {
-        throw new Error(res.error ?? `HTTP ${res.status}`)
-      }
-      setAccounts((prev) => [...prev, res.data])
-      setAccountName("")
-    } catch (err) {
-      setCreateError(err instanceof Error ? err.message : "Failed to create account")
-    } finally {
-      setCreating(false)
-    }
+    createAccountMutation.mutate(
+      { name: accountName.trim(), accountNumber, balance: 0 },
+      {
+        onSuccess: () => {
+          setAccountName("")
+        },
+      },
+    )
   }
 
-  const handleTransfer = async (e: React.FormEvent) => {
+  const handleTransfer = (e: React.FormEvent) => {
     e.preventDefault()
     if (!senderAccountNumber || !receiverLookup || !amount.trim()) return
 
-    setTransferring(true)
-    setTransferError(null)
-    setTransferSuccess(null)
-
     const sender = accounts.find((a) => a.accountNumber === senderAccountNumber)
 
-    try {
-      const res = await fetch("/api/wallet/transfers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.id,
-          senderAccountNumber: senderAccountNumber,
-          senderName: sender?.name ?? "Unknown",
-          receiverAccountNumber: receiverLookup.accountNumber,
-          receiverName: receiverLookup.name,
-          amount: Number.parseFloat(amount),
-        }),
-      })
-      const json: WaveResponse<ITransaction> = await res.json()
-      if (!json.ok) throw new Error(json.error ?? `HTTP ${res.status}`)
-      setTransferSuccess(json.data)
-      setSenderAccountNumber(json.data.senderAccountNumber)
-      setReceiverNumber("")
-      setAmount("")
-      setReceiverLookup(null)
-      fetchAccounts()
-    } catch (err) {
-      setTransferError(err instanceof Error ? err.message : "Failed to send transfer")
-    } finally {
-      setTransferring(false)
-    }
+    transferMutation.mutate(
+      {
+        senderAccountNumber: String(senderAccountNumber),
+        senderName: sender?.name ?? "Unknown",
+        receiverAccountNumber: String(receiverLookup.accountNumber),
+        receiverName: receiverLookup.name,
+        amount: Number.parseFloat(amount),
+      },
+      {
+        onSuccess: (data) => {
+          setSenderAccountNumber(data.senderAccountNumber as unknown as TBankAccountNumber)
+          setReceiverNumber("")
+          setAmount("")
+          setReceiverLookup(null)
+        },
+      },
+    )
   }
-
-
 
   const handleSignOut = async () => {
     await signOut()
@@ -187,7 +132,7 @@ export default function AccountPage() {
         email={user.email}
         actions={
           <>
-            <Button variant="outline" size="sm" onClick={fetchAccounts} disabled={loading}>
+            <Button variant="outline" size="sm" onClick={() => accountsQuery.refetch()} disabled={accountsQuery.isLoading}>
               Refresh
             </Button>
             <DropdownMenu>
@@ -222,7 +167,7 @@ export default function AccountPage() {
               <span className="text-xs text-muted-foreground">{accounts.length} total</span>
             </CardHeader>
             <CardContent className="space-y-3 w-full">
-              {loading && (
+              {accountsQuery.isLoading && (
                 <div className="space-y-3">
                   {Array.from({ length: 2 }).map((_, i) => (
                     <Skeleton key={i} className="h-16 w-full rounded-lg" />
@@ -230,22 +175,22 @@ export default function AccountPage() {
                 </div>
               )}
 
-              {error && !loading && (
+              {accountsQuery.isError && (
                 <div className="flex flex-col items-center gap-3 py-6 text-center">
-                  <p className="text-sm text-muted-foreground">{error}</p>
-                  <Button variant="outline" size="sm" onClick={fetchAccounts}>
+                  <p className="text-sm text-muted-foreground">{accountsQuery.error?.message ?? "Failed to load accounts"}</p>
+                  <Button variant="outline" size="sm" onClick={() => accountsQuery.refetch()}>
                     Retry
                   </Button>
                 </div>
               )}
 
-              {!loading && !error && accounts.length === 0 && (
+              {!accountsQuery.isLoading && !accountsQuery.isError && accounts.length === 0 && (
                 <div className="py-6 text-center">
                   <p className="text-sm text-muted-foreground">No accounts yet. Create one below.</p>
                 </div>
               )}
 
-              {!loading && !error && accounts.length > 0 && (
+              {!accountsQuery.isLoading && !accountsQuery.isError && accounts.length > 0 && (
                 <WalletCardCarousel accounts={accounts} />
               )}
 
@@ -257,14 +202,14 @@ export default function AccountPage() {
                     placeholder="e.g. Checking, Savings"
                     value={accountName}
                     onChange={(e) => setAccountName(e.target.value)}
-                    disabled={creating}
+                    disabled={createAccountMutation.isPending}
                   />
                 </div>
-                {createError && (
-                  <p className="text-sm text-destructive">{createError}</p>
+                {createAccountMutation.isError && (
+                  <p className="text-sm text-destructive">{createAccountMutation.error?.message ?? "Failed to create account"}</p>
                 )}
-                <Button type="submit" disabled={creating || !accountName.trim()} className="w-full">
-                  {creating ? "Creating..." : "Create Account"}
+                <Button type="submit" disabled={createAccountMutation.isPending || !accountName.trim()} className="w-full">
+                  {createAccountMutation.isPending ? "Creating..." : "Create Account"}
                 </Button>
               </form>
             </CardContent>
@@ -272,20 +217,20 @@ export default function AccountPage() {
         </div>
 
         <div className="space-y-6 flex flex-col px-6 w-full mx-auto">
-          <AddMoney accounts={accounts} userId={user.id} onDeposit={fetchAccounts} />
+          <AddMoney accounts={accounts} userId={user.id} onDeposit={() => accountsQuery.refetch()} />
 
           <Card id="transfer-section" className="w-full mx-auto">
             <CardHeader className="card-header-accent">
               <CardTitle>Send Money</CardTitle>
             </CardHeader>
             <CardContent>
-              {transferSuccess ? (
+              {transferMutation.data && !transferMutation.isPending ? (
                 <TransactionSuccess
                   title="Transfer completed"
-                  amount={formatCurrency(transferSuccess.amount)}
-                  description={`${transferSuccess.senderName} \u2192 ${transferSuccess.receiverName}`}
+                  amount={formatCurrency(transferMutation.data.amount)}
+                  description={`${transferMutation.data.senderName} \u2192 ${transferMutation.data.receiverName}`}
                   actionLabel="Send another"
-                  onReset={() => setTransferSuccess(null)}
+                  onReset={() => transferMutation.reset()}
                 />
               ) : (
                 <form onSubmit={handleTransfer} className="space-y-4">
@@ -338,8 +283,8 @@ export default function AccountPage() {
                     />
                   </div>
 
-                  {transferError && (
-                    <p className="text-sm text-destructive">{transferError}</p>
+                  {transferMutation.isError && (
+                    <p className="text-sm text-destructive">{transferMutation.error?.message ?? "Failed to send transfer"}</p>
                   )}
 
                   <Button
@@ -358,7 +303,7 @@ export default function AccountPage() {
 
       <PageFooter right={<span>{accounts.length} account{accounts.length !== 1 ? "s" : ""}</span>} />
 
-      {transferring && (
+      {transferMutation.isPending && (
         <ProcessingOverlay
           amount={formatCurrency(amount)}
           description={`${accounts.find((a) => a.accountNumber === senderAccountNumber)?.name ?? "Sender"} \u2192 ${receiverLookup?.name ?? "Receiver"}`}

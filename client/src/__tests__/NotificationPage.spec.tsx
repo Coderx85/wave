@@ -1,10 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import NotificationPage from "../components/NotificationPage"
 
 const mockSignOut = vi.fn()
 const fakeUser = { id: "user_1", name: "Test User", email: "test@example.com", emailVerified: true, createdAt: new Date(), updatedAt: new Date() }
+let mockQueryClient: QueryClient
 
 vi.mock("@tanstack/react-router", () => ({
   Link: ({ children, ...props }: any) => <a {...props}>{children}</a>,
@@ -17,6 +19,40 @@ vi.mock("../lib/auth-client", () => ({
   signOut: (...args: any[]) => mockSignOut(...args),
   useSession: vi.fn(() => ({ data: { user: fakeUser, session: { id: "sess_1", expiresAt: new Date() } } })),
   $Infer: { Session: {} },
+}))
+
+// Track mock state for notifications
+let mockNotificationsData: any[] = []
+let mockNotificationsLoading = false
+let mockNotificationsError: Error | null = null
+let mockRefetch = vi.fn()
+let mockDismissMutate = vi.fn()
+let mockMarkReadMutate = vi.fn()
+
+vi.mock("../lib/queries/notifications", () => ({
+  useNotifications: vi.fn(() => ({
+    data: mockNotificationsData,
+    isLoading: mockNotificationsLoading,
+    isError: !!mockNotificationsError,
+    error: mockNotificationsError,
+    refetch: mockRefetch,
+  })),
+  useDismissNotification: vi.fn(() => ({
+    mutate: mockDismissMutate,
+    isPending: false,
+    data: null,
+    error: null,
+  })),
+  useMarkNotificationRead: vi.fn(() => ({
+    mutate: mockMarkReadMutate,
+    isPending: false,
+    data: null,
+    error: null,
+  })),
+  notificationKeys: {
+    all: ["notifications"] as const,
+    user: (userId: string) => ["notifications", userId] as const,
+  },
 }))
 
 let sseUrlUsed = ""
@@ -56,20 +92,33 @@ function createMockEventSource() {
   }
 }
 
+function renderWithQuery(ui: React.ReactNode) {
+  mockQueryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
+  return render(
+    <QueryClientProvider client={mockQueryClient}>
+      {ui}
+    </QueryClientProvider>
+  )
+}
+
 describe("NotificationPage", () => {
-  let mockFetch: ReturnType<typeof vi.fn>
   let esHelpers: ReturnType<typeof createMockEventSource>
 
   beforeEach(() => {
     sseUrlUsed = ""
-
-    mockFetch = vi.fn()
-    vi.stubGlobal("fetch", mockFetch)
+    mockNotificationsData = []
+    mockNotificationsLoading = false
+    mockNotificationsError = null
 
     esHelpers = createMockEventSource()
     vi.stubGlobal("EventSource", esHelpers.MockEventSource as any)
 
     mockSignOut.mockReset()
+    mockRefetch.mockReset()
+    mockDismissMutate.mockReset()
+    mockMarkReadMutate.mockReset()
   })
 
   afterEach(() => {
@@ -77,41 +126,32 @@ describe("NotificationPage", () => {
   })
 
   it("renders loading skeletons initially", () => {
-    mockFetch.mockReturnValue(new Promise(() => {}))
-    render(<NotificationPage />)
+    mockNotificationsLoading = true
+    mockNotificationsData = undefined as any
+
+    renderWithQuery(<NotificationPage />)
 
     expect(screen.getByRole("heading", { name: /notifications/i })).toBeInTheDocument()
     expect(document.querySelectorAll("[data-testid='skeleton-card']").length).toBe(4)
   })
 
   it("fetches notifications on mount", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({
-        ok: true,
-        status: 200,
-        message: "SUCCESS",
-        data: [
-          { id: "n1", title: "Test Notification", message: "Hello", type: "info", timestamp: new Date().toISOString(), read: false },
-        ],
-      }),
-    })
+    mockNotificationsData = [
+      { id: "n1", title: "Test Notification", message: "Hello", type: "info", timestamp: new Date().toISOString(), read: false },
+    ]
 
-    render(<NotificationPage />)
+    renderWithQuery(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText("Test Notification")).toBeInTheDocument()
     })
-
-    expect(mockFetch).toHaveBeenCalledWith(
-      `/api/notification/users/${fakeUser.id}/notifications?limit=50`,
-    )
   })
 
   it("displays error state when fetch fails", async () => {
-    mockFetch.mockRejectedValue(new Error("Network error"))
+    mockNotificationsError = new Error("Network error")
+    mockNotificationsData = undefined as any
 
-    render(<NotificationPage />)
+    renderWithQuery(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText(/network error/i)).toBeInTheDocument()
@@ -120,12 +160,9 @@ describe("NotificationPage", () => {
   })
 
   it("shows empty state when no notifications", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ ok: true, status: 200, message: "EMPTY", data: [] }),
-    })
+    mockNotificationsData = []
 
-    render(<NotificationPage />)
+    renderWithQuery(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText(/no notifications/i)).toBeInTheDocument()
@@ -133,39 +170,37 @@ describe("NotificationPage", () => {
   })
 
   it("adds incoming SSE notifications", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ ok: true, status: 200, message: "EMPTY", data: [] }),
-    })
+    mockNotificationsData = []
 
-    render(<NotificationPage />)
+    renderWithQuery(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText(/no notifications/i)).toBeInTheDocument()
     })
 
+    // SSE message triggers optimistic cache update via queryClient.setQueryData
     esHelpers.triggerMessage(JSON.stringify({
       result: [{ id: "n1", title: "Live Alert", message: "Urgent", type: "warning", timestamp: new Date().toISOString(), read: false }],
     }))
 
+    // Verify the query client received the SSE data via setQueryData
     await waitFor(() => {
-      expect(screen.getByText("Live Alert")).toBeInTheDocument()
-      expect(screen.getByText("Urgent")).toBeInTheDocument()
+      const cachedData = mockQueryClient.getQueryData(["notifications", fakeUser.id])
+      expect(cachedData).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ id: "n1", title: "Live Alert" }),
+        ]),
+      )
     })
   })
 
   it("dismisses a notification", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({
-        ok: true, status: 200, message: "OK", data: [
-          { id: "n1", title: "To Dismiss", message: "Bye", type: "info", timestamp: new Date().toISOString(), read: false },
-        ],
-      }),
-    })
+    mockNotificationsData = [
+      { id: "n1", title: "To Dismiss", message: "Bye", type: "info", timestamp: new Date().toISOString(), read: false },
+    ]
 
     const user = userEvent.setup()
-    render(<NotificationPage />)
+    renderWithQuery(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText("To Dismiss")).toBeInTheDocument()
@@ -173,21 +208,16 @@ describe("NotificationPage", () => {
 
     await user.click(screen.getByRole("button", { name: /dismiss/i }))
 
-    expect(screen.queryByText("To Dismiss")).not.toBeInTheDocument()
+    expect(mockDismissMutate).toHaveBeenCalledWith("n1")
   })
 
   it("marks a notification as read", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({
-        ok: true, status: 200, message: "OK", data: [
-          { id: "n1", title: "Read Me", message: "Please", type: "info", timestamp: new Date().toISOString(), read: false },
-        ],
-      }),
-    })
+    mockNotificationsData = [
+      { id: "n1", title: "Read Me", message: "Please", type: "info", timestamp: new Date().toISOString(), read: false },
+    ]
 
     const user = userEvent.setup()
-    render(<NotificationPage />)
+    renderWithQuery(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText("Read Me")).toBeInTheDocument()
@@ -195,19 +225,14 @@ describe("NotificationPage", () => {
 
     await user.click(screen.getByRole("button", { name: /mark read/i }))
 
-    const card = screen.getByText("Read Me").closest("[data-testid='notification-card']")
-    expect(card?.getAttribute("data-read")).toBe("true")
-    expect(screen.queryByRole("button", { name: /mark read/i })).not.toBeInTheDocument()
+    expect(mockMarkReadMutate).toHaveBeenCalledWith("n1")
   })
 
   it("calls signOut when sign-out button clicked", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ ok: true, status: 200, message: "EMPTY", data: [] }),
-    })
+    mockNotificationsData = []
 
     const user = userEvent.setup()
-    render(<NotificationPage />)
+    renderWithQuery(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText(/no notifications/i)).toBeInTheDocument()
@@ -219,12 +244,9 @@ describe("NotificationPage", () => {
   })
 
   it("shows user details in header", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ ok: true, status: 200, message: "EMPTY", data: [] }),
-    })
+    mockNotificationsData = []
 
-    render(<NotificationPage />)
+    renderWithQuery(<NotificationPage />)
 
     await waitFor(() => {
       expect(screen.getByText("test@example.com")).toBeInTheDocument()
@@ -232,8 +254,10 @@ describe("NotificationPage", () => {
   })
 
   it("uses user.id in SSE URL", () => {
-    mockFetch.mockReturnValue(new Promise(() => {}))
-    render(<NotificationPage />)
+    mockNotificationsData = undefined as any
+    mockNotificationsLoading = true
+
+    renderWithQuery(<NotificationPage />)
 
     expect(sseUrlUsed).toBe(`/api/notification/users/${fakeUser.id}/notifications/stream`)
   })

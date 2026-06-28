@@ -5,19 +5,24 @@ export interface INotification {
   email: string;
   subject: string;
   message: string;
-  status: "pending" | "sent" | "failed";
+  status: "pending" | "sent" | "failed" | "dead_letter";
   read: boolean;
   sentAt: Date | null;
+  retryCount: number;
+  lastRetryAt: Date | null;
+  errorMessage: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface INotificationRepository {
   create(notification: Omit<INotification, "id" | "createdAt" | "updatedAt">): Promise<INotification>;
-  updateStatus(id: string, status: "pending" | "sent" | "failed", sentAt?: Date): Promise<void>;
+  updateStatus(id: string, status: INotification["status"], sentAt?: Date): Promise<void>;
+  updateRetryState(id: string, retryCount: number, lastRetryAt: Date, errorMessage: string): Promise<void>;
   markAsRead(id: string): Promise<void>;
   delete(id: string): Promise<void>;
   findPending(limit?: number): Promise<INotification[]>;
+  findFailedForRetry(maxRetries: number, limit?: number): Promise<INotification[]>;
   findByTransactionId(transactionId: string): Promise<INotification | null>;
   findByUserId(userId: string, limit?: number): Promise<INotification[]>;
 }
